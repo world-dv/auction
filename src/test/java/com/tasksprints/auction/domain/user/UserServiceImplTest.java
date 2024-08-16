@@ -137,14 +137,25 @@ public class UserServiceImplTest {
         @DisplayName("should delete user when found")
         void shouldDeleteUserWhenFound() {
             // Arrange
+            User existingUser = User.builder()
+                    .id(1L)
+                    .name("testUser")
+                    .nickName("testNick")
+                    .password("testPassword")
+                    .email("test@example.com")
+                    .build();
             when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+            when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
             // Act
             userService.deleteUser(1L);
 
             // Assert
             verify(userRepository, times(1)).findById(1L);
-            verify(userRepository, times(1)).delete(existingUser);
+            verify(userRepository, times(1)).save(existingUser);
+
+            // Verify that the user's deletedAt field was updated correctly
+            Assertions.assertNotNull(existingUser.getDeletedAt());
         }
 
         @Test
