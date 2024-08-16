@@ -8,14 +8,12 @@ import com.tasksprints.auction.domain.user.repository.UserRepository;
 import com.tasksprints.auction.domain.user.service.UserServiceImpl;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
 
 
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class UserServiceImplTest {
 
     @Mock
