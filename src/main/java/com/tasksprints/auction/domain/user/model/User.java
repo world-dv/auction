@@ -34,4 +34,18 @@ public class User {
         this.password = password;
         this.nickName = nickName;
     }
+
+    /**
+     * @descripton
+     * static factory pattern을 적용하여, 구현
+     */
+    public static User create(String name, String email, String password, String nickName){
+        return User.builder()
+                .name(name)
+                .email(email)
+                .password(password)
+                .nickName(nickName)
+                .build();
+    }
+
 }
