@@ -1,4 +1,4 @@
-package com.tasksprints.auction.common;
+package com.tasksprints.auction.common.constant;
 
 public class ApiResponseMessages {
     public static final String USER_CREATED_SUCCESS = "User successfully created";

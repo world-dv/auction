@@ -1,4 +1,4 @@
-package com.tasksprints.auction.common;
+package com.tasksprints.auction.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

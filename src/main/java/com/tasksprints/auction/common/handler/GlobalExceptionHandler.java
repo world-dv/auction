@@ -1,4 +1,5 @@
-package com.tasksprints.auction.common;
+package com.tasksprints.auction.common.handler;
+import com.tasksprints.auction.common.response.ApiResponse;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

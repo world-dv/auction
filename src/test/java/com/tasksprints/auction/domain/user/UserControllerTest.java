@@ -1,7 +1,7 @@
 package com.tasksprints.auction.domain.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tasksprints.auction.common.ApiResponseMessages;
+import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.domain.user.controller.UserController;
 import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
 import com.tasksprints.auction.domain.user.dto.UserRequest;

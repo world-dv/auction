@@ -1,4 +1,4 @@
-package com.tasksprints.auction.common;
+package com.tasksprints.auction.common.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

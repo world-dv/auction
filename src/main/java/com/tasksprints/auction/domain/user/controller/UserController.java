@@ -1,7 +1,7 @@
 package com.tasksprints.auction.domain.user.controller;
 
-import com.tasksprints.auction.common.ApiResponse;
-import com.tasksprints.auction.common.ApiResponseMessages;
+import com.tasksprints.auction.common.response.ApiResponse;
+import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
 import com.tasksprints.auction.domain.user.dto.UserRequest;
 import com.tasksprints.auction.domain.user.dto.UserSummaryDTO;
