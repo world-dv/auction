@@ -1,5 +1,6 @@
 package com.tasksprints.auction.domain.user;
 
+import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
 import com.tasksprints.auction.domain.user.dto.UserRequest;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
@@ -7,13 +8,14 @@ import com.tasksprints.auction.domain.user.repository.UserRepository;
 import com.tasksprints.auction.domain.user.service.UserServiceImpl;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
+import org.springframework.boot.test.context.SpringBootTest;
 
 
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-
+@SpringBootTest
 public class UserServiceImplTest {
 
     @Mock
@@ -48,7 +50,7 @@ public class UserServiceImplTest {
             when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
             // Act
-            User createdUser = userService.createUser(request);
+            UserDetailsDTO createdUser = userService.createUser(request);
 
             // Assert
             Assertions.assertNotNull(createdUser);
@@ -70,7 +72,7 @@ public class UserServiceImplTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
 
             // Act
-            User user = userService.getUserById(1L);
+            UserDetailsDTO user = userService.getUserDetailsById(1L);
 
             // Assert
             Assertions.assertNotNull(user);
@@ -86,7 +88,7 @@ public class UserServiceImplTest {
             when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
             // Act & Assert
-            Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
+            Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserDetailsById(1L));
             verify(userRepository, times(1)).findById(1L);
         }
     }
@@ -104,7 +106,7 @@ public class UserServiceImplTest {
             when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
             // Act
-            User updatedUser = userService.updateUser(1L, request);
+            UserDetailsDTO updatedUser = userService.updateUser(1L, request);
 
             // Assert
             Assertions.assertNotNull(updatedUser);
