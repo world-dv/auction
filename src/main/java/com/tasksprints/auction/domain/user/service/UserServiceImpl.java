@@ -57,6 +57,8 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
-        userRepository.delete(user);
+        user.delete(); // 사용자 상태를 '삭제됨'으로 변경
+        userRepository.save(user); // 상태 업데이트를 저장
     }
+
 }
