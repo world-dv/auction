@@ -1,8 +1,8 @@
-package com.tasksprints.auction.domain.user;
+package com.tasksprints.auction.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
-import com.tasksprints.auction.domain.user.controller.UserController;
+import com.tasksprints.auction.api.user.UserController;
 import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
 import com.tasksprints.auction.domain.user.dto.UserRequest;
 import com.tasksprints.auction.domain.user.dto.UserSummaryDTO;
@@ -154,7 +154,7 @@ class UserControllerTest {
             mockMvc.perform(get("/api/v1/user/{id}", 1L))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.success").value(false))
-                    .andExpect(jsonPath("$.message").value("User not found with id 1"));
+                    .andExpect(jsonPath("$.message").value("User not found"));
         }
 
         @Test
@@ -183,7 +183,7 @@ class UserControllerTest {
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.success").value(false))
-                    .andExpect(jsonPath("$.message").value("User not found with id 1"));
+                    .andExpect(jsonPath("$.message").value("User not found"));
         }
 
         @Test
@@ -196,7 +196,7 @@ class UserControllerTest {
                             .param("id", "1"))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.success").value(false))
-                    .andExpect(jsonPath("$.message").value("User not found with id 1"));
+                    .andExpect(jsonPath("$.message").value("User not found"));
         }
     }
 }

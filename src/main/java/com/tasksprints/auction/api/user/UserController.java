@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.user.controller;
+package com.tasksprints.auction.api.user;
 
 import com.tasksprints.auction.common.response.ApiResponse;
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
@@ -20,8 +20,8 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<ApiResponse<UserDetailsDTO>> register(@RequestBody UserRequest.Register user) {
-        UserDetailsDTO newUser = userService.createUser(user);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.USER_CREATED_SUCCESS, newUser));
+        UserDetailsDTO createdUser = userService.createUser(user);
+        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.USER_CREATED_SUCCESS, createdUser));
     }
 
     @GetMapping("/{id}")
