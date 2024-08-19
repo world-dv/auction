@@ -19,6 +19,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 실시간성으로 인해서 socket으로 대체할지에 대한 여부 고민 필요
+ */
 @Service
 @RequiredArgsConstructor
 public class BidServiceImpl implements BidService {

@@ -41,7 +41,11 @@ public class User extends BaseEntityWithUpdate {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Auction> auctions = new ArrayList<>();
-
+//    추후 추가
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    @Builder.Default
+//    private List<Bid> bids = new ArrayList<>();
+    
     public void setAuctions(List<Auction> auctions) {
         this.auctions = auctions;
     }

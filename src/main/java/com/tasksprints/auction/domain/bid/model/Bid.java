@@ -23,21 +23,22 @@ public class Bid extends BaseEntity {
 
     private BigDecimal amount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auction_id")
     @Builder.Default
     private Auction auction = null;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @Builder.Default
     private User user = null;
 
+    /**
+     * addUser 와 addAuction 을 양방향으로 묶을지 단방향으로 묶을지에 대한 고민
+     */
     public void addUser(User user){
         this.user = user;
-        /**
-         * 단방향
-         */
+
     }
 
     public void addAuction(Auction auction){
