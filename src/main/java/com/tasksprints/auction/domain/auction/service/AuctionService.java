@@ -7,6 +7,9 @@ import com.tasksprints.auction.domain.auction.dto.AuctionRequest;
 
 import java.util.List;
 
+/**
+ * 사용자가 맞는지 판단도 해야함.
+ */
 public interface AuctionService {
     AuctionDTO createAuction(Long userId, AuctionRequest.Create auctionRequest);
 

@@ -1,3 +1,4 @@
+
 package com.tasksprints.auction.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
