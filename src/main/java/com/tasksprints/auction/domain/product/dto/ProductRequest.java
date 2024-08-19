@@ -17,4 +17,13 @@ public class ProductRequest {
         private String name;
         private String description;
     }
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Update {
+        private Long productId;
+        private String name;
+        private String description;
+    }
+
 }

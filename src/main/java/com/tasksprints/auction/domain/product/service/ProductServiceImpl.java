@@ -54,11 +54,17 @@ public class ProductServiceImpl implements  ProductService{
 
     @Override
     public void delete(Long ProductId) {
-
+        /** 완전 삭제할건지 아닌지 판단
+         */
     }
 
     @Override
-    public ProductDTO update(){
-        return null;
+    public ProductDTO update(ProductRequest.Update product){
+        Long productId = product.getProductId();
+        Product foundProduct = productRepository.findById(productId)
+                .orElseThrow();
+        foundProduct.update(product.getName(), product.getDescription());
+        Product savedProduct = productRepository.save(foundProduct);
+        return ProductDTO.of(savedProduct);
     }
 }
