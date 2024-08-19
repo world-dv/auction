@@ -1,4 +1,7 @@
-package com.tasksprints.auction.domain.product;
+package com.tasksprints.auction.domain.product.service;
+
+import com.tasksprints.auction.domain.product.dto.ProductDTO;
+import com.tasksprints.auction.domain.product.dto.ProductRequest;
 
 import java.util.List;
 

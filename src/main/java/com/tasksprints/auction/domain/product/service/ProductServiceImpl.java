@@ -1,7 +1,11 @@
-package com.tasksprints.auction.domain.product;
+package com.tasksprints.auction.domain.product.service;
 
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
+import com.tasksprints.auction.domain.product.dto.ProductDTO;
+import com.tasksprints.auction.domain.product.dto.ProductRequest;
+import com.tasksprints.auction.domain.product.model.Product;
+import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,16 +47,18 @@ public class ProductServiceImpl implements  ProductService{
                 auction);
 
         Product createdProduct = productRepository.save(newProduct);
+        /** 이미지 추가 로직 필요**/
 
         return ProductDTO.of(createdProduct);
     }
 
     @Override
     public void delete(Long ProductId) {
+
     }
 
     @Override
-    public ProductDTO update() {
+    public ProductDTO update(){
         return null;
     }
 }

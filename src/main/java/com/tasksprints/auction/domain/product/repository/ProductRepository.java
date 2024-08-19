@@ -1,5 +1,6 @@
-package com.tasksprints.auction.domain.product;
+package com.tasksprints.auction.domain.product.repository;
 
+import com.tasksprints.auction.domain.product.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

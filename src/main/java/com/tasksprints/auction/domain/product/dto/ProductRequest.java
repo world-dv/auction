@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.product;
+package com.tasksprints.auction.domain.product.dto;
 
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;

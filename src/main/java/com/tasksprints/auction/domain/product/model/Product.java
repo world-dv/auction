@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.product;
+package com.tasksprints.auction.domain.product.model;
 
 import com.tasksprints.auction.common.entity.BaseEntity;
 import com.tasksprints.auction.domain.auction.model.Auction;
@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="products")
 @Builder
@@ -33,6 +36,9 @@ public class Product extends BaseEntity {
     //mappedby
     private Auction auction;
 
+    @ManyToOne
+    private List<ProductImage> productImageList = new ArrayList<>();
+
     public void addOwner(User owner){
         this.owner = owner;
     }
@@ -40,6 +46,10 @@ public class Product extends BaseEntity {
         this.auction = auction;
     }
 
+    public void addProductImage(ProductImage productImage){
+        productImageList.add(productImage);
+        /** 단방향**/
+    }
     public void addOwnerAndAuction(User owner, Auction auction){
         addOwner(owner);
         addAuction(auction);

@@ -1,5 +1,6 @@
-package com.tasksprints.auction.domain.product;
+package com.tasksprints.auction.domain.product.dto;
 
+import com.tasksprints.auction.domain.product.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
