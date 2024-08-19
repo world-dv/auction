@@ -1,10 +1,11 @@
-package com.tasksprints.auction.domain.auction;
+package com.tasksprints.auction.domain.auction.repository;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
+@Slf4j
 public class AuctionRepositoryTest {
 
     @Autowired
@@ -77,6 +79,8 @@ public class AuctionRepositoryTest {
         List<Auction> auctions = auctionRepository.findAll();
 
         assertThat(auctions).hasSize(2);
+
+
     }
 
     private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {

@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.auction;
+package com.tasksprints.auction.domain.auction.service;
 
 import com.tasksprints.auction.domain.auction.dto.AuctionDTO;
 import com.tasksprints.auction.domain.auction.exception.AuctionAlreadyClosedException;
