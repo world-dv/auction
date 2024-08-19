@@ -18,5 +18,15 @@ public class ApiResponseMessages {
     public static final String PRODUCT_NOT_FOUND = "Product not found";
     public static final String BID_NOT_FOUND = "Bid not found";
 
-    // 추가적인 메시지를 필요에 따라 정의할 수 있습니다.
+    // BID
+    public static final String BID_SUBMITTED_SUCCESS = "Bid successfully submitted";
+    public static final String BID_UPDATED_SUCCESS = "Bid amount successfully updated";
+    public static final String BID_STATUS_CHECKED = "Bid status successfully checked";
+
+    // REVIEW
+    public static final String REVIEW_CREATED_SUCCESS = "Review successfully created";
+    public static final String REVIEWS_RETRIEVED = "Reviews successfully retrieved";
+    public static final String REVIEW_RETRIEVED = "Review successfully retrieved";
+
+    // Additional messages can be defined as needed
 }
