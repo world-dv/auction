@@ -36,7 +36,7 @@ public class Product extends BaseEntity {
     //mappedby
     private Auction auction;
 
-    @ManyToOne
+    @OneToMany
     private List<ProductImage> productImageList = new ArrayList<>();
 
     public void addOwner(User owner){

@@ -13,5 +13,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM products p WHERE p.owner.id = :ownerId")
     List<Product> findAllByUserId(Long ownerId);
-
 }

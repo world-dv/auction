@@ -9,6 +9,8 @@ import java.util.List;
  * item으로 Auction 검색
  */
 public interface ProductService {
+    void uploadImage();
+    void uploadImageBulk();
     List<ProductDTO> getProductsByUserId(Long userId);
     ProductDTO getProductByAuctionId(Long auctionId);
 
