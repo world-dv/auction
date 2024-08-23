@@ -1,7 +1,7 @@
 package com.tasksprints.auction.common.handler;
 
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
-import com.tasksprints.auction.common.response.ApiResponse;
+import com.tasksprints.auction.common.response.ApiResult;
 import com.tasksprints.auction.domain.auction.exception.AuctionAlreadyClosedException;
 import com.tasksprints.auction.domain.auction.exception.AuctionEndedException;
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
@@ -19,59 +19,59 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse<String>> handleUserNotFoundException(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(ApiResponseMessages.USER_NOT_FOUND));
+    public ResponseEntity<ApiResult<String>> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResult.failure(ApiResponseMessages.USER_NOT_FOUND));
     }
 
     @ExceptionHandler(AuctionNotFoundException.class)
-    public ResponseEntity<ApiResponse<String>> handleAuctionNotFoundException(AuctionNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(ApiResponseMessages.AUCTION_NOT_FOUND));
+    public ResponseEntity<ApiResult<String>> handleAuctionNotFoundException(AuctionNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResult.failure(ApiResponseMessages.AUCTION_NOT_FOUND));
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ApiResponse<String>> handleProductNotFoundException(ProductNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(ApiResponseMessages.PRODUCT_NOT_FOUND));
+    public ResponseEntity<ApiResult<String>> handleProductNotFoundException(ProductNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResult.failure(ApiResponseMessages.PRODUCT_NOT_FOUND));
     }
 
     @ExceptionHandler(BidNotFoundException.class)
-    public ResponseEntity<ApiResponse<String>> handleBidNotFoundException(BidNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(ApiResponseMessages.BID_NOT_FOUND));
+    public ResponseEntity<ApiResult<String>> handleBidNotFoundException(BidNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResult.failure(ApiResponseMessages.BID_NOT_FOUND));
     }
 
     @ExceptionHandler(InvalidAuctionTimeException.class)
-    public ResponseEntity<ApiResponse<String>> handleInvalidAuctionTimeException(InvalidAuctionTimeException ex) {
+    public ResponseEntity<ApiResult<String>> handleInvalidAuctionTimeException(InvalidAuctionTimeException ex) {
         String message = "Invalid auction time: " + ex.getMessage();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(message));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(message));
     }
     @ExceptionHandler(InvalidBidAmountException.class)
-    public ResponseEntity<ApiResponse<String>> handleInvalidBidAmountException(InvalidBidAmountException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(ex.getMessage()));
+    public ResponseEntity<ApiResult<String>> handleInvalidBidAmountException(InvalidBidAmountException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(AuctionAlreadyClosedException.class)
-    public ResponseEntity<ApiResponse<String>> handleAuctionAlreadyClosedException(AuctionAlreadyClosedException ex) {
+    public ResponseEntity<ApiResult<String>> handleAuctionAlreadyClosedException(AuctionAlreadyClosedException ex) {
         String message = "Auction is already closed";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(message));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(message));
     }
 
     @ExceptionHandler(AuctionEndedException.class)
-    public ResponseEntity<ApiResponse<String>> handleAuctionEndedException(AuctionEndedException ex) {
+    public ResponseEntity<ApiResult<String>> handleAuctionEndedException(AuctionEndedException ex) {
         String message = "This auction has already ended.";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(message));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(message));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(ex.getMessage()));
+    public ResponseEntity<ApiResult<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ApiResponse<String>> handleIllegalStateException(IllegalStateException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(ex.getMessage()));
+    public ResponseEntity<ApiResult<String>> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.failure(ex.getMessage()));
+    public ResponseEntity<ApiResult<String>> handleRuntimeException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResult.failure(ex.getMessage()));
     }
 }

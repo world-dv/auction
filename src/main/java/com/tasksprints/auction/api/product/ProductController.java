@@ -1,10 +1,13 @@
 package com.tasksprints.auction.api.product;
 
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
-import com.tasksprints.auction.common.response.ApiResponse;
+import com.tasksprints.auction.common.response.ApiResult;
 import com.tasksprints.auction.domain.product.dto.ProductDTO;
 import com.tasksprints.auction.domain.product.dto.ProductRequest;
 import com.tasksprints.auction.domain.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,48 +20,74 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
+    @Operation(summary = "Register Product", description = "Register a new product for an auction by user ID and auction ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product registered successfully."),
+            @ApiResponse(responseCode = "404", description = "Auction not found.")
+    })
     @PostMapping("/{userId}/{auctionId}")
-    public ResponseEntity<ApiResponse<ProductDTO>> registerProduct(
+    public ResponseEntity<ApiResult<ProductDTO>> registerProduct(
             @PathVariable Long userId,
             @PathVariable Long auctionId,
             @RequestBody ProductRequest.Register productRequest) {
         ProductDTO productDTO = productService.register(userId, auctionId, productRequest);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
     }
 
+    @Operation(summary = "Get Products by User ID", description = "Retrieve a list of products registered by a specific user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully."),
+            @ApiResponse(responseCode = "404", description = "User not found.")
+    })
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<ApiResult<List<ProductDTO>>> getProductsByUserId(@PathVariable Long userId) {
         List<ProductDTO> products = productService.getProductsByUserId(userId);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.REVIEWS_RETRIEVED, products));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.REVIEWS_RETRIEVED, products));
     }
 
+    @Operation(summary = "Get Product by Auction ID", description = "Retrieve a product based on the auction ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product retrieved successfully."),
+            @ApiResponse(responseCode = "404", description = "Product not found for the given auction ID.")
+    })
     @GetMapping("/auction/{auctionId}")
-    public ResponseEntity<ApiResponse<ProductDTO>> getProductByAuctionId(@PathVariable Long auctionId) {
+    public ResponseEntity<ApiResult<ProductDTO>> getProductByAuctionId(@PathVariable Long auctionId) {
         ProductDTO productDTO = productService.getProductByAuctionId(auctionId);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
     }
 
+    @Operation(summary = "Update Product", description = "Update an existing product with new information.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product updated successfully."),
+            @ApiResponse(responseCode = "404", description = "Product not found.")
+    })
     @PutMapping
-    public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(@RequestBody ProductRequest.Update productRequest) {
+    public ResponseEntity<ApiResult<ProductDTO>> updateProduct(@RequestBody ProductRequest.Update productRequest) {
         ProductDTO updatedProduct = productService.update(productRequest);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.REVIEW_RETRIEVED, updatedProduct));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.REVIEW_RETRIEVED, updatedProduct));
     }
 
+    @Operation(summary = "Delete Product", description = "Delete a product by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product deleted successfully."),
+            @ApiResponse(responseCode = "404", description = "Product not found.")
+    })
     @DeleteMapping("/{productId}")
-    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable Long productId) {
+    public ResponseEntity<ApiResult<String>> deleteProduct(@PathVariable Long productId) {
         productService.delete(productId);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.PRODUCT_NOT_FOUND));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND));
     }
+}
 
 //    @PostMapping("/uploadImage")
-//    public ResponseEntity<ApiResponse<String>> uploadImage() {
+//    public ResponseEntity<ApiResult<String>> uploadImage() {
 //        productService.uploadImage();
-//        return ResponseEntity.ok(ApiResponse.success("Image uploaded successfully."));
+//        return ResponseEntity.ok(ApiResult.success("Image uploaded successfully."));
 //    }
 //
 //    @PostMapping("/uploadImageBulk")
-//    public ResponseEntity<ApiResponse<String>> uploadImageBulk() {
+//    public ResponseEntity<ApiResult<String>> uploadImageBulk() {
 //        productService.uploadImageBulk();
-//        return ResponseEntity.ok(ApiResponse.success("Bulk images uploaded successfully."));
+//        return ResponseEntity.ok(ApiResult.success("Bulk images uploaded successfully."));
 //    }
-}
+//}

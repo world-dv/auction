@@ -3,7 +3,6 @@ package com.tasksprints.auction.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasksprints.auction.api.product.ProductController;
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
-import com.tasksprints.auction.common.response.ApiResponse;
 import com.tasksprints.auction.domain.product.dto.ProductDTO;
 import com.tasksprints.auction.domain.product.dto.ProductRequest;
 import com.tasksprints.auction.domain.product.service.ProductService;
