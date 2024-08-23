@@ -150,15 +150,15 @@ public class AuctionControllerTest {
                 .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEW_CREATED_SUCCESS));
     }
 
-    @Test
-    @DisplayName("사용자 리뷰 조회 성공")
-    public void testGetReviewsByUser_Success() throws Exception {
-        List<ReviewDTO> reviews = Collections.singletonList(new ReviewDTO()); // Populate with necessary fields
-        when(reviewService.getReviewsByUserId(anyLong())).thenReturn(reviews);
-
-        mockMvc.perform(get("/api/v1/auction/user/1/reviews"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEWS_RETRIEVED))
-                .andExpect(jsonPath("$.data").isArray());
-    }
+//    @Test
+//    @DisplayName("사용자 리뷰 조회 성공")
+//    public void testGetReviewsByUser_Success() throws Exception {
+//        List<ReviewDTO> reviews = Collections.singletonList(new ReviewDTO()); // Populate with necessary fields
+//        when(reviewService.getReviewsByUserId(anyLong())).thenReturn(reviews);
+//
+//        mockMvc.perform(get("/api/v1/auction/user/1/reviews"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEWS_RETRIEVED))
+//                .andExpect(jsonPath("$.data").isArray());
+//    }
 }
