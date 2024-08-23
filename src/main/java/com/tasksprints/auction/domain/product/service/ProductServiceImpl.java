@@ -47,6 +47,7 @@ public class ProductServiceImpl implements  ProductService{
     }
 
     @Override
+    @Deprecated
     public List<ProductDTO> getProductsByUserId(Long userId) {
         List<Product> products = productRepository.findAllByUserId(userId);
         return convertToDTOList(products);

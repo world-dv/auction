@@ -53,7 +53,7 @@ public class ProductControllerTest {
 
         when(productService.register(anyLong(), anyLong(), any())).thenReturn(productDTO);
 
-        mockMvc.perform(post("/api/v1/product/1/1")
+        mockMvc.perform(post("/api/v1/product?userId=1&auctionId=1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isOk())
@@ -67,24 +67,13 @@ public class ProductControllerTest {
 
         when(productService.register(anyLong(), anyLong(), any())).thenThrow(new RuntimeException("Error registering product"));
 
-        mockMvc.perform(post("/api/v1/product/1/1")
+        mockMvc.perform(post("/api/v1/product?userId=1&auctionId=1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value("Error registering product"));
     }
 
-    @DisplayName("userId를 통해 제품 조회 성공")
-    @Test
-    public void testGetProductsByUserId_Success() throws Exception {
-        List<ProductDTO> products = Collections.singletonList(new ProductDTO()); // Populate with necessary fields
-        when(productService.getProductsByUserId(anyLong())).thenReturn(products);
-
-        mockMvc.perform(get("/api/v1/product/user/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEWS_RETRIEVED))
-                .andExpect(jsonPath("$.data").isArray());
-    }
 
     @DisplayName("auctionId를 통해 제품 조회 성공")
     @Test
@@ -92,7 +81,7 @@ public class ProductControllerTest {
         ProductDTO productDTO = new ProductDTO(); // Populate with necessary fields
         when(productService.getProductByAuctionId(anyLong())).thenReturn(productDTO);
 
-        mockMvc.perform(get("/api/v1/product/auction/1"))
+        mockMvc.perform(get("/api/v1/product?auctionId=1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_NOT_FOUND)); // Adjust as needed
     }

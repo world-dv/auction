@@ -25,37 +25,25 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Product registered successfully."),
             @ApiResponse(responseCode = "404", description = "Auction not found.")
     })
-    @PostMapping("/{userId}/{auctionId}")
+    @PostMapping
     public ResponseEntity<ApiResult<ProductDTO>> registerProduct(
-            @PathVariable Long userId,
-            @PathVariable Long auctionId,
+            @RequestParam Long userId,
+            @RequestParam Long auctionId,
             @RequestBody ProductRequest.Register productRequest) {
         ProductDTO productDTO = productService.register(userId, auctionId, productRequest);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
-    }
-
-    @Operation(summary = "Get Products by User ID", description = "Retrieve a list of products registered by a specific user.")
+    }    @Operation(summary = "Get Products by Auction ID", description = "Retrieve products based on user ID or auction ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Products retrieved successfully."),
-            @ApiResponse(responseCode = "404", description = "User not found.")
+            @ApiResponse(responseCode = "200", description = "Product(s) retrieved successfully."),
+            @ApiResponse(responseCode = "404", description = "Product(s) not found for the given user ID or auction ID.")
     })
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResult<List<ProductDTO>>> getProductsByUserId(@PathVariable Long userId) {
-        List<ProductDTO> products = productService.getProductsByUserId(userId);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.REVIEWS_RETRIEVED, products));
-    }
+    @GetMapping
+    public ResponseEntity<ApiResult<?>> getProducts(
+            @RequestParam Long auctionId) {
 
-    @Operation(summary = "Get Product by Auction ID", description = "Retrieve a product based on the auction ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product retrieved successfully."),
-            @ApiResponse(responseCode = "404", description = "Product not found for the given auction ID.")
-    })
-    @GetMapping("/auction/{auctionId}")
-    public ResponseEntity<ApiResult<ProductDTO>> getProductByAuctionId(@PathVariable Long auctionId) {
-        ProductDTO productDTO = productService.getProductByAuctionId(auctionId);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
+            ProductDTO productDTO = productService.getProductByAuctionId(auctionId);
+            return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
     }
-
     @Operation(summary = "Update Product", description = "Update an existing product with new information.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product updated successfully."),
