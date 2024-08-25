@@ -3,10 +3,11 @@ package com.tasksprints.auction.domain.product.service;
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
-import com.tasksprints.auction.domain.product.dto.ProductDTO;
-import com.tasksprints.auction.domain.product.dto.ProductRequest;
+import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
+import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
 import com.tasksprints.auction.domain.product.exception.ProductNotFoundException;
 import com.tasksprints.auction.domain.product.model.Product;
+import com.tasksprints.auction.domain.product.repository.ProductImageRepository;
 import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
@@ -23,19 +24,25 @@ public class ProductServiceImpl implements  ProductService{
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final AuctionRepository auctionRepository;
+    private final ProductImageRepository productImageRepository;
 
     @Override
-    public void uploadImage() {
+    public String uploadImage() {
         /**
          * S3 버킷으로 올리곱 link 반환
          */
+        String url = "url";
+        return url;
     }
 
     @Override
-    public void uploadImageBulk() {
+    public List<String> uploadImageBulk() {
         /**
         * S3 버킷으로 올리곱 link 반환
         */
+        List<String> urlList =  List.of("url1","url2","url3");
+
+        return urlList;
     }
 
 
@@ -48,20 +55,20 @@ public class ProductServiceImpl implements  ProductService{
 
     @Override
     @Deprecated
-    public List<ProductDTO> getProductsByUserId(Long userId) {
+    public List<ProductResponse> getProductsByUserId(Long userId) {
         List<Product> products = productRepository.findAllByUserId(userId);
         return convertToDTOList(products);
     }
 
     @Override
-    public ProductDTO getProductByAuctionId(Long auctionId) {
+    public ProductResponse getProductByAuctionId(Long auctionId) {
         Product product = productRepository.findByAuctionId(auctionId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        return ProductDTO.of(product);
+        return ProductResponse.of(product);
     }
 
     @Override
-    public ProductDTO register(Long userId, Long auctionId, ProductRequest.Register request) {
+    public ProductResponse register(Long userId, Long auctionId, ProductRequest.Register request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         Auction auction = auctionRepository.findById(auctionId)
@@ -77,23 +84,24 @@ public class ProductServiceImpl implements  ProductService{
         Product createdProduct = productRepository.save(newProduct);
         // 이미지 추가 로직 필요
 
-        return ProductDTO.of(createdProduct);
+
+        return ProductResponse.of(createdProduct);
     }
 
     @Override
-    public ProductDTO update(ProductRequest.Update request) {
+    public ProductResponse update(ProductRequest.Update request) {
         Long productId = request.getProductId();
         Product foundProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         foundProduct.update(request.getName(), request.getDescription());
         Product savedProduct = productRepository.save(foundProduct);
-        return ProductDTO.of(savedProduct);
+        return ProductResponse.of(savedProduct);
     }
 
-    private List<ProductDTO> convertToDTOList(List<Product> products) {
+    private List<ProductResponse> convertToDTOList(List<Product> products) {
         return products.stream()
-                .map(ProductDTO::of)
+                .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
 }

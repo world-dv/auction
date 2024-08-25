@@ -4,8 +4,8 @@ import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
-import com.tasksprints.auction.domain.product.dto.ProductDTO;
-import com.tasksprints.auction.domain.product.dto.ProductRequest;
+import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
+import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
 import com.tasksprints.auction.domain.product.exception.ProductNotFoundException;
 import com.tasksprints.auction.domain.product.model.Product;
 import com.tasksprints.auction.domain.product.repository.ProductRepository;
@@ -86,9 +86,9 @@ public class ProductServiceImplTest {
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
 
-            ProductDTO createdProductDTO = productService.register(1L, 1L, request);
+            ProductResponse createdProductResponse = productService.register(1L, 1L, request);
 
-            assertEquals(createdProductDTO.getName(),"Test Product");
+            assertEquals(createdProductResponse.getName(),"Test Product");
             verify(productRepository).save(any(Product.class));
         }
 
@@ -123,7 +123,7 @@ public class ProductServiceImplTest {
         public void testGetProductsByUserId() {
             when(productRepository.findAllByUserId(1L)).thenReturn(Collections.singletonList(product));
 
-            List<ProductDTO> products = productService.getProductsByUserId(1L);
+            List<ProductResponse> products = productService.getProductsByUserId(1L);
 
             assertEquals(products.size(),1);
             assertEquals(products.get(0).getName(),"Test Product");
@@ -134,9 +134,9 @@ public class ProductServiceImplTest {
         public void testGetProductByAuctionId() {
             when(productRepository.findByAuctionId(1L)).thenReturn(Optional.of(product));
 
-            ProductDTO foundProductDTO = productService.getProductByAuctionId(1L);
+            ProductResponse foundProductResponse = productService.getProductByAuctionId(1L);
 
-            assertEquals(foundProductDTO.getName(),"Test Product");
+            assertEquals(foundProductResponse.getName(),"Test Product");
         }
 
         @Test
@@ -170,9 +170,9 @@ public class ProductServiceImplTest {
 
             ProductRequest.Update updateRequest = new ProductRequest.Update(1L, "Updated Product", "Updated Description");
 
-            ProductDTO updatedProductDTO = productService.update(updateRequest);
+            ProductResponse updatedProductResponse = productService.update(updateRequest);
 
-            assertEquals(updatedProductDTO.getName(),"Updated Product");
+            assertEquals(updatedProductResponse.getName(),"Updated Product");
             verify(productRepository).save(any(Product.class));
         }
     }

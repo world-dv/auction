@@ -37,6 +37,7 @@ public class Product extends BaseEntity {
     private Auction auction;
 
     @OneToMany
+    @Builder.Default
     private List<ProductImage> productImageList = new ArrayList<>();
 
     public void addOwner(User owner){
@@ -61,6 +62,7 @@ public class Product extends BaseEntity {
                 .description(description)
                 .build();
         product.addOwnerAndAuction(owner, auction);
+
         return product;
     }
 

@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.user.dto;
+package com.tasksprints.auction.domain.user.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

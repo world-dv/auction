@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.product.dto;
+package com.tasksprints.auction.domain.product.dto.response;
 
 import com.tasksprints.auction.domain.product.model.Product;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ProductDTO{
+public class ProductResponse {
     private Long productId;
     private String name;
     private String description;
@@ -19,8 +19,8 @@ public class ProductDTO{
 
     private Long auctionId;
 
-    public static ProductDTO of(Product product) {
-        return ProductDTO.builder()
+    public static ProductResponse of(Product product) {
+        return ProductResponse.builder()
                 .productId(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())

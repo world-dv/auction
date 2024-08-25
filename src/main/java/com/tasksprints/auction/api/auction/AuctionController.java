@@ -2,13 +2,13 @@ package com.tasksprints.auction.api.auction;
 
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.common.response.ApiResult;
-import com.tasksprints.auction.domain.auction.dto.AuctionDTO;
-import com.tasksprints.auction.domain.auction.dto.AuctionRequest;
+import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.service.AuctionService;
-import com.tasksprints.auction.domain.bid.dto.BidDTO;
+import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
-import com.tasksprints.auction.domain.review.dto.ReviewDTO;
-import com.tasksprints.auction.domain.review.dto.ReviewRequest;
+import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
+import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
 import com.tasksprints.auction.domain.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,10 +36,10 @@ public class AuctionController {
             value = {
                     @ApiResponse( responseCode = "200", description = "Auction created successfully")
             })
-    public ResponseEntity<ApiResult<AuctionDTO>> createAuction(
+    public ResponseEntity<ApiResult<AuctionResponse>> createAuction(
             @Parameter(description = "ID of the user creating the auction") @RequestParam Long userId,
             @RequestBody AuctionRequest.Create auctionRequest) {
-        AuctionDTO createdAuction = auctionService.createAuction(userId, auctionRequest);
+        AuctionResponse createdAuction = auctionService.createAuction(userId, auctionRequest);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_CREATED_SUCCESS, createdAuction));
     }
 
@@ -72,16 +72,16 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionDTO>>> getAllAuctions() {
-        List<AuctionDTO> allAuctions = auctionService.getAllAuctions();
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions() {
+        List<AuctionResponse> allAuctions = auctionService.getAllAuctions();
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, allAuctions));
     }
 
     @GetMapping("/{auctionId}")
     @Operation(summary = "Get auction by ID", description = "Retrieves auction details by its ID.")
     @ApiResponse(responseCode = "200", description = "Auction retrieved successfully")
-    public ResponseEntity<ApiResult<AuctionDTO>> getAuctionById(@PathVariable Long auctionId) {
-        AuctionDTO auction = auctionService.getAuctionById(auctionId);
+    public ResponseEntity<ApiResult<AuctionResponse>> getAuctionById(@PathVariable Long auctionId) {
+        AuctionResponse auction = auctionService.getAuctionById(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_RETRIEVED, auction));
     }
 
@@ -89,22 +89,22 @@ public class AuctionController {
     @PostMapping("/{auctionId}/bid")
     @Operation(summary = "Submit a bid", description = "Submits a bid for the specified auction.")
     @ApiResponse(responseCode = "200", description = "Bid submitted successfully")
-    public ResponseEntity<ApiResult<BidDTO>> submitBid(
+    public ResponseEntity<ApiResult<BidResponse>> submitBid(
             @Parameter(description = "ID of the user submitting the bid") @RequestParam Long userId,
             @PathVariable Long auctionId,
             @Parameter(description = "Bid amount") @RequestParam BigDecimal amount) {
-        BidDTO bid = bidService.submitBid(userId, auctionId, amount);
+        BidResponse bid = bidService.submitBid(userId, auctionId, amount);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_SUBMITTED_SUCCESS, bid));
     }
 
     @PutMapping("/{auctionId}/bid")
     @Operation(summary = "Update a bid", description = "Updates the amount of an existing bid.")
     @ApiResponse(responseCode = "200", description = "Bid updated successfully")
-    public ResponseEntity<ApiResult<BidDTO>> updateBid(
+    public ResponseEntity<ApiResult<BidResponse>> updateBid(
             @Parameter(description = "ID of the user updating the bid") @RequestParam Long userId,
             @PathVariable Long auctionId,
             @Parameter(description = "New bid amount") @RequestParam BigDecimal amount) {
-        BidDTO updatedBid = bidService.updateBidAmount(userId, auctionId, amount);
+        BidResponse updatedBid = bidService.updateBidAmount(userId, auctionId, amount);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_UPDATED_SUCCESS, updatedBid));
     }
 
@@ -122,11 +122,11 @@ public class AuctionController {
     @PostMapping("/{auctionId}/review")
     @Operation(summary = "Create a review", description = "Creates a review for a specific auction.")
     @ApiResponse(responseCode = "200", description = "Review created successfully")
-    public ResponseEntity<ApiResult<ReviewDTO>> createReview(
+    public ResponseEntity<ApiResult<ReviewResponse>> createReview(
             @Parameter(description = "ID of the user creating the review") @RequestParam Long userId,
             @PathVariable Long auctionId,
             @RequestBody ReviewRequest.Create reviewRequest) {
-        ReviewDTO createdReview = reviewService.createReview(userId, auctionId, reviewRequest);
+        ReviewResponse createdReview = reviewService.createReview(userId, auctionId, reviewRequest);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.REVIEW_CREATED_SUCCESS, createdReview));
     }
 
@@ -134,8 +134,8 @@ public class AuctionController {
     @GetMapping("/{auctionId}/review")
     @Operation(summary = "Get review by auction ID", description = "Retrieves the review for a specific auction.")
     @ApiResponse(responseCode = "200", description = "Review retrieved successfully")
-    public ResponseEntity<ApiResult<ReviewDTO>> getReviewByAuctionId(@PathVariable Long auctionId) {
-        ReviewDTO review = reviewService.getReviewByAuctionId(auctionId);
+    public ResponseEntity<ApiResult<ReviewResponse>> getReviewByAuctionId(@PathVariable Long auctionId) {
+        ReviewResponse review = reviewService.getReviewByAuctionId(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.REVIEW_RETRIEVED, review));
     }
 }

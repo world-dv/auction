@@ -2,10 +2,9 @@ package com.tasksprints.auction.api.user;
 
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.common.response.ApiResult;
-import com.tasksprints.auction.domain.review.dto.ReviewDTO;
-import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
-import com.tasksprints.auction.domain.user.dto.UserRequest;
-import com.tasksprints.auction.domain.user.dto.UserSummaryDTO;
+import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
+import com.tasksprints.auction.domain.user.dto.request.UserRequest;
+import com.tasksprints.auction.domain.user.dto.response.UserSummaryResponse;
 import com.tasksprints.auction.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,8 +27,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user data.")
     })
     @PostMapping()
-    public ResponseEntity<ApiResult<UserDetailsDTO>> register(@RequestBody UserRequest.Register user) {
-        UserDetailsDTO createdUser = userService.createUser(user);
+    public ResponseEntity<ApiResult<UserDetailResponse>> register(@RequestBody UserRequest.Register user) {
+        UserDetailResponse createdUser = userService.createUser(user);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.USER_CREATED_SUCCESS, createdUser));
     }
 
@@ -39,8 +38,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found.")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResult<UserDetailsDTO>> getUserById(@PathVariable Long id) {
-        UserDetailsDTO user = userService.getUserDetailsById(id);
+    public ResponseEntity<ApiResult<UserDetailResponse>> getUserById(@PathVariable Long id) {
+        UserDetailResponse user = userService.getUserDetailsById(id);
         return ResponseEntity.ok(ApiResult.success(null, user));
     }
 
@@ -50,8 +49,8 @@ public class UserController {
             @ApiResponse(responseCode = "204", description = "No users found.")
     })
     @GetMapping()
-    public ResponseEntity<ApiResult<List<UserSummaryDTO>>> getAllUsers() {
-        List<UserSummaryDTO> users = userService.getUsersSummary();
+    public ResponseEntity<ApiResult<List<UserSummaryResponse>>> getAllUsers() {
+        List<UserSummaryResponse> users = userService.getUsersSummary();
         return ResponseEntity.ok(ApiResult.success(null, users));
     }
 
@@ -61,8 +60,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found.")
     })
     @PutMapping()
-    public ResponseEntity<ApiResult<UserDetailsDTO>> updateUser(@RequestParam Long id, @RequestBody UserRequest.Update user) {
-        UserDetailsDTO updatedUser = userService.updateUser(id, user);
+    public ResponseEntity<ApiResult<UserDetailResponse>> updateUser(@RequestParam Long id, @RequestBody UserRequest.Update user) {
+        UserDetailResponse updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.USER_UPDATED_SUCCESS, updatedUser));
     }
 

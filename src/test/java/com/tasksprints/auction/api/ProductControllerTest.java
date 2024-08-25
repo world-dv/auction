@@ -3,24 +3,18 @@ package com.tasksprints.auction.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasksprints.auction.api.product.ProductController;
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
-import com.tasksprints.auction.domain.product.dto.ProductDTO;
-import com.tasksprints.auction.domain.product.dto.ProductRequest;
+import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
+import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
 import com.tasksprints.auction.domain.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -49,9 +43,9 @@ public class ProductControllerTest {
     @Test
     public void testRegisterProduct_Success() throws Exception {
         ProductRequest.Register productRequest = new ProductRequest.Register(); // Populate with necessary fields
-        ProductDTO productDTO = new ProductDTO(); // Populate with necessary fields
+        ProductResponse ProductResponse = new ProductResponse(); // Populate with necessary fields
 
-        when(productService.register(anyLong(), anyLong(), any())).thenReturn(productDTO);
+        when(productService.register(anyLong(), anyLong(), any())).thenReturn(ProductResponse);
 
         mockMvc.perform(post("/api/v1/product?userId=1&auctionId=1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -78,8 +72,8 @@ public class ProductControllerTest {
     @DisplayName("auctionId를 통해 제품 조회 성공")
     @Test
     public void testGetProductByAuctionId_Success() throws Exception {
-        ProductDTO productDTO = new ProductDTO(); // Populate with necessary fields
-        when(productService.getProductByAuctionId(anyLong())).thenReturn(productDTO);
+        ProductResponse ProductResponse = new ProductResponse(); // Populate with necessary fields
+        when(productService.getProductByAuctionId(anyLong())).thenReturn(ProductResponse);
 
         mockMvc.perform(get("/api/v1/product?auctionId=1"))
                 .andExpect(status().isOk())
@@ -90,8 +84,8 @@ public class ProductControllerTest {
     @Test
     public void testUpdateProduct_Success() throws Exception {
         ProductRequest.Update productRequest = new ProductRequest.Update(); // Populate with necessary fields
-        ProductDTO updatedProductDTO = new ProductDTO(); // Populate with necessary fields
-        when(productService.update(any())).thenReturn(updatedProductDTO);
+        ProductResponse updatedProductResponse = new ProductResponse(); // Populate with necessary fields
+        when(productService.update(any())).thenReturn(updatedProductResponse);
 
         mockMvc.perform(put("/api/v1/product")
                         .contentType(MediaType.APPLICATION_JSON)
