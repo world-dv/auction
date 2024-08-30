@@ -106,12 +106,14 @@ public class ProductServiceImpl implements  ProductService{
         Auction auction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
 
+        // 이미지 업로드
         List<String> imageUrls = uploadImageBulk(images);
 
         List<ProductImage> productImageList= imageUrls.parallelStream()
                 .map(ProductImage::create)
                 .toList();
 
+        // 상품 생성
         Product newProduct = Product.create(
                 request.getName(),
                 request.getDescription(),
