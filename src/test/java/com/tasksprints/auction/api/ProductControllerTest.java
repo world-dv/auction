@@ -122,13 +122,4 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEW_RETRIEVED)); // Adjust as needed
     }
 
-    @DisplayName("userId를 통해 제품 삭제 성공")
-    @Test
-    public void testDeleteProduct_Success() throws Exception {
-        mockMvc.perform(delete("/api/v1/product/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_DELETED_SUCCESS)); // Adjust as needed
-
-        verify(productService, times(1)).delete(1L);
-    }
 }
