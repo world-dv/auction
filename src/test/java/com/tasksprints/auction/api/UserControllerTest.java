@@ -3,9 +3,9 @@ package com.tasksprints.auction.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.api.user.UserController;
-import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
-import com.tasksprints.auction.domain.user.dto.UserRequest;
-import com.tasksprints.auction.domain.user.dto.UserSummaryDTO;
+import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
+import com.tasksprints.auction.domain.user.dto.request.UserRequest;
+import com.tasksprints.auction.domain.user.dto.response.UserSummaryResponse;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -47,9 +47,9 @@ class UserControllerTest {
         @Test
         @DisplayName("POST /api/v1/user - 성공")
         void registerUser() throws Exception {
-            UserDetailsDTO userDetailsDTO = new UserDetailsDTO(1L, "John", "john@example.com", "password","john123");
+            UserDetailResponse userDetailResponse = new UserDetailResponse(1L, "John", "john@example.com", "password","john123");
 
-            Mockito.when(userService.createUser(any(UserRequest.Register.class))).thenReturn(userDetailsDTO);
+            Mockito.when(userService.createUser(any(UserRequest.Register.class))).thenReturn(userDetailResponse);
 
             UserRequest.Register request = new UserRequest.Register("John", "john@example.com", "password", "john123");
 
@@ -66,9 +66,9 @@ class UserControllerTest {
         @Test
         @DisplayName("GET /api/v1/user/{id} - 성공")
         void getUserById() throws Exception {
-            UserDetailsDTO userDetailsDTO = new UserDetailsDTO(1L, "John", "john@example.com", "password","john123");
+            UserDetailResponse userDetailResponse = new UserDetailResponse(1L, "John", "john@example.com", "password","john123");
 
-            Mockito.when(userService.getUserDetailsById(anyLong())).thenReturn(userDetailsDTO);
+            Mockito.when(userService.getUserDetailsById(anyLong())).thenReturn(userDetailResponse);
 
             mockMvc.perform(get("/api/v1/user/{id}", 1L))
                     .andExpect(status().isOk())
@@ -80,9 +80,9 @@ class UserControllerTest {
         @Test
         @DisplayName("GET /api/v1/user - 성공")
         void getAllUsers() throws Exception {
-            UserSummaryDTO userSummaryDTO = new UserSummaryDTO(1L, "john123", "John", "john@example.com");
+            UserSummaryResponse userSummaryResponse = new UserSummaryResponse(1L, "john123", "John", "john@example.com");
 
-            List<UserSummaryDTO> users = Collections.singletonList(userSummaryDTO);
+            List<UserSummaryResponse> users = Collections.singletonList(userSummaryResponse);
 
             Mockito.when(userService.getUsersSummary()).thenReturn(users);
 
@@ -96,9 +96,9 @@ class UserControllerTest {
         @Test
         @DisplayName("PUT /api/v1/user - 성공")
         void updateUser() throws Exception {
-            UserDetailsDTO userDetailsDTO = new UserDetailsDTO(1L, "John Updated", "john@example.com", "newpassword", "john123updated");
+            UserDetailResponse userDetailResponse = new UserDetailResponse(1L, "John Updated", "john@example.com", "newpassword", "john123updated");
 
-            Mockito.when(userService.updateUser(anyLong(), any(UserRequest.Update.class))).thenReturn(userDetailsDTO);
+            Mockito.when(userService.updateUser(anyLong(), any(UserRequest.Update.class))).thenReturn(userDetailResponse);
 
             UserRequest.Update request = new UserRequest.Update("John Updated", "newpassword", "john123updated");
 

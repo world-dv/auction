@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.review.dto;
+package com.tasksprints.auction.domain.review.dto.response;
 
 import com.tasksprints.auction.domain.review.model.Review;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewDTO {
+public class ReviewResponse {
     Integer rating;
     String content;
-    public static ReviewDTO of(Review review) {
-        return ReviewDTO.builder()
+    public static ReviewResponse of(Review review) {
+        return ReviewResponse.builder()
                 .rating(review.getRating())
                 .content(review.getContent())
                 .build();

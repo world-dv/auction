@@ -41,6 +41,9 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    //Spring
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
     //Junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

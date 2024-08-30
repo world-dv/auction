@@ -1,22 +1,24 @@
 package com.tasksprints.auction.domain.product.service;
 
-import com.tasksprints.auction.domain.product.dto.ProductDTO;
-import com.tasksprints.auction.domain.product.dto.ProductRequest;
+import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
+import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
  * item으로 Auction 검색
  */
 public interface ProductService {
-    void uploadImage();
-    void uploadImageBulk();
-    List<ProductDTO> getProductsByUserId(Long userId);
-    ProductDTO getProductByAuctionId(Long auctionId);
+    String uploadImage(MultipartFile image) throws IOException;
+    List<String> uploadImageBulk(List<MultipartFile> images);
+    List<ProductResponse> getProductsByUserId(Long userId);
+    ProductResponse getProductByAuctionId(Long auctionId);
 
-    ProductDTO register(Long userId, Long auctionId, ProductRequest.Register product);
+    ProductResponse register(Long userId, Long auctionId, ProductRequest.Register product, List<MultipartFile> images);
 
     void delete(Long ProductId);
 
-    ProductDTO update(ProductRequest.Update product);
+    ProductResponse update(ProductRequest.Update product);
 }
