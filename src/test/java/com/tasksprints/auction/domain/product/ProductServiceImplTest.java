@@ -8,6 +8,7 @@ import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
 import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
 import com.tasksprints.auction.domain.product.exception.ProductNotFoundException;
 import com.tasksprints.auction.domain.product.model.Product;
+import com.tasksprints.auction.domain.product.repository.ProductImageRepository;
 import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.product.service.ProductServiceImpl;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,7 +34,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 public class ProductServiceImplTest {
 
     @InjectMocks
@@ -41,6 +42,8 @@ public class ProductServiceImplTest {
     @Mock
     private ProductRepository productRepository;
 
+    @Mock
+    private ProductImageRepository productImageRepository;
     @Mock
     private UserRepository userRepository;
 
@@ -115,6 +118,7 @@ public class ProductServiceImplTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(user));
             when(auctionRepository.findById(1L)).thenReturn(Optional.of(auction));
             when(productRepository.save(any(Product.class))).thenReturn(product);
+            when(productImageRepository.saveAll(anyList())).thenReturn(Collections.emptyList()); // Mock 설정 추가
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
 

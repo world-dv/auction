@@ -80,7 +80,7 @@ public class ProductControllerTest {
                         .file(productRequestMultiPart)
                 )
                 .andExpect(status().isOk()) // Expect status OK
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_NOT_FOUND));
+                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_FOUND_SUCCESS ));
     }
 
     @DisplayName("제품 등록 실패")
@@ -105,7 +105,7 @@ public class ProductControllerTest {
 
         mockMvc.perform(get("/api/v1/product?auctionId=1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_NOT_FOUND)); // Adjust as needed
+                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_FOUND_SUCCESS)); // Adjust as needed
     }
 
     @DisplayName("제품 수정 성공")
@@ -127,7 +127,7 @@ public class ProductControllerTest {
     public void testDeleteProduct_Success() throws Exception {
         mockMvc.perform(delete("/api/v1/product/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_NOT_FOUND)); // Adjust as needed
+                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_DELETED_SUCCESS)); // Adjust as needed
 
         verify(productService, times(1)).delete(1L);
     }
