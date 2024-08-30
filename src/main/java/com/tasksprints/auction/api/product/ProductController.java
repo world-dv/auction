@@ -59,28 +59,5 @@ public class ProductController {
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.REVIEW_RETRIEVED, updatedProduct));
     }
 
-    @Operation(summary = "Delete Product", description = "Delete a product by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product deleted successfully."),
-            @ApiResponse(responseCode = "404", description = "Product not found.")
-    })
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<ApiResult<String>> deleteProduct(@PathVariable Long productId) {
-        productService.delete(productId);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_DELETED_SUCCESS));
-    }
-//    @PostMapping("/uploadImage")
-//    public ResponseEntity<ApiResult<String>> uploadImage() {
-//        productService.uploadImage();
-//        return ResponseEntity.ok(ApiResult.success("Image uploaded successfully."));
-//    }
-//
-//    @PostMapping("/uploadImageBulk")
-//    public ResponseEntity<ApiResult<String>> uploadImageBulk() {
-//        productService.uploadImageBulk();
-//        return ResponseEntity.ok(ApiResult.success("Bulk images uploaded successfully."));
-//    }
 }
 
-
-//}
