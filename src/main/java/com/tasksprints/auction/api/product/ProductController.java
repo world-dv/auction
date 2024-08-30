@@ -34,7 +34,7 @@ public class ProductController {
             @RequestPart("productRequest") ProductRequest.Register productRequest,
             @RequestPart("images") List<MultipartFile> images) {
         ProductResponse ProductResponse = productService.register(userId, auctionId, productRequest, images);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, ProductResponse));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_FOUND_SUCCESS , ProductResponse));
     }
     @Operation(summary = "Get Products by Auction ID", description = "Retrieve products based on user ID or auction ID.")
     @ApiResponses(value = {
@@ -46,7 +46,7 @@ public class ProductController {
             @RequestParam Long auctionId) {
 
             ProductResponse ProductResponse = productService.getProductByAuctionId(auctionId);
-            return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, ProductResponse));
+            return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_FOUND_SUCCESS , ProductResponse));
     }
     @Operation(summary = "Update Product", description = "Update an existing product with new information.")
     @ApiResponses(value = {
@@ -67,7 +67,7 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<ApiResult<String>> deleteProduct(@PathVariable Long productId) {
         productService.delete(productId);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_DELETED_SUCCESS));
     }
 //    @PostMapping("/uploadImage")
 //    public ResponseEntity<ApiResult<String>> uploadImage() {
