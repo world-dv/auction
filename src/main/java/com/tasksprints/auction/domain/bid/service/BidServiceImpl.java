@@ -4,7 +4,7 @@ import com.tasksprints.auction.domain.auction.exception.AuctionEndedException;
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
-import com.tasksprints.auction.domain.bid.dto.BidDTO;
+import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.exception.BidNotFoundException;
 import com.tasksprints.auction.domain.bid.exception.InvalidBidAmountException;
 import com.tasksprints.auction.domain.bid.model.Bid;
@@ -31,7 +31,7 @@ public class BidServiceImpl implements BidService {
     private final AuctionRepository auctionRepository;
 
     @Override
-    public BidDTO submitBid(Long userId, Long auctionId, BigDecimal amount) {
+    public BidResponse submitBid(Long userId, Long auctionId, BigDecimal amount) {
         // 입찰 시 유효성 검사
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -51,11 +51,11 @@ public class BidServiceImpl implements BidService {
         // 입찰 생성 및 저장
         Bid createdBid = Bid.create(amount, foundUser, foundAuction);
         Bid savedBid = bidRepository.save(createdBid);
-        return BidDTO.of(savedBid);
+        return BidResponse.of(savedBid);
     }
 
     @Override
-    public BidDTO updateBidAmount(Long userId, Long auctionId, BigDecimal newAmount) {
+    public BidResponse updateBidAmount(Long userId, Long auctionId, BigDecimal newAmount) {
         // 기존 입찰을 찾습니다.
         Bid foundBid = bidRepository.findByUserIdAndAuctionId(userId, auctionId)
                 .orElseThrow(() -> new BidNotFoundException("Bid not found"));
@@ -80,7 +80,7 @@ public class BidServiceImpl implements BidService {
         // 입찰 금액 업데이트
         foundBid.update(newAmount);
         Bid updatedBid = bidRepository.save(foundBid);
-        return BidDTO.of(updatedBid);
+        return BidResponse.of(updatedBid);
     }
 
     @Override

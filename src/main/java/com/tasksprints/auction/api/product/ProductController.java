@@ -1,13 +1,18 @@
 package com.tasksprints.auction.api.product;
 
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
-import com.tasksprints.auction.common.response.ApiResponse;
-import com.tasksprints.auction.domain.product.dto.ProductDTO;
-import com.tasksprints.auction.domain.product.dto.ProductRequest;
+import com.tasksprints.auction.common.response.ApiResult;
+import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
+import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
 import com.tasksprints.auction.domain.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,48 +22,65 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @PostMapping("/{userId}/{auctionId}")
-    public ResponseEntity<ApiResponse<ProductDTO>> registerProduct(
-            @PathVariable Long userId,
-            @PathVariable Long auctionId,
-            @RequestBody ProductRequest.Register productRequest) {
-        ProductDTO productDTO = productService.register(userId, auctionId, productRequest);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
+    @Operation(summary = "Register Product", description = "Register a new product for an auction by user ID and auction ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product registered successfully."),
+            @ApiResponse(responseCode = "404", description = "Auction not found.")
+    })
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ApiResult<ProductResponse>> registerProduct(
+            @RequestParam Long userId,
+            @RequestParam Long auctionId,
+            @RequestPart("productRequest") ProductRequest.Register productRequest,
+            @RequestPart("images") List<MultipartFile> images) {
+        ProductResponse ProductResponse = productService.register(userId, auctionId, productRequest, images);
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_FOUND_SUCCESS , ProductResponse));
     }
+    @Operation(summary = "Get Products by Auction ID", description = "Retrieve products based on user ID or auction ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product(s) retrieved successfully."),
+            @ApiResponse(responseCode = "404", description = "Product(s) not found for the given user ID or auction ID.")
+    })
+    @GetMapping
+    public ResponseEntity<ApiResult<?>> getProducts(
+            @RequestParam Long auctionId) {
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductsByUserId(@PathVariable Long userId) {
-        List<ProductDTO> products = productService.getProductsByUserId(userId);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.REVIEWS_RETRIEVED, products));
+            ProductResponse ProductResponse = productService.getProductByAuctionId(auctionId);
+            return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_FOUND_SUCCESS , ProductResponse));
     }
-
-    @GetMapping("/auction/{auctionId}")
-    public ResponseEntity<ApiResponse<ProductDTO>> getProductByAuctionId(@PathVariable Long auctionId) {
-        ProductDTO productDTO = productService.getProductByAuctionId(auctionId);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.PRODUCT_NOT_FOUND, productDTO));
-    }
-
+    @Operation(summary = "Update Product", description = "Update an existing product with new information.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product updated successfully."),
+            @ApiResponse(responseCode = "404", description = "Product not found.")
+    })
     @PutMapping
-    public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(@RequestBody ProductRequest.Update productRequest) {
-        ProductDTO updatedProduct = productService.update(productRequest);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.REVIEW_RETRIEVED, updatedProduct));
+    public ResponseEntity<ApiResult<ProductResponse>> updateProduct(@RequestBody ProductRequest.Update productRequest) {
+        ProductResponse updatedProduct = productService.update(productRequest);
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.REVIEW_RETRIEVED, updatedProduct));
     }
 
+    @Operation(summary = "Delete Product", description = "Delete a product by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product deleted successfully."),
+            @ApiResponse(responseCode = "404", description = "Product not found.")
+    })
     @DeleteMapping("/{productId}")
-    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable Long productId) {
+    public ResponseEntity<ApiResult<String>> deleteProduct(@PathVariable Long productId) {
         productService.delete(productId);
-        return ResponseEntity.ok(ApiResponse.success(ApiResponseMessages.PRODUCT_NOT_FOUND));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_DELETED_SUCCESS));
     }
-
 //    @PostMapping("/uploadImage")
-//    public ResponseEntity<ApiResponse<String>> uploadImage() {
+//    public ResponseEntity<ApiResult<String>> uploadImage() {
 //        productService.uploadImage();
-//        return ResponseEntity.ok(ApiResponse.success("Image uploaded successfully."));
+//        return ResponseEntity.ok(ApiResult.success("Image uploaded successfully."));
 //    }
 //
 //    @PostMapping("/uploadImageBulk")
-//    public ResponseEntity<ApiResponse<String>> uploadImageBulk() {
+//    public ResponseEntity<ApiResult<String>> uploadImageBulk() {
 //        productService.uploadImageBulk();
-//        return ResponseEntity.ok(ApiResponse.success("Bulk images uploaded successfully."));
+//        return ResponseEntity.ok(ApiResult.success("Bulk images uploaded successfully."));
 //    }
 }
+
+
+//}

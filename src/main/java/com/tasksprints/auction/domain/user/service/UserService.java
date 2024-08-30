@@ -1,16 +1,15 @@
 package com.tasksprints.auction.domain.user.service;
 
-import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
-import com.tasksprints.auction.domain.user.dto.UserRequest;
-import com.tasksprints.auction.domain.user.dto.UserSummaryDTO;
-import com.tasksprints.auction.domain.user.model.User;
+import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
+import com.tasksprints.auction.domain.user.dto.request.UserRequest;
+import com.tasksprints.auction.domain.user.dto.response.UserSummaryResponse;
 
 import java.util.List;
 
 public interface UserService {
-    UserDetailsDTO createUser(UserRequest.Register user);
-    UserDetailsDTO getUserDetailsById(Long id);
-    List<UserSummaryDTO> getUsersSummary();
-    UserDetailsDTO updateUser(Long id, UserRequest.Update user);
+    UserDetailResponse createUser(UserRequest.Register user);
+    UserDetailResponse getUserDetailsById(Long id);
+    List<UserSummaryResponse> getUsersSummary();
+    UserDetailResponse updateUser(Long id, UserRequest.Update user);
     void deleteUser(Long id);
 }

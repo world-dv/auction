@@ -37,6 +37,7 @@ public class Product extends BaseEntity {
     private Auction auction;
 
     @OneToMany
+    @Builder.Default
     private List<ProductImage> productImageList = new ArrayList<>();
 
     public void addOwner(User owner){
@@ -46,21 +47,21 @@ public class Product extends BaseEntity {
         this.auction = auction;
     }
 
-    public void addProductImage(ProductImage productImage){
-        productImageList.add(productImage);
-        /** 단방향**/
+    public void initProductImageList(List<ProductImage> productImageList){
+        this.productImageList = productImageList;
     }
     public void addOwnerAndAuction(User owner, Auction auction){
         addOwner(owner);
         addAuction(auction);
     }
 
-    public static Product create(String name, String description, User owner, Auction auction){
+    public static Product create(String name, String description, User owner, Auction auction, List<ProductImage> productImageList){
         Product product = Product.builder()
                 .name(name)
                 .description(description)
                 .build();
         product.addOwnerAndAuction(owner, auction);
+        product.initProductImageList(productImageList);
         return product;
     }
 

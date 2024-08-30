@@ -1,15 +1,14 @@
 package com.tasksprints.auction.domain.auction.service;
 
-import com.tasksprints.auction.domain.auction.dto.AuctionDTO;
+import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.exception.AuctionAlreadyClosedException;
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
 import com.tasksprints.auction.domain.auction.exception.InvalidAuctionTimeException;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
-import com.tasksprints.auction.domain.auction.dto.AuctionRequest;
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
-import com.tasksprints.auction.domain.auction.service.AuctionServiceImpl;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
@@ -75,7 +74,7 @@ class AuctionServiceImplTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(seller));
             when(auctionRepository.save(any(Auction.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-            AuctionDTO createdAuction = auctionService.createAuction(1L, auctionRequest);
+            AuctionResponse createdAuction = auctionService.createAuction(1L, auctionRequest);
 
             assertThat(createdAuction.getSellerId()).isEqualTo(seller.getId());
             assertThat(createdAuction.getCategory()).isEqualTo(AuctionCategory.PRIVATE_FREE.name());
@@ -219,7 +218,7 @@ class AuctionServiceImplTest {
             when(auctionRepository.findAuctionsByUserId(1L)).thenReturn(List.of(auction1, auction2));
 
             // Act: 사용자가 있는지 확인하고 경매 목록 가져오기
-            List<AuctionDTO> auctions = auctionService.getAuctionsByUser(1L);
+            List<AuctionResponse> auctions = auctionService.getAuctionsByUser(1L);
 
             // Assert: 반환된 경매 목록 확인
             assertThat(auctions).hasSize(2);
@@ -253,7 +252,7 @@ class AuctionServiceImplTest {
 
             when(auctionRepository.findAll()).thenReturn(List.of(auction1, auction2));
 
-            List<AuctionDTO> auctions = auctionService.getAllAuctions();
+            List<AuctionResponse> auctions = auctionService.getAllAuctions();
 
             assertThat(auctions).hasSize(2);
             assertThat(auctions.get(0).getCategory()).isEqualTo(AuctionCategory.PUBLIC_PAID.name());
@@ -272,7 +271,7 @@ class AuctionServiceImplTest {
 
             when(auctionRepository.findAuctionById(1L)).thenReturn(Optional.of(auction));
 
-            AuctionDTO foundAuction = auctionService.getAuctionById(1L);
+            AuctionResponse foundAuction = auctionService.getAuctionById(1L);
 
             assertThat(foundAuction.getCategory()).isEqualTo(AuctionCategory.PUBLIC_PAID.name());
         }

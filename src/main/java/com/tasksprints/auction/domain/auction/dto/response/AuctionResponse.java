@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.auction.dto;
+package com.tasksprints.auction.domain.auction.dto.response;
 
 import com.tasksprints.auction.domain.auction.model.Auction;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuctionDTO {
+public class AuctionResponse {
     private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -25,8 +25,8 @@ public class AuctionDTO {
     private String sellerNickName;
 
 
-    public static AuctionDTO of(Auction auction){
-        return AuctionDTO.builder()
+    public static AuctionResponse of(Auction auction){
+        return AuctionResponse.builder()
                 .id(auction.getId())
                 .startTime(auction.getStartTime())
                 .endTime(auction.getEndTime())
