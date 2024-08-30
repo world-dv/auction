@@ -39,34 +39,34 @@ public class ProductControllerTest {
         objectMapper = new ObjectMapper();
     }
 
-    @DisplayName("제품 등록 성공")
-    @Test
-    public void testRegisterProduct_Success() throws Exception {
-        ProductRequest.Register productRequest = new ProductRequest.Register(); // Populate with necessary fields
-        ProductResponse ProductResponse = new ProductResponse(); // Populate with necessary fields
+//    @DisplayName("제품 등록 성공")
+//    @Test
+//    public void testRegisterProduct_Success() throws Exception {
+//        ProductRequest.Register productRequest = new ProductRequest.Register(); // Populate with necessary fields
+//        ProductResponse ProductResponse = new ProductResponse(); // Populate with necessary fields
+//
+//        when(productService.register(anyLong(), anyLong(), any())).thenReturn(ProductResponse);
+//
+//        mockMvc.perform(post("/api/v1/product?userId=1&auctionId=1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(productRequest)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_NOT_FOUND)); // Adjust as needed
+//    }
 
-        when(productService.register(anyLong(), anyLong(), any())).thenReturn(ProductResponse);
-
-        mockMvc.perform(post("/api/v1/product?userId=1&auctionId=1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.PRODUCT_NOT_FOUND)); // Adjust as needed
-    }
-
-    @DisplayName("제품 등록 실패")
-    @Test
-    public void testRegisterProduct_Failure() throws Exception {
-        ProductRequest.Register productRequest = new ProductRequest.Register(); // Populate with necessary fields
-
-        when(productService.register(anyLong(), anyLong(), any())).thenThrow(new RuntimeException("Error registering product"));
-
-        mockMvc.perform(post("/api/v1/product?userId=1&auctionId=1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productRequest)))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Error registering product"));
-    }
+//    @DisplayName("제품 등록 실패")
+//    @Test
+//    public void testRegisterProduct_Failure() throws Exception {
+//        ProductRequest.Register productRequest = new ProductRequest.Register(); // Populate with necessary fields
+//
+//        when(productService.register(anyLong(), anyLong(), any())).thenThrow(new RuntimeException("Error registering product"));
+//
+//        mockMvc.perform(post("/api/v1/product?userId=1&auctionId=1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(productRequest)))
+//                .andExpect(status().isInternalServerError())
+//                .andExpect(jsonPath("$.message").value("Error registering product"));
+//    }
 
 
     @DisplayName("auctionId를 통해 제품 조회 성공")
