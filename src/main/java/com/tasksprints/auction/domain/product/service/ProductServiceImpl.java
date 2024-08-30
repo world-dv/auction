@@ -5,6 +5,7 @@ import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
 import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
+import com.tasksprints.auction.domain.product.exception.ProductImageUploadException;
 import com.tasksprints.auction.domain.product.exception.ProductNotFoundException;
 import com.tasksprints.auction.domain.product.model.Product;
 import com.tasksprints.auction.domain.product.model.ProductImage;
@@ -16,7 +17,6 @@ import com.tasksprints.auction.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements  ProductService{
         try {
             return uploadImage(image);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image: " + image.getOriginalFilename(), e);
+            throw new ProductImageUploadException("Failed to upload image: " + image.getOriginalFilename(), e);
         }
     }
 
@@ -113,13 +113,15 @@ public class ProductServiceImpl implements  ProductService{
                 .map(ProductImage::create)
                 .toList();
 
+        List<ProductImage> savedProductImageList = productImageRepository.saveAll(productImageList);
+
         // 상품 생성
         Product newProduct = Product.create(
                 request.getName(),
                 request.getDescription(),
                 user,
                 auction,
-                productImageList
+                savedProductImageList
         );
 
         Product createdProduct = productRepository.save(newProduct);
