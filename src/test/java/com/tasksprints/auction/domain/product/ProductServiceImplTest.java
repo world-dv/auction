@@ -17,8 +17,14 @@ import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +50,9 @@ public class ProductServiceImplTest {
     private User user;
     private Auction auction;
     private Product product;
+
+    private static final String UPLOADS_DIR = "src/main/resources/static/uploads/thumbnails/";
+
 
     @BeforeEach
     public void setUp() {
@@ -76,7 +85,30 @@ public class ProductServiceImplTest {
     @Nested
     @DisplayName("제품 등록 기능")
     class RegisterTests {
+        @AfterEach
+        public void cleanUp() throws IOException {
+            deleteAllImagesInDirectory(UPLOADS_DIR);
+        }
 
+        private void deleteAllImagesInDirectory(String directoryPath) throws IOException {
+            Path dirPath = Paths.get(directoryPath);
+
+            if (Files.exists(dirPath) && Files.isDirectory(dirPath)) {
+                try (var paths = Files.walk(dirPath)) {
+                    paths.filter(Files::isRegularFile) // 정규 파일만 필터링
+                            .forEach(filePath -> {
+                                try {
+                                    Files.delete(filePath); // 파일 삭제
+                                    System.out.println("Deleted: " + filePath.toString()); // 삭제된 파일 로그 출력
+                                } catch (IOException e) {
+                                    System.err.println("Error deleting file: " + filePath.toString() + " - " + e.getMessage()); // 삭제 실패 로그 출력
+                                }
+                            });
+                }
+            } else {
+                System.out.println("Directory not found: " + directoryPath); // 디렉토리 없음 로그 출력
+            }
+        }
         @Test
         @DisplayName("새로운 제품 등록")
         public void testRegister() {
@@ -86,7 +118,7 @@ public class ProductServiceImplTest {
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
 
-            ProductResponse createdProductResponse = productService.register(1L, 1L, request);
+            ProductResponse createdProductResponse = productService.register(1L, 1L, request,createMockImages());
 
             assertEquals(createdProductResponse.getName(),"Test Product");
             verify(productRepository).save(any(Product.class));
@@ -99,7 +131,7 @@ public class ProductServiceImplTest {
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
 
-            assertThrows(UserNotFoundException.class, () -> productService.register(1L, 1L, request));
+            assertThrows(UserNotFoundException.class, () -> productService.register(1L, 1L, request,createMockImages()));
         }
 
         @Test
@@ -110,8 +142,14 @@ public class ProductServiceImplTest {
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
 
-            assertThrows(RuntimeException.class, () -> productService.register(1L, 1L, request));
+            assertThrows(RuntimeException.class, () -> productService.register(1L, 1L,request, createMockImages()));
         }
+        private List<MultipartFile> createMockImages() {
+            MockMultipartFile image1 = new MockMultipartFile("image1", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
+            MockMultipartFile image2 = new MockMultipartFile("image2", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
+            return List.of(image1, image2); // 이미지 리스트 반환
+        }
+
     }
 
     @Nested
