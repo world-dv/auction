@@ -9,8 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -23,14 +27,16 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Product registered successfully."),
             @ApiResponse(responseCode = "404", description = "Auction not found.")
     })
-    @PostMapping
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResult<ProductResponse>> registerProduct(
             @RequestParam Long userId,
             @RequestParam Long auctionId,
-            @RequestBody ProductRequest.Register productRequest) {
-        ProductResponse ProductResponse = productService.register(userId, auctionId, productRequest);
+            @RequestPart("productRequest") ProductRequest.Register productRequest,
+            @RequestPart("images") List<MultipartFile> images) {
+        ProductResponse ProductResponse = productService.register(userId, auctionId, productRequest, images);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND, ProductResponse));
-    }    @Operation(summary = "Get Products by Auction ID", description = "Retrieve products based on user ID or auction ID.")
+    }
+    @Operation(summary = "Get Products by Auction ID", description = "Retrieve products based on user ID or auction ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product(s) retrieved successfully."),
             @ApiResponse(responseCode = "404", description = "Product(s) not found for the given user ID or auction ID.")
@@ -63,17 +69,17 @@ public class ProductController {
         productService.delete(productId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.PRODUCT_NOT_FOUND));
     }
-    @PostMapping("/uploadImage")
-    public ResponseEntity<ApiResult<String>> uploadImage() {
-        productService.uploadImage();
-        return ResponseEntity.ok(ApiResult.success("Image uploaded successfully."));
-    }
-
-    @PostMapping("/uploadImageBulk")
-    public ResponseEntity<ApiResult<String>> uploadImageBulk() {
-        productService.uploadImageBulk();
-        return ResponseEntity.ok(ApiResult.success("Bulk images uploaded successfully."));
-    }
+//    @PostMapping("/uploadImage")
+//    public ResponseEntity<ApiResult<String>> uploadImage() {
+//        productService.uploadImage();
+//        return ResponseEntity.ok(ApiResult.success("Image uploaded successfully."));
+//    }
+//
+//    @PostMapping("/uploadImageBulk")
+//    public ResponseEntity<ApiResult<String>> uploadImageBulk() {
+//        productService.uploadImageBulk();
+//        return ResponseEntity.ok(ApiResult.success("Bulk images uploaded successfully."));
+//    }
 }
 
 
