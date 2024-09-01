@@ -18,7 +18,5 @@ public interface ProductService {
 
     ProductResponse register(Long userId, Long auctionId, ProductRequest.Register product, List<MultipartFile> images);
 
-    void delete(Long ProductId);
-
     ProductResponse update(ProductRequest.Update product);
 }

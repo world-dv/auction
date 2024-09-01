@@ -35,55 +35,20 @@ public class ProductServiceImpl implements  ProductService{
     private final AuctionRepository auctionRepository;
     private final ProductImageRepository productImageRepository;
     private static final String UPLOADS_DIR = "src/main/resources/static/uploads/thumbnails/";
-    private void saveFile(Path filePath, MultipartFile image) throws IOException {
-        Files.createDirectories(filePath.getParent()); // 디렉토리 생성 (필요한 경우)
-
-        // 이미지 파일을 효율적으로 저장
-        try (var inputStream = image.getInputStream()) {
-            Files.copy(inputStream, filePath); // 파일 저장
-        }
-    }
-    private String uploadImageSafely(MultipartFile image) {
-        try {
-            return uploadImage(image);
-        } catch (IOException e) {
-            throw new ProductImageUploadException("Failed to upload image: " + image.getOriginalFilename(), e);
-        }
-    }
-
 
     @Override
-    public String uploadImage(MultipartFile image) throws IOException {
-        // 랜덤한 파일명 생성
-        String fileName = UUID.randomUUID().toString().replace("-", "") + "_" + image.getOriginalFilename();
-
-        // 실제 파일이 저장될 경로
+    public String uploadImage(MultipartFile image) {
+        String fileName = generateFileName(image);
         Path filePath = Paths.get(UPLOADS_DIR, fileName);
-
-        // DB에 저장할 경로 문자열
-        String dbFilePath = "/uploads/thumbnails/" + fileName;
-
-        // 파일 저장
         saveFile(filePath, image);
-
-        return dbFilePath;
+        return "/uploads/thumbnails/" + fileName;
     }
-
     @Override
-    @Transactional
     public List<String> uploadImageBulk(List<MultipartFile> images) {
-        return images.parallelStream() // 병렬 스트림을 사용하여 성능 개선
-                .map(this::uploadImageSafely)
+        return images.stream() // 병렬 처리를 피하고 일반 Stream 사용
+                .map(this::uploadImage)
                 .collect(Collectors.toList());
     }
-
-
-    @Override
-    public void delete(Long ProductId) {
-        /** 완전 삭제할건지 아닌지 판단
-         */
-    }
-
     @Override
     @Deprecated
     public List<ProductResponse> getProductsByUserId(Long userId) {
@@ -145,4 +110,17 @@ public class ProductServiceImpl implements  ProductService{
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
+    private void saveFile(Path filePath, MultipartFile image) {
+        try {
+            Files.createDirectories(filePath.getParent()); // 디렉토리 생성 (필요한 경우)
+            Files.copy(image.getInputStream(), filePath); // 파일 저장
+        } catch (IOException e) {
+            throw new ProductImageUploadException("Failed to upload image: " + image.getOriginalFilename(), e);
+        }
+    }
+
+    private String generateFileName(MultipartFile image) {
+        return UUID.randomUUID().toString().replace("-", "") + "_" + image.getOriginalFilename();
+    }
+
 }
