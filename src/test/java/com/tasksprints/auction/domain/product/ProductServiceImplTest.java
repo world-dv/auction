@@ -163,7 +163,7 @@ public class ProductServiceImplTest {
         @Test
         @DisplayName("사용자 ID로 제품 조회")
         public void testGetProductsByUserId() {
-            when(productRepository.findAllByUserId(1L)).thenReturn(Collections.singletonList(product));
+            when(productRepository.findByOwnerId(1L)).thenReturn(Collections.singletonList(product));
 
             List<ProductResponse> products = productService.getProductsByUserId(1L);
 
