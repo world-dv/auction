@@ -57,7 +57,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("Find all products by user ID")
     public void testFindAllByUserId() {
-        List<Product> products = productRepository.findAllByUserId(owner.getId());
+        List<Product> products = productRepository.findByOwnerId(owner.getId());
 
         assertThat(products).isNotEmpty();
         assertThat(products.get(0).getOwner().getId()).isEqualTo(owner.getId());

@@ -52,7 +52,7 @@ public class ProductServiceImpl implements  ProductService{
     @Override
     @Deprecated
     public List<ProductResponse> getProductsByUserId(Long userId) {
-        List<Product> products = productRepository.findAllByUserId(userId);
+        List<Product> products = productRepository.findByOwnerId(userId);
         return convertToDTOList(products);
     }
 
