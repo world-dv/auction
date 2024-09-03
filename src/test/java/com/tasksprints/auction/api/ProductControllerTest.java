@@ -58,7 +58,7 @@ public class ProductControllerTest {
                 "fake image content 2".getBytes(StandardCharsets.UTF_8)
         );
 
-        ProductRequest.Register productRequest = new ProductRequest.Register("Sample Product", "This is a sample product.");
+        ProductRequest.Register productRequest = new ProductRequest.Register("Sample Product", "This is a sample product.","여성의류");
         String valueAsString = objectMapper.writeValueAsString(productRequest);
 
         productRequestMultiPart = new MockMultipartFile(
