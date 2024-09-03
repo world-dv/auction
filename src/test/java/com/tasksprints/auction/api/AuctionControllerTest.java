@@ -119,18 +119,19 @@ public class AuctionControllerTest {
 
     /**
      * 해당 기저 처리 해야함.
+     * 기본값으로 대응 PUBLIC_FREE로
      */
-//    @Test
-//    @DisplayName("잘못된 유형을 통한 경매목록 조회(오류)")
-//    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
-//        List<AuctionResponse> auctionResponseList = new ArrayList<>();
-//        when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
-//
-//        mockMvc.perform(get("/api/v1/auction")
-//                        .param("auctionCategory", "NON"))
-//                .andExpect(status().isInternalServerError())
-//                .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
-//    }
+    @Test
+    @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
+    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
+        List<AuctionResponse> auctionResponseList = new ArrayList<>();
+        when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
+
+        mockMvc.perform(get("/api/v1/auction")
+                        .param("auctionCategory", "NON"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+    }
     @Test
     @DisplayName("입찰 제출 성공")
     public void testSubmitBid_Success() throws Exception {
