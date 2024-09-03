@@ -73,10 +73,10 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestParam(required = false) AuctionCategory auctionCategory) {
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory) {
         List<AuctionResponse> allAuctions;
         if (auctionCategory != null) {
-                allAuctions = auctionService.getAuctionsByAuctionCategory(auctionCategory);
+                allAuctions = auctionService.getAuctionsByAuctionCategory(auctionCategory.getAuctionCategory());
         } else {
                 allAuctions = auctionService.getAllAuctions();
             }
