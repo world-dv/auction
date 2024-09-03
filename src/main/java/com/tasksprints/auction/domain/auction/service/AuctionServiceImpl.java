@@ -5,7 +5,6 @@ import com.tasksprints.auction.domain.auction.exception.AuctionAlreadyClosedExce
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
 import com.tasksprints.auction.domain.auction.exception.InvalidAuctionTimeException;
 import com.tasksprints.auction.domain.auction.model.Auction;
-import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
@@ -100,18 +99,5 @@ public class AuctionServiceImpl implements AuctionService {
                 .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
 
         return AuctionResponse.of(foundAuction);
-    }
-
-    @Override
-    public List<AuctionResponse> getAuctionsByAuctionCategory(AuctionCategory auctionCategory) {
-        List<Auction> foundAuctions =  auctionRepository.findAuctionsByAuctionCategory(auctionCategory);
-
-//        if (foundAuctions.isEmpty()) {
-//            throw new AuctionNotFoundException("Auction not found");
-//        }
-
-        return foundAuctions.stream()
-                .map(AuctionResponse::of)
-                .collect(Collectors.toList());
     }
 }

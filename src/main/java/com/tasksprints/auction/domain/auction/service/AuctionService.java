@@ -2,7 +2,6 @@ package com.tasksprints.auction.domain.auction.service;
 
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
-import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 
 import java.util.List;
 
@@ -17,5 +16,4 @@ public interface AuctionService {
     List<AuctionResponse> getAuctionsByUser(Long userId);
     List<AuctionResponse> getAllAuctions();
     AuctionResponse getAuctionById(Long auctionId);
-    List<AuctionResponse> getAuctionsByAuctionCategory(AuctionCategory auctionCategory);
 }

@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -286,47 +285,6 @@ class AuctionServiceImplTest {
                     auctionService.getAuctionById(1L));
 
             assertThat(exception.getMessage()).isEqualTo("Auction not found");
-        }
-    }
-
-    @Nested
-    @DisplayName("경매 유형이 []인 경매 목록 조회")
-    class GetAuctionsByAuctionCategoryTests {
-        @Test
-        @DisplayName("경매 유형 조회 : [성공]")
-        public void testGetAuctionsByAuctionCategory_Success() {
-            Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
-            Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
-
-            List<Auction> expectedAuctions = List.of(auction1, auction2);
-
-            when(auctionRepository.findAuctionsByAuctionCategory(AuctionCategory.PUBLIC_PAID)).thenReturn(expectedAuctions);
-            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
-                    .map(AuctionResponse::of)
-                    .collect(Collectors.toList());
-
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByAuctionCategory(AuctionCategory.PUBLIC_PAID);
-            assertThat(actualAuctions).isEqualTo(expectedResponses);
-        }
-        @Test
-        @DisplayName("경매 유형 조회 : [결과 없음]")
-        public void testGetAuctionsByAuctionCategory_AuctionNotFound() {
-            List<Auction> emptyAuctionList = List.of();
-
-            when(auctionRepository.findAuctionsByAuctionCategory(AuctionCategory.PUBLIC_FREE))
-                    .thenReturn(emptyAuctionList);
-
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByAuctionCategory(AuctionCategory.PUBLIC_FREE);
-
-            assertThat(actualAuctions).isEmpty();
-
-            //service 메서드 안에서 예외 처리를 하면 아래 코드로 테스트?
-//            assertThrows(AuctionNotFoundException.class, () -> {
-//                    auctionService.getAuctionsByAuctionCategory(AuctionCategory.PUBLIC_FREE);
-//            });
-
-
-
         }
     }
 

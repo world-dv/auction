@@ -4,7 +4,6 @@ import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.common.response.ApiResult;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
-import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.service.AuctionService;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
@@ -117,13 +116,6 @@ public class AuctionController {
             @Parameter(description = "ID of the user") @RequestParam Long userId) {
         Boolean hasBidded = bidService.hasUserAlreadyBid(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_STATUS_CHECKED, hasBidded));
-    }
-    @GetMapping("/auctionCategory")
-    @Operation
-    @ApiResponse
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAuctionsByAuctionCategory(@RequestParam AuctionCategory auctionCategory) {
-        List<AuctionResponse> auctions = auctionService.getAuctionsByAuctionCategory(auctionCategory);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
 
     // Review Endpoints

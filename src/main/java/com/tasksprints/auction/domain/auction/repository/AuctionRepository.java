@@ -2,7 +2,6 @@ package com.tasksprints.auction.domain.auction.repository;
 
 
 import com.tasksprints.auction.domain.auction.model.Auction;
-import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +17,5 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     @Query("SELECT a FROM auction a WHERE a.id = :auctionId")
     Optional<Auction> findAuctionById(@Param("auctionId") Long auctionId);
-
-    List<Auction> findAuctionsByAuctionCategory(AuctionCategory auctionCategory);
 }
 
