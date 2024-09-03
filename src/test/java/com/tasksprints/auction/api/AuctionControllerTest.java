@@ -111,18 +111,22 @@ public class AuctionControllerTest {
     public void testFindAuctionByUsingAuctionCategory_Success() throws Exception {
         List<AuctionResponse> auctionResponseList = new ArrayList<>();
         when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
-        mockMvc.perform(get("/api/v1/auction/auctionCategory")
+        mockMvc.perform(get("/api/v1/auction")
                         .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
     }
+
+    /**
+     * 해당 기저 처리 해야함.
+     */
 //    @Test
 //    @DisplayName("잘못된 유형을 통한 경매목록 조회(오류)")
 //    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
 //        List<AuctionResponse> auctionResponseList = new ArrayList<>();
 //        when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
 //
-//        mockMvc.perform(get("/api/v1/auction/auctionCategory")
+//        mockMvc.perform(get("/api/v1/auction")
 //                        .param("auctionCategory", "NON"))
 //                .andExpect(status().isInternalServerError())
 //                .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
