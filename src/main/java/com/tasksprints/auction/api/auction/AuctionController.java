@@ -4,6 +4,7 @@ import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.common.response.ApiResult;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
+import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.service.AuctionService;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
@@ -72,8 +73,13 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions() {
-        List<AuctionResponse> allAuctions = auctionService.getAllAuctions();
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory) {
+        List<AuctionResponse> allAuctions;
+        if (auctionCategory != null) {
+                allAuctions = auctionService.getAuctionsByAuctionCategory(auctionCategory.getAuctionCategory());
+        } else {
+                allAuctions = auctionService.getAllAuctions();
+            }
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, allAuctions));
     }
 
@@ -113,7 +119,8 @@ public class AuctionController {
     @ApiResponse(responseCode = "200", description = "Bid status checked successfully")
     public ResponseEntity<ApiResult<Boolean>> checkUserBidStatus(
             @PathVariable Long auctionId,
-            @Parameter(description = "ID of the user") @RequestParam Long userId) {
+            @Parameter(description = "ID of the user")
+            @RequestParam Long userId) {
         Boolean hasBidded = bidService.hasUserAlreadyBid(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_STATUS_CHECKED, hasBidded));
     }

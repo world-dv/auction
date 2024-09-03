@@ -5,6 +5,8 @@ import com.tasksprints.auction.api.auction.AuctionController;
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
+import com.tasksprints.auction.domain.auction.model.AuctionCategory;
+import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
 import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
@@ -20,6 +22,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -101,7 +106,32 @@ public class AuctionControllerTest {
                 .andExpect(jsonPath("$.message").value(ApiResponseMessages.AUCTION_STATUS_RETRIEVED))
                 .andExpect(jsonPath("$.data").value(auctionStatus));
     }
+    @Test
+    @DisplayName("경매 유형을 통한 경매목록 조회")
+    public void testFindAuctionByUsingAuctionCategory_Success() throws Exception {
+        List<AuctionResponse> auctionResponseList = new ArrayList<>();
+        when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
+        mockMvc.perform(get("/api/v1/auction")
+                        .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+    }
 
+    /**
+     * 해당 기저 처리 해야함.
+     * 기본값으로 대응 PUBLIC_FREE로
+     */
+    @Test
+    @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
+    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
+        List<AuctionResponse> auctionResponseList = new ArrayList<>();
+        when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
+
+        mockMvc.perform(get("/api/v1/auction")
+                        .param("auctionCategory", "NON"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+    }
     @Test
     @DisplayName("입찰 제출 성공")
     public void testSubmitBid_Success() throws Exception {
@@ -142,6 +172,7 @@ public class AuctionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEW_CREATED_SUCCESS));
     }
+
 
 //    @Test
 //    @DisplayName("사용자 리뷰 조회 성공")
