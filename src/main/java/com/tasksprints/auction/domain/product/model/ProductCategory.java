@@ -15,7 +15,7 @@ public enum ProductCategory {
 
     CURTAINS("커튼"),
     FURNITURE("가구"),
-    LIVING("생황"),
+    LIVING("생활"),
     DECOR("장식소품"),
     STORAGE("수납용품"),
     KITCHEN("주방"),
