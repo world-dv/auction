@@ -20,5 +20,13 @@ public class AuctionRequest {
         AuctionCategory auctionCategory;
         AuctionStatus auctionStatus;
     }
-
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AuctionCategoryParam {
+        AuctionCategory auctionCategory;
+        public AuctionCategoryParam(String auctionCategory){
+            this.auctionCategory = AuctionCategory.fromString(auctionCategory);
+        }
+    }
 }
