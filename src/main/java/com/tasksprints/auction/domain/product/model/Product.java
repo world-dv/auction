@@ -28,6 +28,9 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private ProductCategory category; //제품의 Category
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
@@ -55,10 +58,11 @@ public class Product extends BaseEntity {
         addAuction(auction);
     }
 
-    public static Product create(String name, String description, User owner, Auction auction, List<ProductImage> productImageList){
+    public static Product create(String name, String description, User owner, Auction auction,String productCategory, List<ProductImage> productImageList){
         Product product = Product.builder()
                 .name(name)
                 .description(description)
+                .category(ProductCategory.fromDisplayName(productCategory))
                 .build();
         product.addOwnerAndAuction(owner, auction);
         product.initProductImageList(productImageList);
