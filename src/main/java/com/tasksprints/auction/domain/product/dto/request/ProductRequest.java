@@ -16,6 +16,7 @@ public class ProductRequest {
     public static class Register{
         private String name;
         private String description;
+        private String category;
     }
     @Getter
     @NoArgsConstructor

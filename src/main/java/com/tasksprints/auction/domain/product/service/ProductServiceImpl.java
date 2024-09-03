@@ -86,6 +86,7 @@ public class ProductServiceImpl implements  ProductService{
                 request.getDescription(),
                 user,
                 auction,
+                request.getCategory(),
                 savedProductImageList
         );
 

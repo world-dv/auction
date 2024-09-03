@@ -8,6 +8,7 @@ import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
 import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
 import com.tasksprints.auction.domain.product.exception.ProductNotFoundException;
 import com.tasksprints.auction.domain.product.model.Product;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.product.repository.ProductImageRepository;
 import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.product.service.ProductServiceImpl;
@@ -80,6 +81,7 @@ public class ProductServiceImplTest {
                 .id(1L)
                 .name("Test Product")
                 .description("Description")
+                .category(ProductCategory.fromDisplayName("여성의류"))
                 .owner(user)
                 .auction(auction)
                 .build();
@@ -120,7 +122,7 @@ public class ProductServiceImplTest {
             when(productRepository.save(any(Product.class))).thenReturn(product);
             when(productImageRepository.saveAll(anyList())).thenReturn(Collections.emptyList()); // Mock 설정 추가
 
-            ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
+            ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description", "여성의류");
 
             ProductResponse createdProductResponse = productService.register(1L, 1L, request,createMockImages());
 
@@ -133,7 +135,7 @@ public class ProductServiceImplTest {
         public void testRegisterUserNotFound() {
             when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-            ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
+            ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description", "여성의류");
 
             assertThrows(UserNotFoundException.class, () -> productService.register(1L, 1L, request,createMockImages()));
         }
@@ -144,7 +146,7 @@ public class ProductServiceImplTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(user));
             when(auctionRepository.findById(1L)).thenReturn(Optional.empty());
 
-            ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description");
+            ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description", "여성의류");
 
             assertThrows(RuntimeException.class, () -> productService.register(1L, 1L,request, createMockImages()));
         }
