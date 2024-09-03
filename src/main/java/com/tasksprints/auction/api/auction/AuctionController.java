@@ -73,8 +73,13 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions() {
-        List<AuctionResponse> allAuctions = auctionService.getAllAuctions();
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestParam(required = false) AuctionCategory auctionCategory) {
+        List<AuctionResponse> allAuctions;
+        if (auctionCategory != null) {
+                allAuctions = auctionService.getAuctionsByAuctionCategory(auctionCategory);
+        } else {
+                allAuctions = auctionService.getAllAuctions();
+            }
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, allAuctions));
     }
 
@@ -118,14 +123,6 @@ public class AuctionController {
             @RequestParam Long userId) {
         Boolean hasBidded = bidService.hasUserAlreadyBid(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_STATUS_CHECKED, hasBidded));
-    }
-    @GetMapping("/auctionCategory")
-    @Operation
-    @ApiResponse
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAuctionsByAuctionCategory(
-            @RequestParam(defaultValue = "PUBLIC_PAID") AuctionCategory auctionCategory) {
-        List<AuctionResponse> auctions = auctionService.getAuctionsByAuctionCategory(auctionCategory);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
 
     // Review Endpoints
