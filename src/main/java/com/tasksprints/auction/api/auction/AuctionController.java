@@ -114,14 +114,16 @@ public class AuctionController {
     @ApiResponse(responseCode = "200", description = "Bid status checked successfully")
     public ResponseEntity<ApiResult<Boolean>> checkUserBidStatus(
             @PathVariable Long auctionId,
-            @Parameter(description = "ID of the user") @RequestParam Long userId) {
+            @Parameter(description = "ID of the user")
+            @RequestParam Long userId) {
         Boolean hasBidded = bidService.hasUserAlreadyBid(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_STATUS_CHECKED, hasBidded));
     }
     @GetMapping("/auctionCategory")
     @Operation
     @ApiResponse
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAuctionsByAuctionCategory(@RequestParam AuctionCategory auctionCategory) {
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAuctionsByAuctionCategory(
+            @RequestParam(defaultValue = "PUBLIC_PAID") AuctionCategory auctionCategory) {
         List<AuctionResponse> auctions = auctionService.getAuctionsByAuctionCategory(auctionCategory);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
