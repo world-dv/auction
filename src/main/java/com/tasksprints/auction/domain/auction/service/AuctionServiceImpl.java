@@ -83,7 +83,7 @@ public class AuctionServiceImpl implements AuctionService {
 
         return foundAuctions.stream()
                 .map(AuctionResponse::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class AuctionServiceImpl implements AuctionService {
         List<Auction> foundAuctions =  auctionRepository.findAll();
         return foundAuctions.stream()
                 .map(AuctionResponse::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -106,12 +106,8 @@ public class AuctionServiceImpl implements AuctionService {
     public List<AuctionResponse> getAuctionsByAuctionCategory(AuctionCategory auctionCategory) {
         List<Auction> foundAuctions =  auctionRepository.findAuctionsByAuctionCategory(auctionCategory);
 
-//        if (foundAuctions.isEmpty()) {
-//            throw new AuctionNotFoundException("Auction not found");
-//        }
-
         return foundAuctions.stream()
                 .map(AuctionResponse::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
