@@ -6,7 +6,7 @@ public enum AuctionCategory {
     PRIVATE_PAID,
     PUBLIC_PAID;
 
-    public static AuctionCategory fromString(String auctionCategory) {
+    public static AuctionCategory fromDisplayName(String auctionCategory) {
         try {
             return AuctionCategory.valueOf(auctionCategory.toUpperCase()); // 대문자로 변환하여 비교
         } catch (IllegalArgumentException e) {
