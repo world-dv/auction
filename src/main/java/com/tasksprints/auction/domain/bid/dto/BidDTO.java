@@ -13,14 +13,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BidDTO {
-    Long userId;
+    String uuid;
     String name;
     Long auctionId;
     BigDecimal amount;
 
     public static BidDTO of(Bid bid){
         return BidDTO.builder()
-                .userId(bid.getUser().getId())
+                .uuid(bid.getUuid())
                 .name(bid.getUser().getName())
                 .auctionId(bid.getAuction().getId())
                 .amount(bid.getAmount())
