@@ -86,6 +86,7 @@ public class AuctionServiceImpl implements AuctionService {
                 .toList();
     }
 
+
     @Override
     public List<AuctionResponse> getAllAuctions() {
         List<Auction> foundAuctions =  auctionRepository.findAll();
@@ -101,10 +102,34 @@ public class AuctionServiceImpl implements AuctionService {
 
         return AuctionResponse.of(foundAuction);
     }
-
+    @Deprecated
     @Override
-    public List<AuctionResponse> getAuctionsByAuctionCategory(AuctionCategory auctionCategory) {
-        List<Auction> foundAuctions =  auctionRepository.findAuctionsByAuctionCategory(auctionCategory);
+    public List<AuctionResponse> getAuctionsByProductCategory(AuctionRequest.ProductCategoryParam param) {
+        List<Auction> foundAuctions = auctionRepository.findAuctionByProduct_Category(param.getProductCategory());
+
+        return foundAuctions.stream()
+                .map(AuctionResponse::of)
+                .toList();
+
+    }
+
+    @Deprecated
+    @Override
+    public List<AuctionResponse> getAuctionsByAuctionCategory(AuctionRequest.AuctionCategoryParam param) {
+        List<Auction> foundAuctions =  auctionRepository.findAuctionsByAuctionCategory(param.getAuctionCategory());
+
+        return foundAuctions.stream()
+                .map(AuctionResponse::of)
+                .toList();
+    }
+    /**
+     * NULL POINTER EXCEPTION 발생
+     * NULL 안정성 보장을 해줬음**/
+    @Override
+    public List<AuctionResponse> getAuctionsByFilter(AuctionRequest.ProductCategoryParam productCategoryParam, AuctionRequest.AuctionCategoryParam auctionCategoryParam) {
+        List<Auction> foundAuctions = auctionRepository.getAuctionsByFilters(
+                productCategoryParam!=null?productCategoryParam.getProductCategory():null,
+                auctionCategoryParam!=null?auctionCategoryParam.getAuctionCategory():null);
 
         return foundAuctions.stream()
                 .map(AuctionResponse::of)
