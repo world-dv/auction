@@ -10,8 +10,8 @@ public interface BidService {
      * 입찰금액 변경
      */
     BidDTO submitBid(Long userId, Long auctionId, BigDecimal amount);
+
     BidDTO updateBidAmount(Long userId, Long auctionId, BigDecimal amount);
 
     Boolean hasUserAlreadyBid(Long auctionId);
-
 }
