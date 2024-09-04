@@ -70,18 +70,28 @@ public class AuctionController {
 //        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_BY_USER_RETRIEVED, userAuctions));
 //    }
 
-    @GetMapping
-    @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
-    @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory) {
-        List<AuctionResponse> allAuctions;
-        if (auctionCategory != null) {
-                allAuctions = auctionService.getAuctionsByAuctionCategory(auctionCategory.getAuctionCategory());
-        } else {
-                allAuctions = auctionService.getAllAuctions();
-            }
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, allAuctions));
-    }
+//    @GetMapping
+//    @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
+//    @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
+//    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory) {
+//        List<AuctionResponse> allAuctions;
+//        if (auctionCategory != null) {
+//                allAuctions = auctionService.getAuctionsByAuctionCategory(auctionCategory);
+//        } else {
+//                allAuctions = auctionService.getAllAuctions();
+//        }
+//        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, allAuctions));
+//    }
+@GetMapping
+@Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
+@ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
+public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(
+        @RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory,
+        @RequestParam(required = false) AuctionRequest.ProductCategoryParam productCategory
+) {
+    List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(productCategory,auctionCategory);
+    return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
+}
 
     @GetMapping("/{auctionId}")
     @Operation(summary = "Get auction by ID", description = "Retrieves auction details by its ID.")
