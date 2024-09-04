@@ -32,7 +32,10 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
   packages-to-scan: com.tasksprints.auction.api
-
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 server:
   port: 8080
 

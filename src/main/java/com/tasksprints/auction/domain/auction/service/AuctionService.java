@@ -11,11 +11,12 @@ import java.util.List;
  */
 public interface AuctionService {
     AuctionResponse createAuction(Long userId, AuctionRequest.Create auctionRequest);
-
     void closeAuction(Long auctionId);
     String getAuctionStatus(Long auctionId);
     List<AuctionResponse> getAuctionsByUser(Long userId);
+    List<AuctionResponse> getAuctionsByProductCategory(AuctionRequest.ProductCategoryParam param);
     List<AuctionResponse> getAllAuctions();
     AuctionResponse getAuctionById(Long auctionId);
-    List<AuctionResponse> getAuctionsByAuctionCategory(AuctionCategory auctionCategory);
+    List<AuctionResponse> getAuctionsByAuctionCategory(AuctionRequest.AuctionCategoryParam param);
+    List<AuctionResponse> getAuctionsByFilter(AuctionRequest.ProductCategoryParam productCategoryParam, AuctionRequest.AuctionCategoryParam auctionCategoryParam);
 }

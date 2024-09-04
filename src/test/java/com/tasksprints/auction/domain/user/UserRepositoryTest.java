@@ -1,5 +1,6 @@
 package com.tasksprints.auction.domain.user;
 
+import com.tasksprints.auction.common.config.QueryDslConfig;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
  * [CRUD TEST] UserRepositoryTest
  */
 @DataJpaTest
+@Import(QueryDslConfig.class)
 @Slf4j
 public class UserRepositoryTest {
 
