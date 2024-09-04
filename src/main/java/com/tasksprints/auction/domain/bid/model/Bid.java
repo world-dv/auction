@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity(name = "bids")
 @AllArgsConstructor
@@ -21,6 +22,9 @@ public class Bid extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //UUID를 ID로 사용하게 되면 성능 저하 -> 기본 키는 Id를 유지하되, 외부에 공개할 키는 UUID로 설정
+    private String uuid;
+
     private BigDecimal amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,28 +32,31 @@ public class Bid extends BaseEntity {
     @Builder.Default
     private Auction auction = null;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //지연 로딩 설정 이유 ? -> N + 1 문제 발생 가능성 있으므로 fetch join 으로 개선 필요
     @JoinColumn(name = "user_id")
     @Builder.Default
-    private User user = null;
+    private User user = null; //null 설정한 이유가 무엇인지?
 
     /**
      * addUser 와 addAuction 을 양방향으로 묶을지 단방향으로 묶을지에 대한 고민
      */
+
     public void addUser(User user){
         this.user = user;
-
     }
 
     public void addAuction(Auction auction){
         this.auction = auction;
     }
+
     public void addUserAndAuction(User user, Auction auction){
         addUser(user);
         addAuction(auction);
     }
+
     public static Bid create(BigDecimal amount, User user, Auction auction){
         Bid newBid = Bid.builder()
+                .uuid(UUID.randomUUID().toString())
                 .amount(amount)
                 .build();
 
