@@ -297,7 +297,7 @@ class AuctionServiceImplTest {
         public void testGetAuctionsByAuctionCategory_Success() {
             Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
             Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
-
+            AuctionRequest.AuctionCategoryParam param = new AuctionRequest.AuctionCategoryParam(AuctionCategory.PUBLIC_PAID);
             List<Auction> expectedAuctions = List.of(auction1, auction2);
 
             when(auctionRepository.findAuctionsByAuctionCategory(AuctionCategory.PUBLIC_PAID)).thenReturn(expectedAuctions);
@@ -305,28 +305,50 @@ class AuctionServiceImplTest {
                     .map(AuctionResponse::of)
                     .collect(Collectors.toList());
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByAuctionCategory(AuctionCategory.PUBLIC_PAID);
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByAuctionCategory(param);
+            assertThat(actualAuctions).isEqualTo(expectedResponses);
+        }
+        @Test
+        @DisplayName("경매 유형 조회 : [성공] -Criteria 사용")
+        public void testGetAuctionsByAuctionCategory_Success_Criteria() {
+            Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
+            Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
+            AuctionRequest.AuctionCategoryParam param = new AuctionRequest.AuctionCategoryParam(AuctionCategory.PUBLIC_PAID);
+            List<Auction> expectedAuctions = List.of(auction1, auction2);
+
+            when(auctionRepository.getAuctionsByFilters(null,AuctionCategory.PUBLIC_PAID)).thenReturn(expectedAuctions);
+            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
+                    .map(AuctionResponse::of)
+                    .toList();
+
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(null,param);
             assertThat(actualAuctions).isEqualTo(expectedResponses);
         }
         @Test
         @DisplayName("경매 유형 조회 : [결과 없음]")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound() {
             List<Auction> emptyAuctionList = List.of();
+            AuctionRequest.AuctionCategoryParam param = new AuctionRequest.AuctionCategoryParam(AuctionCategory.PUBLIC_FREE);
 
             when(auctionRepository.findAuctionsByAuctionCategory(AuctionCategory.PUBLIC_FREE))
                     .thenReturn(emptyAuctionList);
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByAuctionCategory(AuctionCategory.PUBLIC_FREE);
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByAuctionCategory(param);
 
             assertThat(actualAuctions).isEmpty();
+        }
+        @Test
+        @DisplayName("경매 유형 조회 : [결과 없음] - Criteria 사용")
+        public void testGetAuctionsByAuctionCategory_AuctionNotFound_Criteria() {
+            List<Auction> emptyAuctionList = List.of();
+            AuctionRequest.AuctionCategoryParam param = new AuctionRequest.AuctionCategoryParam(AuctionCategory.PUBLIC_FREE);
 
-            //service 메서드 안에서 예외 처리를 하면 아래 코드로 테스트?
-//            assertThrows(AuctionNotFoundException.class, () -> {
-//                    auctionService.getAuctionsByAuctionCategory(AuctionCategory.PUBLIC_FREE);
-//            });
+            when(auctionRepository.getAuctionsByFilters(null,AuctionCategory.PUBLIC_FREE))
+                    .thenReturn(emptyAuctionList);
 
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(null,param);
 
-
+            assertThat(actualAuctions).isEmpty();
         }
     }
 

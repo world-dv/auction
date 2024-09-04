@@ -110,7 +110,7 @@ public class AuctionControllerTest {
     @DisplayName("경매 유형을 통한 경매목록 조회")
     public void testFindAuctionByUsingAuctionCategory_Success() throws Exception {
         List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
+        when(auctionService.getAuctionsByFilter(any(),any())).thenReturn(auctionResponseList);
         mockMvc.perform(get("/api/v1/auction")
                         .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
                 .andExpect(status().isOk())
@@ -125,7 +125,7 @@ public class AuctionControllerTest {
     @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
     public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
         List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByAuctionCategory(any())).thenReturn(auctionResponseList);
+        when(auctionService.getAuctionsByFilter(any(),any())).thenReturn(auctionResponseList);
 
         mockMvc.perform(get("/api/v1/auction")
                         .param("auctionCategory", "NON"))
