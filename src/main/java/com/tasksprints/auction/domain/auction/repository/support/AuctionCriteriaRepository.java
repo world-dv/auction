@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.auction.repository;
+package com.tasksprints.auction.domain.auction.repository.support;
 
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
