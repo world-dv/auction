@@ -11,7 +11,7 @@ public class UserRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
-    public static class Register{
+    public static class Register {
         String name;
         String email;
         String password;
@@ -21,7 +21,7 @@ public class UserRequest {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Update{
+    public static class Update {
         String name;
         String password;
         String nickname;

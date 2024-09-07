@@ -4,7 +4,6 @@ import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.product.model.ProductCategory;
 
-
 import java.util.List;
 
 public interface AuctionCriteriaRepository {

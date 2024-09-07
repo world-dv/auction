@@ -4,8 +4,8 @@ import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
-import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
 import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
+import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
 import com.tasksprints.auction.domain.product.exception.ProductNotFoundException;
 import com.tasksprints.auction.domain.product.model.Product;
 import com.tasksprints.auction.domain.product.model.ProductCategory;
@@ -20,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,58 +32,54 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+
 public class ProductServiceImplTest {
 
+    private static final String UPLOADS_DIR = "src/main/resources/static/uploads/thumbnails/";
     @InjectMocks
     private ProductServiceImpl productService;
-
     @Mock
     private ProductRepository productRepository;
-
     @Mock
     private ProductImageRepository productImageRepository;
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private AuctionRepository auctionRepository;
-
     private User user;
     private Auction auction;
     private Product product;
-
-    private static final String UPLOADS_DIR = "src/main/resources/static/uploads/thumbnails/";
-
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         user = User.builder()
-                .id(1L)
-                .name("testUser")
-                .nickName("test")
-                .password("password")
-                .email("test@naver.com")
-                .build();
+            .id(1L)
+            .name("testUser")
+            .nickName("test")
+            .password("password")
+            .email("test@naver.com")
+            .build();
         auction = Auction.builder()
-                .id(1L)
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusHours(1))
-                .auctionStatus(AuctionStatus.ACTIVE)
-                .startingBid(BigDecimal.ONE)
-                .auctionCategory(AuctionCategory.PRIVATE_FREE)
-                .seller(user)
-                .build();
+            .id(1L)
+            .startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.now().plusHours(1))
+            .auctionStatus(AuctionStatus.ACTIVE)
+            .startingBid(BigDecimal.ONE)
+            .auctionCategory(AuctionCategory.PRIVATE_FREE)
+            .seller(user)
+            .build();
         product = Product.builder()
-                .id(1L)
-                .name("Test Product")
-                .description("Description")
-                .category(ProductCategory.fromDisplayName("여성의류"))
-                .owner(user)
-                .auction(auction)
-                .build();
+            .id(1L)
+            .name("Test Product")
+            .description("Description")
+            .category(ProductCategory.fromDisplayName("여성의류"))
+            .owner(user)
+            .auction(auction)
+            .build();
     }
 
     @Nested
@@ -101,19 +96,20 @@ public class ProductServiceImplTest {
             if (Files.exists(dirPath) && Files.isDirectory(dirPath)) {
                 try (var paths = Files.walk(dirPath)) {
                     paths.filter(Files::isRegularFile) // 정규 파일만 필터링
-                            .forEach(filePath -> {
-                                try {
-                                    Files.delete(filePath); // 파일 삭제
-                                    System.out.println("Deleted: " + filePath.toString()); // 삭제된 파일 로그 출력
-                                } catch (IOException e) {
-                                    System.err.println("Error deleting file: " + filePath.toString() + " - " + e.getMessage()); // 삭제 실패 로그 출력
-                                }
-                            });
+                        .forEach(filePath -> {
+                            try {
+                                Files.delete(filePath); // 파일 삭제
+                                System.out.println("Deleted: " + filePath.toString()); // 삭제된 파일 로그 출력
+                            } catch (IOException e) {
+                                System.err.println("Error deleting file: " + filePath.toString() + " - " + e.getMessage()); // 삭제 실패 로그 출력
+                            }
+                        });
                 }
             } else {
                 System.out.println("Directory not found: " + directoryPath); // 디렉토리 없음 로그 출력
             }
         }
+
         @Test
         @DisplayName("새로운 제품 등록")
         public void testRegister() {
@@ -124,9 +120,9 @@ public class ProductServiceImplTest {
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description", "여성의류");
 
-            ProductResponse createdProductResponse = productService.register(1L, 1L, request,createMockImages());
+            ProductResponse createdProductResponse = productService.register(1L, 1L, request, createMockImages());
 
-            assertEquals(createdProductResponse.getName(),"Test Product");
+            assertEquals(createdProductResponse.getName(), "Test Product");
             verify(productRepository).save(any(Product.class));
         }
 
@@ -137,7 +133,7 @@ public class ProductServiceImplTest {
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description", "여성의류");
 
-            assertThrows(UserNotFoundException.class, () -> productService.register(1L, 1L, request,createMockImages()));
+            assertThrows(UserNotFoundException.class, () -> productService.register(1L, 1L, request, createMockImages()));
         }
 
         @Test
@@ -148,8 +144,9 @@ public class ProductServiceImplTest {
 
             ProductRequest.Register request = new ProductRequest.Register("Test Product", "Description", "여성의류");
 
-            assertThrows(RuntimeException.class, () -> productService.register(1L, 1L,request, createMockImages()));
+            assertThrows(RuntimeException.class, () -> productService.register(1L, 1L, request, createMockImages()));
         }
+
         private List<MultipartFile> createMockImages() {
             MockMultipartFile image1 = new MockMultipartFile("image1", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
             MockMultipartFile image2 = new MockMultipartFile("image2", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
@@ -169,8 +166,8 @@ public class ProductServiceImplTest {
 
             List<ProductResponse> products = productService.getProductsByUserId(1L);
 
-            assertEquals(products.size(),1);
-            assertEquals(products.get(0).getName(),"Test Product");
+            assertEquals(products.size(), 1);
+            assertEquals(products.get(0).getName(), "Test Product");
         }
 
         @Test
@@ -180,7 +177,7 @@ public class ProductServiceImplTest {
 
             ProductResponse foundProductResponse = productService.getProductByAuctionId(1L);
 
-            assertEquals(foundProductResponse.getName(),"Test Product");
+            assertEquals(foundProductResponse.getName(), "Test Product");
         }
 
         @Test
@@ -216,7 +213,7 @@ public class ProductServiceImplTest {
 
             ProductResponse updatedProductResponse = productService.update(updateRequest);
 
-            assertEquals(updatedProductResponse.getName(),"Updated Product");
+            assertEquals(updatedProductResponse.getName(), "Updated Product");
             verify(productRepository).save(any(Product.class));
         }
     }

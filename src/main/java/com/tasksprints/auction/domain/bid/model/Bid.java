@@ -33,31 +33,33 @@ public class Bid extends BaseEntity {
     @Builder.Default
     private User user = null;
 
-    /**
-     * addUser 와 addAuction 을 양방향으로 묶을지 단방향으로 묶을지에 대한 고민
-     */
-    public void addUser(User user){
-        this.user = user;
-
-    }
-
-    public void addAuction(Auction auction){
-        this.auction = auction;
-    }
-    public void addUserAndAuction(User user, Auction auction){
-        addUser(user);
-        addAuction(auction);
-    }
-    public static Bid create(BigDecimal amount, User user, Auction auction){
+    public static Bid create(BigDecimal amount, User user, Auction auction) {
         Bid newBid = Bid.builder()
-                .amount(amount)
-                .build();
+            .amount(amount)
+            .build();
 
         newBid.addUserAndAuction(user, auction);
         return newBid;
     }
 
-    public void update(BigDecimal amount){
+    /**
+     * addUser 와 addAuction 을 양방향으로 묶을지 단방향으로 묶을지에 대한 고민
+     */
+    public void addUser(User user) {
+        this.user = user;
+
+    }
+
+    public void addAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    public void addUserAndAuction(User user, Auction auction) {
+        addUser(user);
+        addAuction(auction);
+    }
+
+    public void update(BigDecimal amount) {
         this.amount = amount;
     }
 

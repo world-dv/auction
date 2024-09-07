@@ -15,9 +15,9 @@ public class CustomAuctionRepositoryV1 {
     private EntityManager entityManager;
 
     public List<Auction> findByCategoryUsingEntityManager(AuctionCategory auctionCategoryName) {
-           String jpql = "SELECT a FROM auction a WHERE a.auctionCategory = :category";
-           return entityManager.createQuery(jpql, Auction.class)
-                               .setParameter("category", auctionCategoryName)
-                               .getResultList();
-       }
+        String jpql = "SELECT a FROM auction a WHERE a.auctionCategory = :category";
+        return entityManager.createQuery(jpql, Auction.class)
+            .setParameter("category", auctionCategoryName)
+            .getResultList();
+    }
 }

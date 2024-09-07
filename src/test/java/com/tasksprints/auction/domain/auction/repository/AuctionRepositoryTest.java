@@ -1,9 +1,9 @@
 package com.tasksprints.auction.domain.auction.repository;
+
 import com.tasksprints.auction.common.config.QueryDslConfig;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
-import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +38,11 @@ public class AuctionRepositoryTest {
     @BeforeEach
     public void setUp() {
         seller = User.builder()
-                .name("testUser")
-                .nickName("testNick")
-                .password("testPassword")
-                .email("test@example.com")
-                .build();
+            .name("testUser")
+            .nickName("testNick")
+            .password("testPassword")
+            .email("test@example.com")
+            .build();
         userRepository.save(seller);
     }
 
@@ -85,6 +85,7 @@ public class AuctionRepositoryTest {
 
 
     }
+
     @Test
     @DisplayName("경매 유형이 []인 경매 목록 조회")
     public void testFindAuctionsByAuctionCategory() {
@@ -104,6 +105,7 @@ public class AuctionRepositoryTest {
         assertThat(auctions).hasSize(2);
         assertThat(auctions).allMatch(auction -> auction.getAuctionCategory() == AuctionCategory.PUBLIC_PAID);
     }
+
     @Test
     @DisplayName("QueryDSL 필터를 통해서 경매 목록 조회")
     public void testFindAllUsingFilter() {
@@ -122,14 +124,15 @@ public class AuctionRepositoryTest {
 
 
     }
+
     private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
         return Auction.create(
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7),
-                BigDecimal.valueOf(100.00),
-                category,
-                status,
-                seller
+            LocalDateTime.now(),
+            LocalDateTime.now().plusDays(7),
+            BigDecimal.valueOf(100.00),
+            category,
+            status,
+            seller
         );
     }
 }
