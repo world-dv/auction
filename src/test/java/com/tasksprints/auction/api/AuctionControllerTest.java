@@ -133,6 +133,16 @@ public class AuctionControllerTest {
                 .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
     }
     @Test
+    @DisplayName("마감 기한이 24시간 이하로 남은 경매 목록 조회")
+    public void testFindAuctionsEndWithin24Hours_Success() throws Exception {
+
+        /*
+        테스트 코드 추가
+        * */
+
+    }
+
+    @Test
     @DisplayName("입찰 제출 성공")
     public void testSubmitBid_Success() throws Exception {
         BidResponse bidDTO = new BidResponse(); // Populate with necessary fields

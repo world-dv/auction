@@ -19,4 +19,7 @@ public interface AuctionService {
     AuctionResponse getAuctionById(Long auctionId);
     List<AuctionResponse> getAuctionsByAuctionCategory(AuctionRequest.AuctionCategoryParam param);
     List<AuctionResponse> getAuctionsByFilter(AuctionRequest.ProductCategoryParam productCategoryParam, AuctionRequest.AuctionCategoryParam auctionCategoryParam);
+
+    List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc();
+    List<AuctionResponse> getAuctionsEndWith24Hours();
 }

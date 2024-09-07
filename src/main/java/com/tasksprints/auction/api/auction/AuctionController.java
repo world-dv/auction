@@ -82,17 +82,23 @@ public class AuctionController {
 //        }
 //        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, allAuctions));
 //    }
-@GetMapping
-@Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
-@ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(
-        @RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory,
-        @RequestParam(required = false) AuctionRequest.ProductCategoryParam productCategory
-) {
-    List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(productCategory,auctionCategory);
-    return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
-}
-
+    @GetMapping
+    @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
+    @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(
+            @RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory,
+            @RequestParam(required = false) AuctionRequest.ProductCategoryParam productCategory
+    ) {
+        List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(productCategory,auctionCategory);
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
+    }
+    @GetMapping("/ending-soon")
+    @Operation(summary = "Get all auctions ending Soon", description = "Retrieves all auctions.")
+    @ApiResponse(responseCode = "200",description = "All auctions retrieved successfully")
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctionsEndingSoon() {
+        List<AuctionResponse> auctions = auctionService.getAuctionsByEndTimeBetweenOrderByEndTimeAsc();
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
+    }
     @GetMapping("/{auctionId}")
     @Operation(summary = "Get auction by ID", description = "Retrieves auction details by its ID.")
     @ApiResponse(responseCode = "200", description = "Auction retrieved successfully")

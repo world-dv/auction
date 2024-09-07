@@ -122,10 +122,48 @@ public class AuctionRepositoryTest {
 
 
     }
+    @Test
+    @DisplayName("경매 마감 시간까지 24시간 이하로 남은 경매 목록 조회")
+    public void testFindAuctionsByEndTimeBetweenOrderByEndTimeAsc() {
+        //given
+        Auction auction1 = createAuction(seller, LocalDateTime.now().plusHours(21), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
+        Auction auction2 = createAuction(seller, LocalDateTime.now().plusHours(22), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
+        Auction auction3 = createAuction(seller, LocalDateTime.now().plusHours(23), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
+        Auction auction4 = createAuction(seller, LocalDateTime.now().plusHours(48), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
+        Auction auction5 = createAuction(seller, LocalDateTime.now().plusHours(20), AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
+
+        auctionRepository.saveAll(List.of(auction1, auction2, auction3, auction4, auction5));
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime next24Hours = LocalDateTime.now().plusHours(24);
+        // when
+        List<Auction> result = auctionRepository.getAuctionsEndWith24Hours(now, next24Hours, AuctionStatus.ACTIVE);
+        //then
+        assertThat(result).hasSize(3);
+        // 오름차순 정렬 되었는지 확인
+        LocalDateTime previousEndTime = null;
+            for (Auction auction : result) {
+                if (previousEndTime != null) {
+                    assertThat(auction.getEndTime()).isAfterOrEqualTo(previousEndTime);
+                }
+                previousEndTime = auction.getEndTime();
+            }
+    }
+
     private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
         return Auction.create(
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(7),
+                BigDecimal.valueOf(100.00),
+                category,
+                status,
+                seller
+        );
+    }
+    private Auction createAuction(User seller,LocalDateTime endTime, AuctionCategory category, AuctionStatus status) {
+        return Auction.create(
+                LocalDateTime.now(),
+                endTime,
                 BigDecimal.valueOf(100.00),
                 category,
                 status,

@@ -1,14 +1,17 @@
 package com.tasksprints.auction.domain.auction.repository.support;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
+import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.model.QAuction;
 import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.product.model.QProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,5 +29,20 @@ public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository 
                 .where(productCategory != null ? product.category.eq(productCategory) : null) // ProductCategory 필터
                 .fetch();
     }
+
+    @Override
+    public List<Auction> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours, AuctionStatus auctionStatus) {
+        QAuction auction = QAuction.auction;
+
+        BooleanExpression endTimeBetween = auction.endTime.between(now, next24Hours);
+        BooleanExpression statusEquals = auction.auctionStatus.eq(auctionStatus);
+
+        return queryFactory
+                .selectFrom(auction)
+                .where(endTimeBetween.and(statusEquals))
+                .orderBy(auction.endTime.asc())
+                .fetch();
+    }
+
 
 }
