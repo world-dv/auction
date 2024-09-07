@@ -23,6 +23,10 @@ jobs:
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
 
+      - name: lint 강제 설정
+      - run: ./gradlew editorconfigFormat
+
+
       - name: Build with Gradle
         run: ./gradlew build
 
