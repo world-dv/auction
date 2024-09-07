@@ -14,19 +14,21 @@ public class AuctionRequest {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Create{
+    public static class Create {
         LocalDateTime startTime;
         LocalDateTime endTime;
         BigDecimal startingBid;
         AuctionCategory auctionCategory;
         AuctionStatus auctionStatus;
     }
+
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AuctionCategoryParam {
         AuctionCategory auctionCategory;
-        public AuctionCategoryParam(String auctionCategory){
+
+        public AuctionCategoryParam(String auctionCategory) {
             this.auctionCategory = AuctionCategory.fromDisplayName(auctionCategory);
         }
     }
@@ -36,7 +38,8 @@ public class AuctionRequest {
     @AllArgsConstructor
     public static class ProductCategoryParam {
         ProductCategory productCategory;
-        public ProductCategoryParam(String productCategory){
+
+        public ProductCategoryParam(String productCategory) {
             this.productCategory = ProductCategory.fromDisplayName(productCategory);
         }
     }

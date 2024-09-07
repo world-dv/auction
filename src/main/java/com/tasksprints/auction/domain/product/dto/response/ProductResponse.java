@@ -1,7 +1,6 @@
 package com.tasksprints.auction.domain.product.dto.response;
 
 import com.tasksprints.auction.domain.product.model.Product;
-import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.product.model.ProductImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,22 +23,23 @@ public class ProductResponse {
     private Long auctionId;
     private List<String> productImageList;
 
-    private static List<String> extractProductImageList(Product product){
+    private static List<String> extractProductImageList(Product product) {
         return product.getProductImageList()
-                .stream()
-                .map(ProductImage::getImageUrl)
-                .toList();
+            .stream()
+            .map(ProductImage::getImageUrl)
+            .toList();
     }
+
     public static ProductResponse of(Product product) {
         return ProductResponse.builder()
-                .productId(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .ownerId(product.getOwner().getId())
-                .ownerNickName(product.getOwner().getNickName())
-                .category(product.getCategory().getDisplayName())
-                .auctionId(product.getAuction().getId())
-                .productImageList(extractProductImageList(product))
-                .build();
+            .productId(product.getId())
+            .name(product.getName())
+            .description(product.getDescription())
+            .ownerId(product.getOwner().getId())
+            .ownerNickName(product.getOwner().getNickName())
+            .category(product.getCategory().getDisplayName())
+            .auctionId(product.getAuction().getId())
+            .productImageList(extractProductImageList(product))
+            .build();
     }
 }

@@ -43,6 +43,7 @@ public class GlobalExceptionHandler {
         String message = "Invalid auction time: " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(message));
     }
+
     @ExceptionHandler(InvalidBidAmountException.class)
     public ResponseEntity<ApiResult<String>> handleInvalidBidAmountException(InvalidBidAmountException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failure(ex.getMessage()));

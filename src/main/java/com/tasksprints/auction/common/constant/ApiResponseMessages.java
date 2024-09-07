@@ -17,7 +17,7 @@ public class ApiResponseMessages {
     public static final String AUCTION_NOT_FOUND = "Auction not found";
     public static final String PRODUCT_NOT_FOUND = "Product not found";
     public static final String PRODUCT_FOUND_SUCCESS = "Product successfully found.";
-    public static  final String PRODUCT_DELETED_SUCCESS = "Product successfully deleted";
+    public static final String PRODUCT_DELETED_SUCCESS = "Product successfully deleted";
     public static final String BID_NOT_FOUND = "Bid not found";
 
     // BID

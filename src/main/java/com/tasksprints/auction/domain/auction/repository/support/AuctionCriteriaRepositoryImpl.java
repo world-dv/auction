@@ -15,16 +15,18 @@ import java.util.List;
 @Repository
 public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository {
     private final JPAQueryFactory queryFactory;
-    public List<Auction> getAuctionsByFilters( ProductCategory productCategory,
-                                               AuctionCategory category
-                                               ) {
+
+    public List<Auction> getAuctionsByFilters(ProductCategory productCategory,
+                                              AuctionCategory category
+    ) {
         QAuction auction = QAuction.auction;
         QProduct product = QProduct.product;
         return queryFactory.selectFrom(auction)
-                .leftJoin(auction.product, product) // Auction과 Product 조인
-                .where(category != null ? auction.auctionCategory.eq(category) : null)
-                .where(productCategory != null ? product.category.eq(productCategory) : null) // ProductCategory 필터
-                .fetch();
+            .leftJoin(auction.product, product) // Auction과 Product 조인
+            .where(category != null ? auction.auctionCategory.eq(category) : null)
+            .where(productCategory != null ? product.category.eq(productCategory) : null) // ProductCategory 필터
+            .fetch();
     }
+
 
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name="products")
+@Entity(name = "products")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,33 +43,31 @@ public class Product extends BaseEntity {
     @Builder.Default
     private List<ProductImage> productImageList = new ArrayList<>();
 
-    public void addOwner(User owner){
-        this.owner = owner;
-    }
-    public void addAuction(Auction auction){
-        this.auction = auction;
-    }
-
-    public void initProductImageList(List<ProductImage> productImageList){
-        this.productImageList = productImageList;
-    }
-    public void addOwnerAndAuction(User owner, Auction auction){
-        addOwner(owner);
-        addAuction(auction);
-    }
-
-    public static Product create(String name, String description, User owner, Auction auction,String productCategory, List<ProductImage> productImageList){
-        Product product = Product.builder()
-                .name(name)
-                .description(description)
-                .category(ProductCategory.fromDisplayName(productCategory))
-                .build();
+    public static Product create(String name, String description, User owner, Auction auction, String productCategory, List<ProductImage> productImageList) {
+        Product product = Product.builder().name(name).description(description).category(ProductCategory.fromDisplayName(productCategory)).build();
         product.addOwnerAndAuction(owner, auction);
         product.initProductImageList(productImageList);
         return product;
     }
 
-    public void update(String name, String description){
+    public void addOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public void addAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    public void initProductImageList(List<ProductImage> productImageList) {
+        this.productImageList = productImageList;
+    }
+
+    public void addOwnerAndAuction(User owner, Auction auction) {
+        addOwner(owner);
+        addAuction(auction);
+    }
+
+    public void update(String name, String description) {
         this.name = name;
         this.description = description;
     }
