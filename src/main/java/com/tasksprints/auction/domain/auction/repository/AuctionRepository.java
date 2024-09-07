@@ -24,6 +24,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     Optional<Auction> findAuctionById(@Param("auctionId") Long auctionId);
 
     List<Auction> findAuctionsByAuctionCategory(AuctionCategory auctionCategory);
+
     List<Auction> findAuctionByProduct_Category(ProductCategory productCategory);
     List<Auction> findAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours, AuctionStatus auctionStatus);
 }

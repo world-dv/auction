@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity(name = "product_images")
 @NoArgsConstructor
@@ -21,14 +20,13 @@ public class ProductImage {
     private String imageUrl;
 
 
-
 //    @ColumnDefault("false")
 //    private Boolean isPrime;
 
-    public static ProductImage create(String imageUrl){
+    public static ProductImage create(String imageUrl) {
         return ProductImage.builder()
-                .imageUrl(imageUrl)
-                .build();
+            .imageUrl(imageUrl)
+            .build();
     }
 
 }

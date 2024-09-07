@@ -102,33 +102,33 @@ public class ProductRepositoryTest {
     // Helper methods to minimize code duplication
     private User createUser(String name, String nickName, String email) {
         User user = User.builder()
-                .name(name)
-                .nickName(nickName)
-                .password("password")  // Use a consistent password for all users
-                .email(email)
-                .build();
+            .name(name)
+            .nickName(nickName)
+            .password("password")  // Use a consistent password for all users
+            .email(email)
+            .build();
         return userRepository.save(user);
     }
 
     private Auction createAuction(User owner, BigDecimal startingBid, LocalDateTime startTime, LocalDateTime endTime) {
         Auction auction = Auction.builder()
-                .startingBid(startingBid)
-                .startTime(startTime)
-                .endTime(endTime)
-                .auctionStatus(AuctionStatus.ACTIVE)
-                .auctionCategory(AuctionCategory.PRIVATE_FREE)
-                .seller(owner)
-                .build();
+            .startingBid(startingBid)
+            .startTime(startTime)
+            .endTime(endTime)
+            .auctionStatus(AuctionStatus.ACTIVE)
+            .auctionCategory(AuctionCategory.PRIVATE_FREE)
+            .seller(owner)
+            .build();
         return auctionRepository.save(auction);
     }
 
     private Product createProduct(String name, String description, User owner, Auction auction) {
         Product product = Product.builder()
-                .name(name)
-                .description(description)
-                .owner(owner)
-                .auction(auction)
-                .build();
+            .name(name)
+            .description(description)
+            .owner(owner)
+            .auction(auction)
+            .build();
         return productRepository.save(product);
     }
 }

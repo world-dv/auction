@@ -47,26 +47,26 @@ public class Auction extends BaseEntity {
     @Builder.Default
     private Product product = null;
 
-    public void addProduct(Product product){
+    public static Auction create(LocalDateTime startTime, LocalDateTime endTime, BigDecimal startingBid, AuctionCategory auctionCategory, AuctionStatus auctionStatus, User seller) {
+        Auction newAuction = Auction.builder()
+            .startTime(startTime)
+            .endTime(endTime)
+            .startingBid(startingBid)
+            .auctionCategory(auctionCategory)
+            .auctionStatus(auctionStatus)
+            .build();
+        newAuction.addUser(seller);
+        return newAuction;
+    }
+
+    public void addProduct(Product product) {
         product.addAuction(this);
         this.product = product;
     }
 
-    public void addUser(User seller){
+    public void addUser(User seller) {
         seller.addAuction(this);
         this.seller = seller;
-    }
-
-    public static Auction create(LocalDateTime startTime, LocalDateTime endTime, BigDecimal startingBid, AuctionCategory auctionCategory, AuctionStatus auctionStatus, User seller){
-        Auction newAuction = Auction.builder()
-                .startTime(startTime)
-                .endTime(endTime)
-                .startingBid(startingBid)
-                .auctionCategory(auctionCategory)
-                .auctionStatus(auctionStatus)
-                .build();
-        newAuction.addUser(seller);
-        return newAuction;
     }
 
 }

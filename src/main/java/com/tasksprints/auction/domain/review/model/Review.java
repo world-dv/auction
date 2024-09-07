@@ -31,25 +31,27 @@ public class Review {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "auction_id")
     private Auction auction;
-    public void addWriter(User writer) {
-        this.writer = writer;
-    }
-    public void addAuction(Auction auction){
-        this.auction = auction;
-    }
-    public void addWriterAndAuction(User writer, Auction auction){
-        addWriter(writer);
-        addAuction(auction);
-    }
 
-
-    public static  Review create(String content, Integer rating,User writer, Auction auction) {
+    public static Review create(String content, Integer rating, User writer, Auction auction) {
         Review newReview = Review.builder()
-                .content(content)
-                .rating(rating)
-                .build();
+            .content(content)
+            .rating(rating)
+            .build();
 
         newReview.addWriterAndAuction(writer, auction);
         return newReview;
+    }
+
+    public void addWriter(User writer) {
+        this.writer = writer;
+    }
+
+    public void addAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    public void addWriterAndAuction(User writer, Auction auction) {
+        addWriter(writer);
+        addAuction(auction);
     }
 }

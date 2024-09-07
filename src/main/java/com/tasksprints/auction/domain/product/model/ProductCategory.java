@@ -1,4 +1,5 @@
 package com.tasksprints.auction.domain.product.model;
+
 public enum ProductCategory {
     WOMENS_CLOTHING("여성의류"),
     UNDERWEAR_SLEEPWEAR("언더웨어/잠옷"),
@@ -47,9 +48,6 @@ public enum ProductCategory {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
     /**
      * 한정된 갯수의 Category 이기에 따로 Over-head는 발생하지 않을 것으로 판단
      ***/
@@ -60,5 +58,9 @@ public enum ProductCategory {
             }
         }
         throw new IllegalArgumentException("Unknown category: " + displayName);
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

@@ -3,7 +3,6 @@ package com.tasksprints.auction.domain.user;
 import com.tasksprints.auction.common.config.QueryDslConfig;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,13 @@ public class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .name("testUser")
-                .nickName("testNick")
-                .password("testPassword")
-                .email("test@example.com")
-                .build();
+            .name("testUser")
+            .nickName("testNick")
+            .password("testPassword")
+            .email("test@example.com")
+            .build();
     }
+
     @DisplayName("findById 테스트")
     @Test
     void findUserById() {
@@ -47,6 +47,20 @@ public class UserRepositoryTest {
         Assertions.assertEquals("test@example.com", foundUser.getEmail());
 
         log.info("Found User: {}", foundUser);
+    }
+
+    @DisplayName("delete 테스트")
+    @Test
+    void deleteUser() {
+        User createdUser = userRepository.save(user);
+        Long userId = createdUser.getId();
+
+        userRepository.deleteById(userId);
+
+        Optional<User> deletedUser = userRepository.findById(userId);
+
+        Assertions.assertTrue(deletedUser.isEmpty(), "User should be deleted");
+        log.info("User with ID {} deleted", userId);
     }
 
     @DisplayName("save 테스트")
@@ -66,6 +80,7 @@ public class UserRepositoryTest {
 
             log.info("Updated User: {}", updatedUser);
         }
+
         @DisplayName("유저 생성 테스트")
         @Test
         void createUser() {
@@ -79,18 +94,5 @@ public class UserRepositoryTest {
 
             log.info("Created User: {}", createdUser);
         }
-    }
-    @DisplayName("delete 테스트")
-    @Test
-    void deleteUser() {
-        User createdUser = userRepository.save(user);
-        Long userId = createdUser.getId();
-
-        userRepository.deleteById(userId);
-
-        Optional<User> deletedUser = userRepository.findById(userId);
-
-        Assertions.assertTrue(deletedUser.isEmpty(), "User should be deleted");
-        log.info("User with ID {} deleted", userId);
     }
 }

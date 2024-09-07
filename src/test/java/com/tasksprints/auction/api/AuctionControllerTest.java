@@ -3,15 +3,14 @@ package com.tasksprints.auction.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasksprints.auction.api.auction.AuctionController;
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
-import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
+import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
-import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
-import com.tasksprints.auction.domain.bid.dto.BidResponse;
-import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
-import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
 import com.tasksprints.auction.domain.auction.service.AuctionService;
+import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
+import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
+import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
 import com.tasksprints.auction.domain.review.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuctionController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -63,11 +64,11 @@ public class AuctionControllerTest {
         when(auctionService.createAuction(anyLong(), any())).thenReturn(auctionDTO);
 
         mockMvc.perform(post("/api/v1/auction")
-                        .param("userId", "1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(auctionRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.AUCTION_CREATED_SUCCESS));
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(auctionRequest)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.AUCTION_CREATED_SUCCESS));
     }
 
     @Test
@@ -78,19 +79,19 @@ public class AuctionControllerTest {
         when(auctionService.createAuction(anyLong(), any())).thenThrow(new RuntimeException("Error creating auction"));
 
         mockMvc.perform(post("/api/v1/auction")
-                        .param("userId", "1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(auctionRequest)))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Error creating auction"));
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(auctionRequest)))
+            .andExpect(status().isInternalServerError())
+            .andExpect(jsonPath("$.message").value("Error creating auction"));
     }
 
     @Test
     @DisplayName("경매 종료 성공")
     public void testCloseAuction_Success() throws Exception {
         mockMvc.perform(post("/api/v1/auction/1/close"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.AUCTION_CLOSED_SUCCESS));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.AUCTION_CLOSED_SUCCESS));
 
         verify(auctionService, times(1)).closeAuction(1L);
     }
@@ -102,19 +103,20 @@ public class AuctionControllerTest {
         when(auctionService.getAuctionStatus(1L)).thenReturn(auctionStatus);
 
         mockMvc.perform(get("/api/v1/auction/1/status"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.AUCTION_STATUS_RETRIEVED))
-                .andExpect(jsonPath("$.data").value(auctionStatus));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.AUCTION_STATUS_RETRIEVED))
+            .andExpect(jsonPath("$.data").value(auctionStatus));
     }
+
     @Test
     @DisplayName("경매 유형을 통한 경매목록 조회")
     public void testFindAuctionByUsingAuctionCategory_Success() throws Exception {
         List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByFilter(any(),any())).thenReturn(auctionResponseList);
+        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
         mockMvc.perform(get("/api/v1/auction")
-                        .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+                .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
     }
 
     /**
@@ -125,13 +127,14 @@ public class AuctionControllerTest {
     @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
     public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
         List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByFilter(any(),any())).thenReturn(auctionResponseList);
+        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
 
         mockMvc.perform(get("/api/v1/auction")
-                        .param("auctionCategory", "NON"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+                .param("auctionCategory", "NON"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
     }
+
     @Test
     @DisplayName("마감 기한이 24시간 이하로 남은 경매 목록 조회")
     public void testFindAuctionsEndWithin24Hours_Success() throws Exception {
@@ -149,10 +152,10 @@ public class AuctionControllerTest {
         when(bidService.submitBid(anyLong(), anyLong(), any())).thenReturn(bidDTO);
 
         mockMvc.perform(post("/api/v1/auction/1/bid")
-                        .param("userId", "1")
-                        .param("amount", "100.00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.BID_SUBMITTED_SUCCESS));
+                .param("userId", "1")
+                .param("amount", "100.00"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.BID_SUBMITTED_SUCCESS));
     }
 
     @Test
@@ -162,10 +165,10 @@ public class AuctionControllerTest {
         when(bidService.updateBidAmount(anyLong(), anyLong(), any())).thenReturn(updatedBidDTO);
 
         mockMvc.perform(put("/api/v1/auction/1/bid")
-                        .param("userId", "1")
-                        .param("amount", "150.00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.BID_UPDATED_SUCCESS));
+                .param("userId", "1")
+                .param("amount", "150.00"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.BID_UPDATED_SUCCESS));
     }
 
     @Test
@@ -176,11 +179,11 @@ public class AuctionControllerTest {
         when(reviewService.createReview(anyLong(), anyLong(), any())).thenReturn(reviewResponse);
 
         mockMvc.perform(post("/api/v1/auction/1/review")
-                        .param("userId", "1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEW_CREATED_SUCCESS));
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewRequest)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(ApiResponseMessages.REVIEW_CREATED_SUCCESS));
     }
 
 
