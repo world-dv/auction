@@ -69,6 +69,16 @@ class AuctionServiceImplTest {
             .seller(seller)
             .build();
     }
+    private Auction createAuction(User seller, LocalDateTime endTime, AuctionCategory category, AuctionStatus status) {
+       return Auction.create(
+               LocalDateTime.now(),
+               endTime,
+               BigDecimal.valueOf(100.00),
+               category,
+               status,
+               seller
+       );
+   }
 
     @Nested
     @DisplayName("경매 생성 테스트")
@@ -418,25 +428,6 @@ class AuctionServiceImplTest {
         }
     }
 
-    private Auction createAuction(Long auctionId, User seller, AuctionStatus status) {
-        return Auction.builder()
-                .id(auctionId)
-                .auctionCategory(AuctionCategory.PUBLIC_PAID)
-                .auctionStatus(status)
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusDays(7))
-                .startingBid(BigDecimal.valueOf(100.00))
-                .seller(seller)
-                .build();
-    }
-    private Auction createAuction(User seller,LocalDateTime endTime, AuctionCategory category, AuctionStatus status) {
-            return Auction.create(
-                    LocalDateTime.now(),
-                    endTime,
-                    BigDecimal.valueOf(100.00),
-                    category,
-                    status,
-                    seller
-            );
-        }
+
+
 }

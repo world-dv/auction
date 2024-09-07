@@ -46,6 +46,28 @@ public class AuctionRepositoryTest {
         userRepository.save(seller);
     }
 
+    private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
+        return Auction.create(
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(7),
+                BigDecimal.valueOf(100.00),
+                category,
+                status,
+                seller
+        );
+    }
+
+    private Auction createAuction(User seller, LocalDateTime endTime, AuctionCategory category, AuctionStatus status) {
+        return Auction.create(
+                LocalDateTime.now(),
+                endTime,
+                BigDecimal.valueOf(100.00),
+                category,
+                status,
+                seller
+        );
+    }
+
     @Test
     @DisplayName("사용자 ID로 경매 목록 조회")
     public void testFindAuctionsByUserId() {
@@ -153,30 +175,4 @@ public class AuctionRepositoryTest {
             }
     }
 
-    private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
-        return Auction.create(
-            LocalDateTime.now(),
-            LocalDateTime.now().plusDays(7),
-            BigDecimal.valueOf(100.00),
-            category,
-            status,
-            seller
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7),
-                BigDecimal.valueOf(100.00),
-                category,
-                status,
-                seller
-        );
-    }
-    private Auction createAuction(User seller,LocalDateTime endTime, AuctionCategory category, AuctionStatus status) {
-        return Auction.create(
-                LocalDateTime.now(),
-                endTime,
-                BigDecimal.valueOf(100.00),
-                category,
-                status,
-                seller
-        );
-    }
 }
