@@ -63,8 +63,8 @@ class AuctionServiceImplTest {
             .id(auctionId)
             .auctionCategory(AuctionCategory.PUBLIC_PAID)
             .auctionStatus(status)
-            .startTime(LocalDateTime.now())
-            .endTime(LocalDateTime.now().plusDays(7))
+            .startTime(LocalDateTime.of(2024, 8, 1, 10, 0))
+            .endTime(LocalDateTime.of(2024, 9, 1, 10, 0))
             .startingBid(BigDecimal.valueOf(100.00))
             .seller(seller)
             .build();
@@ -75,7 +75,7 @@ class AuctionServiceImplTest {
             .id(auctionId)
             .auctionCategory(AuctionCategory.PUBLIC_PAID)
             .auctionStatus(status)
-            .startTime(LocalDateTime.now())
+            .startTime(LocalDateTime.of(2024, 8, 1, 10, 0))
             .endTime(endTime)
             .startingBid(BigDecimal.valueOf(100.00))
             .seller(seller)
@@ -390,14 +390,10 @@ class AuctionServiceImplTest {
             LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
             LocalDateTime next24Hours = fixedNow.plusHours(24);
 
-            Auction auction1 = createAuction(1L, fixedNow.plusHours(23), AuctionStatus.ACTIVE);
-            Auction auction2 = createAuction(2L, fixedNow.plusHours(22), AuctionStatus.ACTIVE);
-            Auction auction3 = createAuction(3L, fixedNow.plusHours(21), AuctionStatus.ACTIVE);
-
-            List<Auction> unsortedAuctions = List.of(auction1, auction2, auction3);
-            List<Auction> expectedAuctions = unsortedAuctions.stream()
-                .sorted(Comparator.comparing(Auction::getEndTime))
-                .toList();
+            List<Auction> expectedAuctions = List.of(createAuction(1L, fixedNow.plusHours(21), AuctionStatus.ACTIVE),
+                createAuction(2L, fixedNow.plusHours(22), AuctionStatus.ACTIVE),
+                createAuction(3L, fixedNow.plusHours(23), AuctionStatus.ACTIVE)
+            );
 
             List<AuctionResponse> expectedResponses = expectedAuctions.stream()
                 .map(AuctionResponse::of)

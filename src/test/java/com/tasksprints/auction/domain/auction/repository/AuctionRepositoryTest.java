@@ -49,8 +49,8 @@ public class AuctionRepositoryTest {
 
     private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
         return Auction.create(
-            LocalDateTime.now(),
-            LocalDateTime.now().plusDays(7),
+            LocalDateTime.of(2024, 8, 1, 10, 0),
+            LocalDateTime.of(2024, 9, 1, 10, 0),
             BigDecimal.valueOf(100.00),
             category,
             status,
@@ -60,7 +60,7 @@ public class AuctionRepositoryTest {
 
     private Auction createAuction(LocalDateTime endTime, AuctionStatus status) {
         return Auction.create(
-            LocalDateTime.now(),
+            LocalDateTime.of(2024, 8, 1, 10, 0),
             endTime,
             BigDecimal.valueOf(100.00),
             AuctionCategory.PUBLIC_PAID,
@@ -155,13 +155,15 @@ public class AuctionRepositoryTest {
         LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
         LocalDateTime next24Hours = fixedNow.plusHours(24);
 
-        Auction auction1 = createAuction(fixedNow.plusHours(21), AuctionStatus.ACTIVE);
-        Auction auction2 = createAuction(fixedNow.plusHours(22), AuctionStatus.ACTIVE);
-        Auction auction3 = createAuction(fixedNow.plusHours(23), AuctionStatus.ACTIVE);
-        Auction auction4 = createAuction(fixedNow.plusHours(48), AuctionStatus.ACTIVE);
-        Auction auction5 = createAuction(fixedNow.plusHours(20), AuctionStatus.PENDING);
+        List<Auction> auctions = List.of(
+            createAuction(fixedNow.plusHours(23), AuctionStatus.ACTIVE),
+            createAuction(fixedNow.plusHours(22), AuctionStatus.ACTIVE),
+            createAuction(fixedNow.plusHours(21), AuctionStatus.ACTIVE),
+            createAuction(fixedNow.plusHours(48), AuctionStatus.ACTIVE),
+            createAuction(fixedNow.plusHours(20), AuctionStatus.PENDING)
+        );
 
-        auctionRepository.saveAll(List.of(auction1, auction2, auction3, auction4, auction5));
+        auctionRepository.saveAll(auctions);
 
         // when
         List<Auction> result = auctionRepository.getAuctionsEndWith24Hours(fixedNow, next24Hours, AuctionStatus.ACTIVE);
