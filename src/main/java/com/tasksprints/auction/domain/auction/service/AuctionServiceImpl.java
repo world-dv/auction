@@ -139,10 +139,10 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc() {
+    public List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours) {
         // auction의 endTime까지 24시간 이하로 남은 진행중인 경매 목록 조회
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime next24Hours = now.plusHours(24);
+        //LocalDateTime now = LocalDateTime.now();
+        //LocalDateTime next24Hours = now.plusHours(24);
 
         //endTime이 now ~ now + 24hour에 포함되는 진행 상태인 경매 목록 조회
         List<Auction> foundAuctions = auctionRepository.findAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc(now, next24Hours, AuctionStatus.ACTIVE);
@@ -153,10 +153,10 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public List<AuctionResponse> getAuctionsEndWith24Hours() {
+    public List<AuctionResponse> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours) {
         // auction의 endTime까지 24시간 이하로 남은 진행중인 경매 목록 조회
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime next24Hours = now.plusHours(24);
+        // LocalDateTime now = LocalDateTime.now();
+        // LocalDateTime next24Hours = now.plusHours(24);
 
         //endTime이 now ~ now + 24hour에 포함되는 진행 상태인 경매 목록 조회
         List<Auction> foundAuctions = auctionRepository.getAuctionsEndWith24Hours(now, next24Hours, AuctionStatus.ACTIVE);

@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -89,8 +90,8 @@ public class AuctionController {
     @GetMapping("/ending-soon")
     @Operation(summary = "Get all auctions ending Soon", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200",description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctionsEndingSoon() {
-        List<AuctionResponse> auctions = auctionService.getAuctionsByEndTimeBetweenOrderByEndTimeAsc();
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctionsEndingSoon(@RequestParam("now") LocalDateTime now, @RequestParam("nextHours") LocalDateTime next24Hours) {
+        List<AuctionResponse> auctions = auctionService.getAuctionsByEndTimeBetweenOrderByEndTimeAsc(now, next24Hours);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
     @GetMapping("/{auctionId}")
