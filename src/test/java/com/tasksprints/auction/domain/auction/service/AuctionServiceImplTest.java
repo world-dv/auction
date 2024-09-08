@@ -69,16 +69,18 @@ class AuctionServiceImplTest {
             .seller(seller)
             .build();
     }
-    private Auction createAuction(User seller, LocalDateTime endTime, AuctionCategory category, AuctionStatus status) {
-       return Auction.create(
-               LocalDateTime.now(),
-               endTime,
-               BigDecimal.valueOf(100.00),
-               category,
-               status,
-               seller
-       );
-   }
+
+    private Auction createAuction(Long auctionId, LocalDateTime endTime, AuctionStatus status) {
+        return Auction.builder()
+            .id(auctionId)
+            .auctionCategory(AuctionCategory.PUBLIC_PAID)
+            .auctionStatus(status)
+            .startTime(LocalDateTime.now())
+            .endTime(endTime)
+            .startingBid(BigDecimal.valueOf(100.00))
+            .seller(seller)
+            .build();
+    }
 
     @Nested
     @DisplayName("경매 생성 테스트")
@@ -377,6 +379,7 @@ class AuctionServiceImplTest {
             assertThat(actualAuctions).isEmpty();
         }
     }
+
     @Nested
     @DisplayName("경매 마감 시간이 24시간 이하인 경매 목록 조회")
     class GetAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAscTests {
@@ -384,50 +387,31 @@ class AuctionServiceImplTest {
         @DisplayName("경매 마감 임박 목록 조회 : 성공")
         public void testGetAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc_Success() {
             //given
-            Auction auction1 = createAuction(seller, LocalDateTime.now().plusHours(23), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-            Auction auction2 = createAuction(seller, LocalDateTime.now().plusHours(22), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-            Auction auction3 = createAuction(seller, LocalDateTime.now().plusHours(21), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-            Auction auction4 = createAuction(seller, LocalDateTime.now().plusHours(48), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-            Auction auction5 = createAuction(seller, LocalDateTime.now().plusHours(20), AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
+            LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
+            LocalDateTime next24Hours = fixedNow.plusHours(24);
 
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime next24Hours = now.plusHours(24);
+            Auction auction1 = createAuction(1L, fixedNow.plusHours(23), AuctionStatus.ACTIVE);
+            Auction auction2 = createAuction(2L, fixedNow.plusHours(22), AuctionStatus.ACTIVE);
+            Auction auction3 = createAuction(3L, fixedNow.plusHours(21), AuctionStatus.ACTIVE);
 
             List<Auction> unsortedAuctions = List.of(auction1, auction2, auction3);
             List<Auction> expectedAuctions = unsortedAuctions.stream()
-                    .sorted(Comparator.comparing(Auction::getEndTime))
-                    .toList();
+                .sorted(Comparator.comparing(Auction::getEndTime))
+                .toList();
 
             List<AuctionResponse> expectedResponses = expectedAuctions.stream()
-                    .map(AuctionResponse::of)
-                    .toList();
-            //when
-//            when(auctionRepository.getAuctionsEndWith24Hours(
-//                    now,
-//                    next24Hours,
-//                    AuctionStatus.ACTIVE)
-//            ).thenReturn(expectedAuctions);
+                .map(AuctionResponse::of)
+                .toList();
 
-            /*
-            위의 코드를 아래 부분으로 작성했는데, LocalDateTime.now()를 사용하기 때문에,
-            stub 하기 전 LocalDateTime.now와 service메서드 안에서 넣은 인자 LocalDateTime.now 간에 시간 차이가 생겨, 인자 매칭 에러가 생겨 fail됐음
-            그래서 getAuctionsEndWith24Hours의 인자를 now에서 +- 1초 정도 오차이면 expectedAuction을 리턴하는 것을 의도했으나..
-            검색으로 알아본 것이라 확신이 없어 리뷰 필요..
-            * */
-            when(auctionRepository.getAuctionsEndWith24Hours(
-                    argThat(current -> current.isAfter(now.minusSeconds(1)) && current.isBefore(now.plusSeconds(1))),
-                    argThat(nextHours -> nextHours.isAfter(next24Hours.minusSeconds(1)) && nextHours.isBefore(next24Hours.plusSeconds(1)) ) ,
-                    eq(AuctionStatus.ACTIVE))).thenReturn(expectedAuctions);
-
-
-            List<AuctionResponse> actualResponses = auctionService.getAuctionsEndWith24Hours();
+            when(auctionRepository.getAuctionsEndWith24Hours(fixedNow, next24Hours, AuctionStatus.ACTIVE)).thenReturn(expectedAuctions);
+            List<AuctionResponse> actualResponses = auctionService.getAuctionsEndWith24Hours(fixedNow, next24Hours);
 
             //then
             assertThat(actualResponses).isEqualTo(expectedResponses);
 
+
         }
     }
-
 
 
 }

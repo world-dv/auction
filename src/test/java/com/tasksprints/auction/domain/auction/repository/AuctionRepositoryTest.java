@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
@@ -48,23 +49,23 @@ public class AuctionRepositoryTest {
 
     private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
         return Auction.create(
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7),
-                BigDecimal.valueOf(100.00),
-                category,
-                status,
-                seller
+            LocalDateTime.now(),
+            LocalDateTime.now().plusDays(7),
+            BigDecimal.valueOf(100.00),
+            category,
+            status,
+            seller
         );
     }
 
-    private Auction createAuction(User seller, LocalDateTime endTime, AuctionCategory category, AuctionStatus status) {
+    private Auction createAuction(LocalDateTime endTime, AuctionStatus status) {
         return Auction.create(
-                LocalDateTime.now(),
-                endTime,
-                BigDecimal.valueOf(100.00),
-                category,
-                status,
-                seller
+            LocalDateTime.now(),
+            endTime,
+            BigDecimal.valueOf(100.00),
+            AuctionCategory.PUBLIC_PAID,
+            status,
+            seller
         );
     }
 
@@ -151,28 +152,34 @@ public class AuctionRepositoryTest {
     @DisplayName("경매 마감 시간까지 24시간 이하로 남은 경매 목록 조회")
     public void testFindAuctionsByEndTimeBetweenOrderByEndTimeAsc() {
         //given
-        Auction auction1 = createAuction(seller, LocalDateTime.now().plusHours(21), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-        Auction auction2 = createAuction(seller, LocalDateTime.now().plusHours(22), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-        Auction auction3 = createAuction(seller, LocalDateTime.now().plusHours(23), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-        Auction auction4 = createAuction(seller, LocalDateTime.now().plusHours(48), AuctionCategory.PUBLIC_PAID, AuctionStatus.ACTIVE);
-        Auction auction5 = createAuction(seller, LocalDateTime.now().plusHours(20), AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
+        LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
+        LocalDateTime next24Hours = fixedNow.plusHours(24);
+
+        Auction auction1 = createAuction(fixedNow.plusHours(21), AuctionStatus.ACTIVE);
+        Auction auction2 = createAuction(fixedNow.plusHours(22), AuctionStatus.ACTIVE);
+        Auction auction3 = createAuction(fixedNow.plusHours(23), AuctionStatus.ACTIVE);
+        Auction auction4 = createAuction(fixedNow.plusHours(48), AuctionStatus.ACTIVE);
+        Auction auction5 = createAuction(fixedNow.plusHours(20), AuctionStatus.PENDING);
 
         auctionRepository.saveAll(List.of(auction1, auction2, auction3, auction4, auction5));
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime next24Hours = LocalDateTime.now().plusHours(24);
         // when
-        List<Auction> result = auctionRepository.getAuctionsEndWith24Hours(now, next24Hours, AuctionStatus.ACTIVE);
+        List<Auction> result = auctionRepository.getAuctionsEndWith24Hours(fixedNow, next24Hours, AuctionStatus.ACTIVE);
+
         //then
         assertThat(result).hasSize(3);
-        // 오름차순 정렬 되었는지 확인
-        LocalDateTime previousEndTime = null;
-            for (Auction auction : result) {
-                if (previousEndTime != null) {
-                    assertThat(auction.getEndTime()).isAfterOrEqualTo(previousEndTime);
+
+        assertAll("endTime을 기준으로 오름차순 정렬이 되었는지 확인",
+            () -> {
+                LocalDateTime previousEndTime = null;
+                for (Auction auction : result) {
+                    if (previousEndTime != null) {
+                        assertThat(auction.getEndTime()).isAfterOrEqualTo(previousEndTime);
+                    }
+                    previousEndTime = auction.getEndTime();
                 }
-                previousEndTime = auction.getEndTime();
             }
+        );
     }
 
 }
