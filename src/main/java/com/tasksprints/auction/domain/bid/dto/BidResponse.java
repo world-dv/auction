@@ -12,17 +12,19 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BidDTO {
-    String uuid;
+public class BidResponse {
+    Long userId;
     String name;
     Long auctionId;
     BigDecimal amount;
+    String uuid;
 
-    public static BidDTO of(Bid bid){
-        return BidDTO.builder()
-                .uuid(bid.getUuid())
+    public static BidResponse of(Bid bid){
+        return BidResponse.builder()
+                .userId(bid.getUser().getId())
                 .name(bid.getUser().getName())
                 .auctionId(bid.getAuction().getId())
+                .uuid(bid.getUuid())
                 .amount(bid.getAmount())
                 .build();
         /** 아이템 목록 추가**/

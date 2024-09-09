@@ -1,17 +1,17 @@
 package com.tasksprints.auction.domain.review.service;
 
-import com.tasksprints.auction.domain.review.dto.ReviewDTO;
-import com.tasksprints.auction.domain.review.dto.ReviewRequest;
+import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
+import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
 
 import java.util.List;
 
 public interface ReviewService {
 
-    ReviewDTO createReview(Long userId, Long auctionId, ReviewRequest.Create review);
+    ReviewResponse createReview(Long userId, Long auctionId, ReviewRequest.Create review);
 
-    List<ReviewDTO> getReviewsByUserId(Long userId);
+    List<ReviewResponse> getReviewsByUserId(Long userId);
 
-    ReviewDTO getReviewByAuctionId(Long auctionId);
+    ReviewResponse getReviewByAuctionId(Long auctionId);
     
 }
 /**

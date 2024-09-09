@@ -1,9 +1,7 @@
 package com.tasksprints.auction.domain.auction.service;
 
-import com.tasksprints.auction.domain.auction.dto.AuctionDTO;
-import com.tasksprints.auction.domain.auction.model.Auction;
-import com.tasksprints.auction.domain.auction.model.AuctionStatus;
-import com.tasksprints.auction.domain.auction.dto.AuctionRequest;
+import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 
 import java.util.List;
 
@@ -11,11 +9,11 @@ import java.util.List;
  * 사용자가 맞는지 판단도 해야함.
  */
 public interface AuctionService {
-    AuctionDTO createAuction(Long userId, AuctionRequest.Create auctionRequest);
+    AuctionResponse createAuction(Long userId, AuctionRequest.Create auctionRequest);
 
     void closeAuction(Long auctionId);
     String getAuctionStatus(Long auctionId);
-    List<AuctionDTO> getAuctionsByUser(Long userId);
-    List<AuctionDTO> getAllAuctions();
-    AuctionDTO getAuctionById(Long auctionId);
+    List<AuctionResponse> getAuctionsByUser(Long userId);
+    List<AuctionResponse> getAllAuctions();
+    AuctionResponse getAuctionById(Long auctionId);
 }

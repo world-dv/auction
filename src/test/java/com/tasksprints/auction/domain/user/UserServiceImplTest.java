@@ -1,7 +1,7 @@
 package com.tasksprints.auction.domain.user;
 
-import com.tasksprints.auction.domain.user.dto.UserDetailsDTO;
-import com.tasksprints.auction.domain.user.dto.UserRequest;
+import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
+import com.tasksprints.auction.domain.user.dto.request.UserRequest;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
@@ -48,7 +48,7 @@ public class UserServiceImplTest {
             when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
             // Act
-            UserDetailsDTO createdUser = userService.createUser(request);
+            UserDetailResponse createdUser = userService.createUser(request);
 
             // Assert
             Assertions.assertNotNull(createdUser);
@@ -70,7 +70,7 @@ public class UserServiceImplTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
 
             // Act
-            UserDetailsDTO user = userService.getUserDetailsById(1L);
+            UserDetailResponse user = userService.getUserDetailsById(1L);
 
             // Assert
             Assertions.assertNotNull(user);
@@ -104,7 +104,7 @@ public class UserServiceImplTest {
             when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
             // Act
-            UserDetailsDTO updatedUser = userService.updateUser(1L, request);
+            UserDetailResponse updatedUser = userService.updateUser(1L, request);
 
             // Assert
             Assertions.assertNotNull(updatedUser);

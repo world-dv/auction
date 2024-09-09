@@ -3,18 +3,28 @@ package com.tasksprints.auction.domain.product.service;
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
-import com.tasksprints.auction.domain.product.dto.ProductDTO;
-import com.tasksprints.auction.domain.product.dto.ProductRequest;
+import com.tasksprints.auction.domain.product.dto.response.ProductResponse;
+import com.tasksprints.auction.domain.product.dto.request.ProductRequest;
+import com.tasksprints.auction.domain.product.exception.ProductImageUploadException;
 import com.tasksprints.auction.domain.product.exception.ProductNotFoundException;
 import com.tasksprints.auction.domain.product.model.Product;
+import com.tasksprints.auction.domain.product.model.ProductImage;
+import com.tasksprints.auction.domain.product.repository.ProductImageRepository;
 import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,21 +33,49 @@ public class ProductServiceImpl implements  ProductService{
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final AuctionRepository auctionRepository;
+    private final ProductImageRepository productImageRepository;
+    private static final String UPLOADS_DIR = "src/main/resources/static/uploads/thumbnails/";
+    private void saveFile(Path filePath, MultipartFile image) throws IOException {
+        Files.createDirectories(filePath.getParent()); // 디렉토리 생성 (필요한 경우)
+
+        // 이미지 파일을 효율적으로 저장
+        try (var inputStream = image.getInputStream()) {
+            Files.copy(inputStream, filePath); // 파일 저장
+        }
+    }
+    private String uploadImageSafely(MultipartFile image) {
+        try {
+            return uploadImage(image);
+        } catch (IOException e) {
+            throw new ProductImageUploadException("Failed to upload image: " + image.getOriginalFilename(), e);
+        }
+    }
+
 
     @Override
-    public void uploadImage() {
-        /**
-         * S3 버킷으로 올리곱 link 반환
-         */
+    public String uploadImage(MultipartFile image) throws IOException {
+        // 랜덤한 파일명 생성
+        String fileName = UUID.randomUUID().toString().replace("-", "") + "_" + image.getOriginalFilename();
+
+        // 실제 파일이 저장될 경로
+        Path filePath = Paths.get(UPLOADS_DIR, fileName);
+
+        // DB에 저장할 경로 문자열
+        String dbFilePath = "/uploads/thumbnails/" + fileName;
+
+        // 파일 저장
+        saveFile(filePath, image);
+
+        return dbFilePath;
     }
 
     @Override
-    public void uploadImageBulk() {
-        /**
-        * S3 버킷으로 올리곱 link 반환
-        */
+    @Transactional
+    public List<String> uploadImageBulk(List<MultipartFile> images) {
+        return images.parallelStream() // 병렬 스트림을 사용하여 성능 개선
+                .map(this::uploadImageSafely)
+                .collect(Collectors.toList());
     }
-
 
 
     @Override
@@ -47,52 +85,64 @@ public class ProductServiceImpl implements  ProductService{
     }
 
     @Override
-    public List<ProductDTO> getProductsByUserId(Long userId) {
+    @Deprecated
+    public List<ProductResponse> getProductsByUserId(Long userId) {
         List<Product> products = productRepository.findAllByUserId(userId);
         return convertToDTOList(products);
     }
 
     @Override
-    public ProductDTO getProductByAuctionId(Long auctionId) {
+    public ProductResponse getProductByAuctionId(Long auctionId) {
         Product product = productRepository.findByAuctionId(auctionId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        return ProductDTO.of(product);
+        return ProductResponse.of(product);
     }
 
+    @Transactional
     @Override
-    public ProductDTO register(Long userId, Long auctionId, ProductRequest.Register request) {
+    public ProductResponse register(Long userId, Long auctionId, ProductRequest.Register request, List<MultipartFile> images) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         Auction auction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
 
+        // 이미지 업로드
+        List<String> imageUrls = uploadImageBulk(images);
+
+        List<ProductImage> productImageList= imageUrls.parallelStream()
+                .map(ProductImage::create)
+                .toList();
+
+        List<ProductImage> savedProductImageList = productImageRepository.saveAll(productImageList);
+
+        // 상품 생성
         Product newProduct = Product.create(
                 request.getName(),
                 request.getDescription(),
                 user,
-                auction
+                auction,
+                savedProductImageList
         );
 
         Product createdProduct = productRepository.save(newProduct);
-        // 이미지 추가 로직 필요
 
-        return ProductDTO.of(createdProduct);
+        return ProductResponse.of(createdProduct);
     }
 
     @Override
-    public ProductDTO update(ProductRequest.Update request) {
+    public ProductResponse update(ProductRequest.Update request) {
         Long productId = request.getProductId();
         Product foundProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         foundProduct.update(request.getName(), request.getDescription());
         Product savedProduct = productRepository.save(foundProduct);
-        return ProductDTO.of(savedProduct);
+        return ProductResponse.of(savedProduct);
     }
 
-    private List<ProductDTO> convertToDTOList(List<Product> products) {
+    private List<ProductResponse> convertToDTOList(List<Product> products) {
         return products.stream()
-                .map(ProductDTO::of)
+                .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
 }

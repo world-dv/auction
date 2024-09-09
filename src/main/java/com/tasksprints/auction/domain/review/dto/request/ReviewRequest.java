@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.review.dto;
+package com.tasksprints.auction.domain.review.dto.request;
 
 import lombok.Data;
 
