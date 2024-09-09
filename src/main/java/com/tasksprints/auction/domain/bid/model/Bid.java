@@ -64,7 +64,7 @@ public class Bid extends BaseEntity {
         return newBid;
     }
 
-    public void update(BigDecimal amount){
+    public void update(BigDecimal amount) {
         this.amount = amount;
     }
 

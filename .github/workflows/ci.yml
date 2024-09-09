@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'develop'
 
 jobs:
   ci-pipeline:
@@ -21,6 +22,9 @@ jobs:
 
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
+
+      - name: Lint and format code
+        run: ./gradlew editorconfigFormat
 
       - name: Build with Gradle
         run: ./gradlew build

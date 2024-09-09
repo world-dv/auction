@@ -1,5 +1,6 @@
 package com.tasksprints.auction.domain.product;
 
+import com.tasksprints.auction.common.config.QueryDslConfig;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
+@Import(QueryDslConfig.class)
 public class ProductRepositoryTest {
 
     @Autowired
@@ -57,7 +60,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("Find all products by user ID")
     public void testFindAllByUserId() {
-        List<Product> products = productRepository.findAllByUserId(owner.getId());
+        List<Product> products = productRepository.findByOwnerId(owner.getId());
 
         assertThat(products).isNotEmpty();
         assertThat(products.get(0).getOwner().getId()).isEqualTo(owner.getId());
@@ -99,33 +102,33 @@ public class ProductRepositoryTest {
     // Helper methods to minimize code duplication
     private User createUser(String name, String nickName, String email) {
         User user = User.builder()
-                .name(name)
-                .nickName(nickName)
-                .password("password")  // Use a consistent password for all users
-                .email(email)
-                .build();
+            .name(name)
+            .nickName(nickName)
+            .password("password")  // Use a consistent password for all users
+            .email(email)
+            .build();
         return userRepository.save(user);
     }
 
     private Auction createAuction(User owner, BigDecimal startingBid, LocalDateTime startTime, LocalDateTime endTime) {
         Auction auction = Auction.builder()
-                .startingBid(startingBid)
-                .startTime(startTime)
-                .endTime(endTime)
-                .auctionStatus(AuctionStatus.ACTIVE)
-                .auctionCategory(AuctionCategory.PRIVATE_FREE)
-                .seller(owner)
-                .build();
+            .startingBid(startingBid)
+            .startTime(startTime)
+            .endTime(endTime)
+            .auctionStatus(AuctionStatus.ACTIVE)
+            .auctionCategory(AuctionCategory.PRIVATE_FREE)
+            .seller(owner)
+            .build();
         return auctionRepository.save(auction);
     }
 
     private Product createProduct(String name, String description, User owner, Auction auction) {
         Product product = Product.builder()
-                .name(name)
-                .description(description)
-                .owner(owner)
-                .auction(auction)
-                .build();
+            .name(name)
+            .description(description)
+            .owner(owner)
+            .auction(auction)
+            .build();
         return productRepository.save(product);
     }
 }

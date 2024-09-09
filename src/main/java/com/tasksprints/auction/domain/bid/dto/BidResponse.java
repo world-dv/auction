@@ -19,7 +19,7 @@ public class BidResponse {
     BigDecimal amount;
     String uuid;
 
-    public static BidResponse of(Bid bid){
+    public static BidResponse of(Bid bid) {
         return BidResponse.builder()
                 .userId(bid.getUser().getId())
                 .name(bid.getUser().getName())

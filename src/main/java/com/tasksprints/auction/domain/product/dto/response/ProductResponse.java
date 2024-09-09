@@ -17,26 +17,29 @@ public class ProductResponse {
     private Long productId;
     private String name;
     private String description;
+    private String category;
     private Long ownerId;
     private String ownerNickName;
     private Long auctionId;
     private List<String> productImageList;
 
-    private static List<String> extractProductImageList(Product product){
+    private static List<String> extractProductImageList(Product product) {
         return product.getProductImageList()
-                .stream()
-                .map(ProductImage::getImageUrl)
-                .toList();
+            .stream()
+            .map(ProductImage::getImageUrl)
+            .toList();
     }
+
     public static ProductResponse of(Product product) {
         return ProductResponse.builder()
-                .productId(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .ownerId(product.getOwner().getId())
-                .ownerNickName(product.getOwner().getNickName())
-                .auctionId(product.getAuction().getId())
-                .productImageList(extractProductImageList(product))
-                .build();
+            .productId(product.getId())
+            .name(product.getName())
+            .description(product.getDescription())
+            .ownerId(product.getOwner().getId())
+            .ownerNickName(product.getOwner().getNickName())
+            .category(product.getCategory().getDisplayName())
+            .auctionId(product.getAuction().getId())
+            .productImageList(extractProductImageList(product))
+            .build();
     }
 }
