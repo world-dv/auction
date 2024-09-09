@@ -88,4 +88,11 @@ public class BidServiceImpl implements BidService {
         List<Bid> bids = bidRepository.findByAuctionId(auctionId);
         return !bids.isEmpty();
     }
+
+    @Override
+    public BidResponse getBidByUuid(String uuid) {
+        Bid bid = bidRepository.findByUuid(uuid)
+                .orElseThrow(() -> new BidNotFoundException("Bid not found"));
+        return BidResponse.of(bid);
+    }
 }
