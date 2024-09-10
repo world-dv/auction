@@ -1,7 +1,9 @@
 package com.tasksprints.auction.domain.auction.repository.support;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
@@ -19,25 +21,39 @@ import java.util.List;
 public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository {
     private final JPAQueryFactory queryFactory;
 
-    public List<Auction> getAuctionsByFilters(ProductCategory productCategory,
-                                              AuctionCategory category,
-                                              LocalDateTime now,
-                                              LocalDateTime endTime,
-                                              AuctionStatus status
-    ) {
+    public List<Auction> getAuctionsByFilters(AuctionRequest.SearchCondition condition) {
         QAuction auction = QAuction.auction;
         QProduct product = QProduct.product;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // AuctionCategory 필터
+        if (condition.getAuctionCategory() != null) {
+            builder.and(auction.auctionCategory.eq(condition.getAuctionCategory()));
+        }
+
+        // ProductCategory 필터
+        if (condition.getProductCategory() != null) {
+            builder.and(product.category.eq(condition.getProductCategory()));
+        }
+
+        // StartTime ~ EndTime 필터
+        if (condition.getStartTime() != null && condition.getEndTime() != null) {
+            builder.and(auction.endTime.between(condition.getStartTime(), condition.getEndTime()));
+        }
+
+        // AuctionStatus 필터
+        if (condition.getAuctionStatus() != null) {
+            builder.and(auction.auctionStatus.eq(condition.getAuctionStatus()));
+        }
+
         return queryFactory.selectFrom(auction)
             .leftJoin(auction.product, product) // Auction과 Product 조인
-            .where(category != null ? auction.auctionCategory.eq(category) : null)
-            .where(productCategory != null ? product.category.eq(productCategory) : null) // ProductCategory 필터
-            .where((now != null && endTime != null) ? auction.endTime.between(now, endTime) : null)
-            .where(status != null ? auction.auctionStatus.eq(status) : null)
+            .where(builder)
             // orderBy는 성능 이슈로 일단 보류
-//            .orderBy(auction.endTime.asc())
+            // .orderBy(auction.endTime.asc())
             .fetch();
     }
-
 
     @Deprecated
     @Override
