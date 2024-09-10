@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -81,19 +80,11 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestParam(required = false) AuctionRequest.AuctionCategoryParam auctionCategory,
-                                                                           @RequestParam(required = false) AuctionRequest.ProductCategoryParam productCategory) {
-        List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(productCategory, auctionCategory);
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestBody AuctionRequest.SearchCondition searchCondition) {
+        List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(searchCondition);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
 
-    @GetMapping("/ending-soon")
-    @Operation(summary = "Get all auctions ending Soon", description = "Retrieves all auctions.")
-    @ApiResponse(responseCode = "200",description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctionsEndingSoon(@RequestParam("now") LocalDateTime now, @RequestParam("nextHours") LocalDateTime next24Hours) {
-        List<AuctionResponse> auctions = auctionService.getAuctionsByEndTimeBetweenOrderByEndTimeAsc(now, next24Hours);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
-    }
     @GetMapping("/{auctionId}")
     @Operation(summary = "Get auction by ID", description = "Retrieves auction details by its ID.")
     @ApiResponse(responseCode = "200", description = "Auction retrieved successfully")

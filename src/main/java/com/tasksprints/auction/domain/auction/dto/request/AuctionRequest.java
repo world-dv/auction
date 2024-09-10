@@ -43,4 +43,24 @@ public class AuctionRequest {
             this.productCategory = ProductCategory.fromDisplayName(productCategory);
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AuctionStatusParam {
+        AuctionStatus auctionStatus;
+
+        public AuctionStatusParam(String auctionStatus) {
+            this.auctionStatus = AuctionStatus.fromDisplayName(auctionStatus);
+        }
+
+    }
+    @Getter
+    @AllArgsConstructor
+    public static class SearchCondition{
+        String auctionCategory;
+        String productCategory;
+        LocalDateTime endTime;
+        String auctionStatus;
+    }
 }

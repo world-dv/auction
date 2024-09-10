@@ -6,11 +6,16 @@ import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.product.model.ProductCategory;
 
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AuctionCriteriaRepository {
     public List<Auction> getAuctionsByFilters(ProductCategory productCategory,
-                                              AuctionCategory category);
+                                              AuctionCategory category,
+                                              LocalDateTime now,
+                                              LocalDateTime endTime,
+                                              AuctionStatus status);
+    //삭제해야 함
     public List<Auction> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours, AuctionStatus auctionStatus);
 }

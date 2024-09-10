@@ -26,8 +26,10 @@ public interface AuctionService {
 
     List<AuctionResponse> getAuctionsByAuctionCategory(AuctionRequest.AuctionCategoryParam param);
 
-    List<AuctionResponse> getAuctionsByFilter(AuctionRequest.ProductCategoryParam productCategoryParam, AuctionRequest.AuctionCategoryParam auctionCategoryParam);
+    List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition);
 
+    @Deprecated
     List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours);
+    @Deprecated
     List<AuctionResponse> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours);
 }
