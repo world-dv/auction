@@ -58,9 +58,11 @@ public class AuctionRequest {
     @Getter
     @AllArgsConstructor
     public static class SearchCondition{
-        String auctionCategory;
-        String productCategory;
+        AuctionCategory auctionCategory;
+        ProductCategory productCategory;
+        LocalDateTime startTime;
         LocalDateTime endTime;
-        String auctionStatus;
+        AuctionStatus auctionStatus;
+
     }
 }
