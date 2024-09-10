@@ -130,20 +130,8 @@ public class AuctionServiceImpl implements AuctionService {
      **/
     @Override
     public List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition) {
-        LocalDateTime now = null;
-        //now는 endTime이 SeachCondition에 들어왔을 때만 값이 있어야 한다. (현재 시각 ~ User가 정한 시각까지 경매 목록 조회)
-        if (searchCondition.getEndTime() != null) {
-            now = LocalDateTime.now();
-        }
-
         List<Auction> foundAuctions = auctionRepository.getAuctionsByFilters(
-//            productCategoryParam != null ? productCategoryParam.getProductCategory() : null,
-//            auctionCategoryParam != null ? auctionCategoryParam.getAuctionCategory() : null,
-            searchCondition.getProductCategory() !=null ? new AuctionRequest.ProductCategoryParam(searchCondition.getProductCategory()).getProductCategory() : null,
-            searchCondition.getAuctionCategory() != null ? new AuctionRequest.AuctionCategoryParam(searchCondition.getAuctionCategory()).getAuctionCategory() : null,
-            now,
-            searchCondition.getEndTime() != null ? searchCondition.getEndTime(): null,
-            searchCondition.getAuctionStatus() != null ? new AuctionRequest.AuctionStatusParam(searchCondition.getAuctionStatus()).getAuctionStatus() : null
+            searchCondition
         );
 
         return foundAuctions.stream()
