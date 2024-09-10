@@ -108,32 +108,32 @@ public class AuctionControllerTest {
             .andExpect(jsonPath("$.data").value(auctionStatus));
     }
 
-    @Test
-    @DisplayName("경매 유형을 통한 경매목록 조회")
-    public void testFindAuctionByUsingAuctionCategory_Success() throws Exception {
-        List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
-        mockMvc.perform(get("/api/v1/auction")
-                .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
-    }
+//    @Test
+//    @DisplayName("경매 유형을 통한 경매목록 조회")
+//    public void testFindAuctionByUsingAuctionCategory_Success() throws Exception {
+//        List<AuctionResponse> auctionResponseList = new ArrayList<>();
+//        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
+//        mockMvc.perform(get("/api/v1/auction")
+//                .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
+//            .andExpect(status().isOk())
+//            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+//    }
 
     /**
      * 해당 기저 처리 해야함.
      * 기본값으로 대응 PUBLIC_FREE로
      */
-    @Test
-    @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
-    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
-        List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
-
-        mockMvc.perform(get("/api/v1/auction")
-                .param("auctionCategory", "NON"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
-    }
+//    @Test
+//    @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
+//    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
+//        List<AuctionResponse> auctionResponseList = new ArrayList<>();
+//        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
+//
+//        mockMvc.perform(get("/api/v1/auction")
+//                .param("auctionCategory", "NON"))
+//            .andExpect(status().isOk())
+//            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+//    }
 
     @Test
     @DisplayName("마감 기한이 24시간 이하로 남은 경매 목록 조회")

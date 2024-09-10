@@ -1,6 +1,7 @@
 package com.tasksprints.auction.domain.auction.repository;
 
 import com.tasksprints.auction.common.config.QueryDslConfig;
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
@@ -134,11 +135,11 @@ public class AuctionRepositoryTest {
     public void testFindAllUsingFilter() {
         Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
         Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE,null, null, null, null);
         auctionRepository.save(auction1);
         auctionRepository.save(auction2);
 
-        List<Auction> auctions = auctionRepository.getAuctionsByFilters(null, AuctionCategory.PUBLIC_FREE, null, null, null);
+        List<Auction> auctions = auctionRepository.getAuctionsByFilters(condition);
         log.info(auctions.toString());
 
         assertThat(auctions).hasSize(1);

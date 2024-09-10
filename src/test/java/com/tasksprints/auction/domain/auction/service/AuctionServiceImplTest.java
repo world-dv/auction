@@ -339,15 +339,15 @@ class AuctionServiceImplTest {
         public void testGetAuctionsByAuctionCategory_Success_Criteria() {
             Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
             Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
-            AuctionRequest.AuctionCategoryParam param = new AuctionRequest.AuctionCategoryParam(AuctionCategory.PUBLIC_PAID);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID,null,null,null,null);
             List<Auction> expectedAuctions = List.of(auction1, auction2);
 
-            when(auctionRepository.getAuctionsByFilters(null, AuctionCategory.PUBLIC_PAID, null, null, null)).thenReturn(expectedAuctions);
+            when(auctionRepository.getAuctionsByFilters(condition)).thenReturn(expectedAuctions);
             List<AuctionResponse> expectedResponses = expectedAuctions.stream()
                 .map(AuctionResponse::of)
                 .toList();
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(null, param);
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
             assertThat(actualAuctions).isEqualTo(expectedResponses);
         }
 
@@ -369,12 +369,12 @@ class AuctionServiceImplTest {
         @DisplayName("경매 유형 조회 : [결과 없음] - Criteria 사용")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound_Criteria() {
             List<Auction> emptyAuctionList = List.of();
-            AuctionRequest.AuctionCategoryParam param = new AuctionRequest.AuctionCategoryParam(AuctionCategory.PUBLIC_FREE);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID,null,null,null,null);
 
-            when(auctionRepository.getAuctionsByFilters(null, AuctionCategory.PUBLIC_FREE))
+            when(auctionRepository.getAuctionsByFilters(condition))
                 .thenReturn(emptyAuctionList);
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(null, param);
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
 
             assertThat(actualAuctions).isEmpty();
         }
