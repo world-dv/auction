@@ -6,6 +6,7 @@ import com.tasksprints.auction.domain.auction.exception.AuctionAlreadyClosedExce
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
 import com.tasksprints.auction.domain.auction.exception.InvalidAuctionTimeException;
 import com.tasksprints.auction.domain.auction.model.Auction;
+import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -127,10 +129,52 @@ public class AuctionServiceImpl implements AuctionService {
      * NULL 안정성 보장을 해줬음
      **/
     @Override
-    public List<AuctionResponse> getAuctionsByFilter(AuctionRequest.ProductCategoryParam productCategoryParam, AuctionRequest.AuctionCategoryParam auctionCategoryParam) {
+    public List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition) {
+        LocalDateTime now = null;
+        //now는 endTime이 SeachCondition에 들어왔을 때만 값이 있어야 한다. (현재 시각 ~ User가 정한 시각까지 경매 목록 조회)
+        if (searchCondition.getEndTime() != null) {
+            now = LocalDateTime.now();
+        }
+
         List<Auction> foundAuctions = auctionRepository.getAuctionsByFilters(
-            productCategoryParam != null ? productCategoryParam.getProductCategory() : null,
-            auctionCategoryParam != null ? auctionCategoryParam.getAuctionCategory() : null);
+//            productCategoryParam != null ? productCategoryParam.getProductCategory() : null,
+//            auctionCategoryParam != null ? auctionCategoryParam.getAuctionCategory() : null,
+            searchCondition.getProductCategory() !=null ? new AuctionRequest.ProductCategoryParam(searchCondition.getProductCategory()).getProductCategory() : null,
+            searchCondition.getAuctionCategory() != null ? new AuctionRequest.AuctionCategoryParam(searchCondition.getAuctionCategory()).getAuctionCategory() : null,
+            now,
+            searchCondition.getEndTime() != null ? searchCondition.getEndTime(): null,
+            searchCondition.getAuctionStatus() != null ? new AuctionRequest.AuctionStatusParam(searchCondition.getAuctionStatus()).getAuctionStatus() : null
+        );
+
+        return foundAuctions.stream()
+                .map(AuctionResponse::of)
+                .toList();
+    }
+
+    @Deprecated
+    @Override
+    public List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours) {
+        // auction의 endTime까지 24시간 이하로 남은 진행중인 경매 목록 조회
+        //LocalDateTime now = LocalDateTime.now();
+        //LocalDateTime next24Hours = now.plusHours(24);
+
+        //endTime이 now ~ now + 24hour에 포함되는 진행 상태인 경매 목록 조회
+        List<Auction> foundAuctions = auctionRepository.findAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc(now, next24Hours, AuctionStatus.ACTIVE);
+
+        return foundAuctions.stream()
+                .map(AuctionResponse::of)
+                .toList();
+    }
+
+    @Deprecated
+    @Override
+    public List<AuctionResponse> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours) {
+        // auction의 endTime까지 24시간 이하로 남은 진행중인 경매 목록 조회
+        // LocalDateTime now = LocalDateTime.now();
+        // LocalDateTime next24Hours = now.plusHours(24);
+
+        //endTime이 now ~ now + 24hour에 포함되는 진행 상태인 경매 목록 조회
+        List<Auction> foundAuctions = auctionRepository.getAuctionsEndWith24Hours(now, next24Hours, AuctionStatus.ACTIVE);
 
         return foundAuctions.stream()
             .map(AuctionResponse::of)
