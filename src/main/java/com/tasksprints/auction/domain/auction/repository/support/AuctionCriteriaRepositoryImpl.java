@@ -27,22 +27,21 @@ public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository 
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        // AuctionCategory 필터
         if (condition.getAuctionCategory() != null) {
             builder.and(auction.auctionCategory.eq(condition.getAuctionCategory()));
         }
 
-        // ProductCategory 필터
         if (condition.getProductCategory() != null) {
             builder.and(product.category.eq(condition.getProductCategory()));
         }
-
-        // StartTime ~ EndTime 필터
+        // 현재 입찰가를 알 수 있게 변경해야함
+        if (condition.getMinPrice() != null && condition.getMaxPrice() != null) {
+            builder.and(auction.startingBid.between(condition.getMinPrice(), condition.getMaxPrice()));
+        }
         if (condition.getStartTime() != null && condition.getEndTime() != null) {
             builder.and(auction.endTime.between(condition.getStartTime(), condition.getEndTime()));
         }
 
-        // AuctionStatus 필터
         if (condition.getAuctionStatus() != null) {
             builder.and(auction.auctionStatus.eq(condition.getAuctionStatus()));
         }
