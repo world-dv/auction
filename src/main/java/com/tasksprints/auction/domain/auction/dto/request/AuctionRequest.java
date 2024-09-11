@@ -3,6 +3,7 @@ package com.tasksprints.auction.domain.auction.dto.request;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.product.model.ProductCategory;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,12 +58,14 @@ public class AuctionRequest {
     }
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SearchCondition{
         AuctionCategory auctionCategory;
         ProductCategory productCategory;
         LocalDateTime startTime;
         LocalDateTime endTime;
+        BigDecimal minPrice;
+        BigDecimal maxPrice;
         AuctionStatus auctionStatus;
-
     }
 }
