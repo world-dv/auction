@@ -121,7 +121,7 @@ public class AuctionControllerTest {
         // When & Then
         mockMvc.perform(get("/api/v1/auction")
                 .param("auctionCategory", AuctionCategory.PRIVATE_FREE.name())
-                .param("productCategory", ProductCategory.BEAUTY.name())
+                .param("productCategory", "여성의류")
                 .param("startTime", LocalDateTime.now().minusDays(1).toString())
                 .param("endTime", LocalDateTime.now().toString())
                 .param("minPrice", "100")
