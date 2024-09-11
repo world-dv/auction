@@ -5,10 +5,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.Auction;
-import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.model.QAuction;
-import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.product.model.QProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -63,10 +61,10 @@ public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository 
         BooleanExpression statusEquals = auction.auctionStatus.eq(auctionStatus);
 
         return queryFactory
-                .selectFrom(auction)
-                .where(endTimeBetween.and(statusEquals))
-                .orderBy(auction.endTime.asc())
-                .fetch();
+            .selectFrom(auction)
+            .where(endTimeBetween.and(statusEquals))
+            .orderBy(auction.endTime.asc())
+            .fetch();
     }
 
 

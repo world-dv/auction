@@ -56,10 +56,11 @@ public class AuctionRequest {
         }
 
     }
+
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class SearchCondition{
+    public static class SearchCondition {
         AuctionCategory auctionCategory;
         ProductCategory productCategory;
         LocalDateTime startTime;

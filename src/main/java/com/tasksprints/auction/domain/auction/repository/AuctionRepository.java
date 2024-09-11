@@ -3,9 +3,9 @@ package com.tasksprints.auction.domain.auction.repository;
 
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
+import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.support.AuctionCriteriaRepository;
 import com.tasksprints.auction.domain.product.model.ProductCategory;
-import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,6 +26,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     List<Auction> findAuctionsByAuctionCategory(AuctionCategory auctionCategory);
 
     List<Auction> findAuctionByProduct_Category(ProductCategory productCategory);
+
     List<Auction> findAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours, AuctionStatus auctionStatus);
 }
 

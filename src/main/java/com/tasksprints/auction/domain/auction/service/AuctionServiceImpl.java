@@ -6,7 +6,6 @@ import com.tasksprints.auction.domain.auction.exception.AuctionAlreadyClosedExce
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
 import com.tasksprints.auction.domain.auction.exception.InvalidAuctionTimeException;
 import com.tasksprints.auction.domain.auction.model.Auction;
-import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
@@ -135,8 +134,8 @@ public class AuctionServiceImpl implements AuctionService {
         );
 
         return foundAuctions.stream()
-                .map(AuctionResponse::of)
-                .toList();
+            .map(AuctionResponse::of)
+            .toList();
     }
 
     @Deprecated
@@ -150,8 +149,8 @@ public class AuctionServiceImpl implements AuctionService {
         List<Auction> foundAuctions = auctionRepository.findAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc(now, next24Hours, AuctionStatus.ACTIVE);
 
         return foundAuctions.stream()
-                .map(AuctionResponse::of)
-                .toList();
+            .map(AuctionResponse::of)
+            .toList();
     }
 
     @Deprecated

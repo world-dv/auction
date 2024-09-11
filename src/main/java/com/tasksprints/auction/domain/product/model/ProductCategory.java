@@ -1,7 +1,5 @@
 package com.tasksprints.auction.domain.product.model;
 
-import com.tasksprints.auction.domain.auction.model.AuctionCategory;
-
 public enum ProductCategory {
     WOMENS_CLOTHING("여성의류"),
     UNDERWEAR_SLEEPWEAR("언더웨어/잠옷"),

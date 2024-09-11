@@ -1,4 +1,4 @@
-package com.tasksprints.auction.common;
+package com.tasksprints.auction.common.resolver;
 
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;

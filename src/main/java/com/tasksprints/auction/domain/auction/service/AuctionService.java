@@ -30,6 +30,7 @@ public interface AuctionService {
 
     @Deprecated
     List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours);
+
     @Deprecated
     List<AuctionResponse> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours);
 }
