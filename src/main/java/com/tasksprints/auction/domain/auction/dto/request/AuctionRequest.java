@@ -22,6 +22,7 @@ public class AuctionRequest {
         AuctionCategory auctionCategory;
         AuctionStatus auctionStatus;
     }
+
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

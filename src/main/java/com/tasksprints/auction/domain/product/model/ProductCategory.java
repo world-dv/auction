@@ -59,6 +59,7 @@ public enum ProductCategory {
         }
         throw new IllegalArgumentException("Unknown category: " + displayName);
     }
+
     public String getDisplayName() {
         return displayName;
     }

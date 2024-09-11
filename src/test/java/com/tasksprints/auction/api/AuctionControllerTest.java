@@ -10,7 +10,6 @@ import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.service.AuctionService;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
-import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
 import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
 import com.tasksprints.auction.domain.review.service.ReviewService;

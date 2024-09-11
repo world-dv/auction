@@ -99,9 +99,9 @@ public class ProductServiceImplTest {
                         .forEach(filePath -> {
                             try {
                                 Files.delete(filePath); // 파일 삭제
-                                System.out.println("Deleted: " + filePath.toString()); // 삭제된 파일 로그 출력
+                                System.out.println("Deleted: " + filePath); // 삭제된 파일 로그 출력
                             } catch (IOException e) {
-                                System.err.println("Error deleting file: " + filePath.toString() + " - " + e.getMessage()); // 삭제 실패 로그 출력
+                                System.err.println("Error deleting file: " + filePath + " - " + e.getMessage()); // 삭제 실패 로그 출력
                             }
                         });
                 }

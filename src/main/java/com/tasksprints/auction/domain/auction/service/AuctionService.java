@@ -3,7 +3,6 @@ package com.tasksprints.auction.domain.auction.service;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
