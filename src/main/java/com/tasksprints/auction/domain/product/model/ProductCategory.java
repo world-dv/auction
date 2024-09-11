@@ -52,17 +52,13 @@ public enum ProductCategory {
      * 한정된 갯수의 Category 이기에 따로 Over-head는 발생하지 않을 것으로 판단
      ***/
     public static ProductCategory fromDisplayName(String displayName) {
-        if (displayName == null || displayName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Display name cannot be null or empty.");
+        for (ProductCategory category : values()) {
+            if (category.displayName.equals(displayName)) {
+                return category;
+            }
         }
-
-        try {
-            return ProductCategory.valueOf(displayName.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid product category: " + displayName);
-        }
+        throw new IllegalArgumentException("Unknown category: " + displayName);
     }
-
     public String getDisplayName() {
         return displayName;
     }
