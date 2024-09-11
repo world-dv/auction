@@ -80,7 +80,7 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(@RequestBody AuctionRequest.SearchCondition searchCondition) {
+    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(AuctionRequest.SearchCondition searchCondition) {
         List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(searchCondition);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
