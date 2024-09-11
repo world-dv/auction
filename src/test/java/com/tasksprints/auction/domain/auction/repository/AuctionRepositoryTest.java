@@ -59,17 +59,6 @@ public class AuctionRepositoryTest {
         );
     }
 
-//    private Auction createAuction(LocalDateTime endTime, AuctionStatus status) {
-//        return Auction.create(
-//            LocalDateTime.of(2024, 8, 1, 10, 0),
-//            endTime,
-//            BigDecimal.valueOf(100.00),
-//            AuctionCategory.PUBLIC_PAID,
-//            status,
-//            seller
-//        );
-//    }
-
     @Test
     @DisplayName("사용자 ID로 경매 목록 조회")
     public void testFindAuctionsByUserId() {
@@ -110,32 +99,32 @@ public class AuctionRepositoryTest {
 
     }
 
-//    @Test
-//    @DisplayName("경매 유형이 []인 경매 목록 조회")
-//    public void testFindAuctionsByAuctionCategory() {
-//        //given
-//        Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
-//        Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-//        Auction auction3 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-//
-//        auctionRepository.save(auction1);
-//        auctionRepository.save(auction2);
-//        auctionRepository.save(auction3);
-//
-//        //when
-//        List<Auction> auctions = auctionRepository.findAuctionsByAuctionCategory(AuctionCategory.PUBLIC_PAID);
-//
-//        //then
-//        assertThat(auctions).hasSize(2);
-//        assertThat(auctions).allMatch(auction -> auction.getAuctionCategory() == AuctionCategory.PUBLIC_PAID);
-//    }
+    @Test
+    @DisplayName("경매 유형이 []인 경매 목록 조회")
+    public void testFindAuctionsByAuctionCategory() {
+        //given
+        Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
+        Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
+        Auction auction3 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID,null,null,null,null,null,null);
+        auctionRepository.save(auction1);
+        auctionRepository.save(auction2);
+        auctionRepository.save(auction3);
+
+        //when
+        List<Auction> auctions = auctionRepository.getAuctionsByFilters(condition);
+
+        //then
+        assertThat(auctions).hasSize(2);
+        assertThat(auctions).allMatch(auction -> auction.getAuctionCategory() == AuctionCategory.PUBLIC_PAID);
+    }
 
     @Test
     @DisplayName("QueryDSL 필터를 통해서 경매 목록 조회")
     public void testFindAllUsingFilter() {
         Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
         Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE,null, null, null, null);
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE,null,null,null, null, null, null);
         auctionRepository.save(auction1);
         auctionRepository.save(auction2);
 
