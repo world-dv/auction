@@ -22,41 +22,6 @@ public class AuctionRequest {
         AuctionCategory auctionCategory;
         AuctionStatus auctionStatus;
     }
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AuctionCategoryParam {
-        AuctionCategory auctionCategory;
-
-        public AuctionCategoryParam(String auctionCategory) {
-            this.auctionCategory = AuctionCategory.fromDisplayName(auctionCategory);
-        }
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ProductCategoryParam {
-        ProductCategory productCategory;
-
-        public ProductCategoryParam(String productCategory) {
-            this.productCategory = ProductCategory.fromDisplayName(productCategory);
-        }
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AuctionStatusParam {
-        AuctionStatus auctionStatus;
-
-        public AuctionStatusParam(String auctionStatus) {
-            this.auctionStatus = AuctionStatus.fromDisplayName(auctionStatus);
-        }
-
-    }
-
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
