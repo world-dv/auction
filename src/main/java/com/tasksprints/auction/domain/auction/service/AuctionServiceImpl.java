@@ -102,27 +102,6 @@ public class AuctionServiceImpl implements AuctionService {
         return AuctionResponse.of(foundAuction);
     }
 
-    @Deprecated
-    @Override
-    public List<AuctionResponse> getAuctionsByProductCategory(AuctionRequest.ProductCategoryParam param) {
-        List<Auction> foundAuctions = auctionRepository.findAuctionByProduct_Category(param.getProductCategory());
-
-        return foundAuctions.stream()
-            .map(AuctionResponse::of)
-            .toList();
-
-    }
-
-    @Deprecated
-    @Override
-    public List<AuctionResponse> getAuctionsByAuctionCategory(AuctionRequest.AuctionCategoryParam param) {
-        List<Auction> foundAuctions = auctionRepository.findAuctionsByAuctionCategory(param.getAuctionCategory());
-
-        return foundAuctions.stream()
-            .map(AuctionResponse::of)
-            .toList();
-    }
-
     /**
      * NULL POINTER EXCEPTION 발생
      * NULL 안정성 보장을 해줬음
@@ -132,36 +111,6 @@ public class AuctionServiceImpl implements AuctionService {
         List<Auction> foundAuctions = auctionRepository.getAuctionsByFilters(
             searchCondition
         );
-
-        return foundAuctions.stream()
-            .map(AuctionResponse::of)
-            .toList();
-    }
-
-    @Deprecated
-    @Override
-    public List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours) {
-        // auction의 endTime까지 24시간 이하로 남은 진행중인 경매 목록 조회
-        //LocalDateTime now = LocalDateTime.now();
-        //LocalDateTime next24Hours = now.plusHours(24);
-
-        //endTime이 now ~ now + 24hour에 포함되는 진행 상태인 경매 목록 조회
-        List<Auction> foundAuctions = auctionRepository.findAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc(now, next24Hours, AuctionStatus.ACTIVE);
-
-        return foundAuctions.stream()
-            .map(AuctionResponse::of)
-            .toList();
-    }
-
-    @Deprecated
-    @Override
-    public List<AuctionResponse> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours) {
-        // auction의 endTime까지 24시간 이하로 남은 진행중인 경매 목록 조회
-        // LocalDateTime now = LocalDateTime.now();
-        // LocalDateTime next24Hours = now.plusHours(24);
-
-        //endTime이 now ~ now + 24hour에 포함되는 진행 상태인 경매 목록 조회
-        List<Auction> foundAuctions = auctionRepository.getAuctionsEndWith24Hours(now, next24Hours, AuctionStatus.ACTIVE);
 
         return foundAuctions.stream()
             .map(AuctionResponse::of)

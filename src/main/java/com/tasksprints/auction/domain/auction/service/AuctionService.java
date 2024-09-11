@@ -18,19 +18,10 @@ public interface AuctionService {
 
     List<AuctionResponse> getAuctionsByUser(Long userId);
 
-    List<AuctionResponse> getAuctionsByProductCategory(AuctionRequest.ProductCategoryParam param);
-
     List<AuctionResponse> getAllAuctions();
 
     AuctionResponse getAuctionById(Long auctionId);
 
-    List<AuctionResponse> getAuctionsByAuctionCategory(AuctionRequest.AuctionCategoryParam param);
-
     List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition);
 
-    @Deprecated
-    List<AuctionResponse> getAuctionsByEndTimeBetweenOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours);
-
-    @Deprecated
-    List<AuctionResponse> getAuctionsEndWith24Hours(LocalDateTime now, LocalDateTime next24Hours);
 }
