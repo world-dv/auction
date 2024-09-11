@@ -16,17 +16,11 @@ import java.util.Optional;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long>, AuctionCriteriaRepository {
 
-
     @Query("SELECT a FROM auction a WHERE a.seller.id = :userId")
     List<Auction> findAuctionsByUserId(@Param("userId") Long userId);
 
     @Query("SELECT a FROM auction a WHERE a.id = :auctionId")
     Optional<Auction> findAuctionById(@Param("auctionId") Long auctionId);
 
-    List<Auction> findAuctionsByAuctionCategory(AuctionCategory auctionCategory);
-
-    List<Auction> findAuctionByProduct_Category(ProductCategory productCategory);
-
-    List<Auction> findAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc(LocalDateTime now, LocalDateTime next24Hours, AuctionStatus auctionStatus);
 }
 
