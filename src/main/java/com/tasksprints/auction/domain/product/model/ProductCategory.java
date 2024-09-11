@@ -1,5 +1,7 @@
 package com.tasksprints.auction.domain.product.model;
 
+import com.tasksprints.auction.domain.auction.model.AuctionCategory;
+
 public enum ProductCategory {
     WOMENS_CLOTHING("여성의류"),
     UNDERWEAR_SLEEPWEAR("언더웨어/잠옷"),
@@ -52,12 +54,15 @@ public enum ProductCategory {
      * 한정된 갯수의 Category 이기에 따로 Over-head는 발생하지 않을 것으로 판단
      ***/
     public static ProductCategory fromDisplayName(String displayName) {
-        for (ProductCategory category : values()) {
-            if (category.displayName.equals(displayName)) {
-                return category;
-            }
+        if (displayName == null || displayName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Display name cannot be null or empty.");
         }
-        throw new IllegalArgumentException("Unknown category: " + displayName);
+
+        try {
+            return ProductCategory.valueOf(displayName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid product category: " + displayName);
+        }
     }
 
     public String getDisplayName() {
