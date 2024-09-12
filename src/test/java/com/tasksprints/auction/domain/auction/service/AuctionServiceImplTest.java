@@ -320,7 +320,7 @@ class AuctionServiceImplTest {
         public void testGetAuctionsByAuctionCategory_Success() {
             Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
             Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
-            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
             List<Auction> expectedAuctions = List.of(auction1, auction2);
 
             when(auctionRepository.getAuctionsByFilters(condition)).thenReturn(expectedAuctions);
@@ -337,7 +337,7 @@ class AuctionServiceImplTest {
         public void testGetAuctionsByAuctionCategory_Success_Criteria() {
             Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
             Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
-            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
             List<Auction> expectedAuctions = List.of(auction1, auction2);
 
             when(auctionRepository.getAuctionsByFilters(condition)).thenReturn(expectedAuctions);
@@ -353,7 +353,7 @@ class AuctionServiceImplTest {
         @DisplayName("경매 유형 조회 : [결과 없음]")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound() {
             List<Auction> emptyAuctionList = List.of();
-            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
 
             when(auctionRepository.getAuctionsByFilters(condition))
                 .thenReturn(emptyAuctionList);
@@ -367,7 +367,7 @@ class AuctionServiceImplTest {
         @DisplayName("경매 유형 조회 : [결과 없음] - Criteria 사용")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound_Criteria() {
             List<Auction> emptyAuctionList = List.of();
-            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
 
             when(auctionRepository.getAuctionsByFilters(condition))
                 .thenReturn(emptyAuctionList);
