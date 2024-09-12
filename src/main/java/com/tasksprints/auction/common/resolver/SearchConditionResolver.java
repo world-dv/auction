@@ -35,6 +35,7 @@ public class SearchConditionResolver implements HandlerMethodArgumentResolver {
         String minPrice = webRequest.getParameter("minPrice");
         String maxPrice = webRequest.getParameter("maxPrice");
         String auctionStatus = webRequest.getParameter("auctionStatus");
+        String sortBy = webRequest.getParameter("sortBy");
         // 파싱 및 변환
         AuctionCategory parsedAuctionCategory = auctionCategory != null ? AuctionCategory.fromDisplayName(auctionCategory) : null;
         ProductCategory parsedProductCategory = productCategory != null ? ProductCategory.fromDisplayName(productCategory) : null;
@@ -52,7 +53,8 @@ public class SearchConditionResolver implements HandlerMethodArgumentResolver {
             parsedEndTime,
             parsedMinPrice,
             parsedMaxPrice,
-            parsedAuctionStatus
+            parsedAuctionStatus,
+            sortBy
         );
     }
 }
