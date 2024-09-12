@@ -16,23 +16,25 @@ public class AuctionRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Create {
-        LocalDateTime startTime;
-        LocalDateTime endTime;
-        BigDecimal startingBid;
-        AuctionCategory auctionCategory;
-        AuctionStatus auctionStatus;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+        private BigDecimal startingBid;
+        private AuctionCategory auctionCategory;
+        private AuctionStatus auctionStatus;
     }
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SearchCondition {
-        AuctionCategory auctionCategory;
-        ProductCategory productCategory;
-        LocalDateTime startTime;
-        LocalDateTime endTime;
-        BigDecimal minPrice;
-        BigDecimal maxPrice;
-        AuctionStatus auctionStatus;
+        private AuctionCategory auctionCategory;
+        private ProductCategory productCategory;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+        private BigDecimal minPrice;
+        private BigDecimal maxPrice;
+        private AuctionStatus auctionStatus;
+        private String sortBy;
+
     }
 }
