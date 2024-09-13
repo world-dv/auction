@@ -20,6 +20,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -68,13 +73,13 @@ class AuctionServiceImplTest {
             .build();
     }
 
-    private Auction createAuction(Long auctionId, LocalDateTime endTime, AuctionStatus status) {
+    private Auction createAuction(Long auctionId, LocalDateTime startTime) {
         return Auction.builder()
             .id(auctionId)
             .auctionCategory(AuctionCategory.PUBLIC_PAID)
-            .auctionStatus(status)
-            .startTime(LocalDateTime.of(2024, 8, 1, 10, 0))
-            .endTime(endTime)
+            .auctionStatus(AuctionStatus.ACTIVE)
+            .startTime(startTime)
+            .endTime(LocalDateTime.of(2024, 9, 1, 10, 0))
             .startingBid(BigDecimal.valueOf(100.00))
             .seller(seller)
             .build();
@@ -318,94 +323,109 @@ class AuctionServiceImplTest {
         @Test
         @DisplayName("경매 유형 조회 : [성공]")
         public void testGetAuctionsByAuctionCategory_Success() {
-            Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
-            Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
             AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
-            List<Auction> expectedAuctions = List.of(auction1, auction2);
 
-            when(auctionRepository.getAuctionsByFilters(condition)).thenReturn(expectedAuctions);
-            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
+            List<Auction> auctions = List.of(
+                createAuction(1L, seller, AuctionStatus.PENDING),
+                createAuction(2L, seller, AuctionStatus.PENDING)
+            );
+            List<AuctionResponse> auctionResponses = auctions
+                .stream()
                 .map(AuctionResponse::of)
                 .toList();
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
-            assertThat(actualAuctions).isEqualTo(expectedResponses);
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<AuctionResponse> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
+
+            when(auctionRepository.getAuctionsByFilters(pageable, condition)).thenReturn(expectedPage);
+
+            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
+            assertThat(actualAuctions).isEqualTo(expectedPage);
         }
 
         @Test
         @DisplayName("경매 유형 조회 : [성공] -Criteria 사용")
         public void testGetAuctionsByAuctionCategory_Success_Criteria() {
-            Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
-            Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
             AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
-            List<Auction> expectedAuctions = List.of(auction1, auction2);
 
-            when(auctionRepository.getAuctionsByFilters(condition)).thenReturn(expectedAuctions);
-            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
+            List<Auction> auctions = List.of(
+                createAuction(1L, seller, AuctionStatus.PENDING),
+                createAuction(2L, seller, AuctionStatus.PENDING)
+            );
+
+            List<AuctionResponse> auctionResponses = auctions
+                .stream()
                 .map(AuctionResponse::of)
                 .toList();
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
-            assertThat(actualAuctions).isEqualTo(expectedResponses);
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<AuctionResponse> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
+
+            when(auctionRepository.getAuctionsByFilters(pageable, condition)).thenReturn(expectedPage);
+
+            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
+            assertThat(actualAuctions).isEqualTo(expectedPage);
         }
 
         @Test
         @DisplayName("경매 유형 조회 : [결과 없음]")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound() {
-            List<Auction> emptyAuctionList = List.of();
+            List<AuctionResponse> emptyAuctionList = List.of();
             AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
 
-            when(auctionRepository.getAuctionsByFilters(condition))
-                .thenReturn(emptyAuctionList);
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<AuctionResponse> expectedPage = new PageImpl<>(emptyAuctionList, pageable, 0);
+            when(auctionRepository.getAuctionsByFilters(pageable, condition))
+                .thenReturn(expectedPage);
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
+            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
 
-            assertThat(actualAuctions).isEmpty();
+            assertThat(actualAuctions.isEmpty()).isTrue();
         }
 
         @Test
         @DisplayName("경매 유형 조회 : [결과 없음] - Criteria 사용")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound_Criteria() {
-            List<Auction> emptyAuctionList = List.of();
-            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
+            List<AuctionResponse> emptyAuctionList = List.of();
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
 
-            when(auctionRepository.getAuctionsByFilters(condition))
-                .thenReturn(emptyAuctionList);
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<AuctionResponse> expectedPage = new PageImpl<>(emptyAuctionList, pageable, 0);
+            when(auctionRepository.getAuctionsByFilters(pageable, condition))
+                .thenReturn(expectedPage);
 
-            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
+            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
 
-            assertThat(actualAuctions).isEmpty();
+            assertThat(actualAuctions.isEmpty()).isTrue();
         }
     }
-
 //    @Nested
-//    @DisplayName("경매 마감 시간이 24시간 이하인 경매 목록 조회")
-//    class GetAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAscTests {
+//       @DisplayName("경매 목록 최신 순 조회")
+//       class GetAuctionsSortedByNewestTests {
 //        @Test
-//        @DisplayName("경매 마감 임박 목록 조회 : 성공")
-//        public void testGetAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc_Success() {
+//        @DisplayName("경매 목록 최신 순 조회 성공")
+//        void testGetAuctionsSortedByNewest_Success() {
 //            //given
-//            LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
-//            LocalDateTime next24Hours = fixedNow.plusHours(24);
-//
-//            List<Auction> expectedAuctions = List.of(createAuction(1L, fixedNow.plusHours(21), AuctionStatus.ACTIVE),
-//                createAuction(2L, fixedNow.plusHours(22), AuctionStatus.ACTIVE),
-//                createAuction(3L, fixedNow.plusHours(23), AuctionStatus.ACTIVE)
+//            List<Auction> auctions = List.of(
+//                    createAuction(1L, LocalDateTime.of(2024, 8, 1, 9, 0)),
+//                    createAuction(2L, LocalDateTime.of(2024, 8, 1, 10, 0))
 //            );
 //
-//            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
-//                .map(AuctionResponse::of)
-//                .toList();
+//            List<AuctionResponse> auctionResponses = auctions.stream()
+//                    .map(AuctionResponse::of)
+//                    .toList();
 //
-//            when(auctionRepository.getAuctionsEndWith24Hours(fixedNow, next24Hours, AuctionStatus.ACTIVE)).thenReturn(expectedAuctions);
-//            List<AuctionResponse> actualResponses = auctionService.getAuctionsEndWith24Hours(fixedNow, next24Hours);
+//            Pageable pageable = PageRequest.of(0, 10);
+//            Page<AuctionResponse> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
 //
+//            //when
+//            when(auctionRepository.findAllSortedByNewest(pageable)).thenReturn(expectedPage);
+//            Page<AuctionResponse> actualPage = auctionService.getAuctionsSortedByNewest(pageable);
 //            //then
-//            assertThat(actualResponses).isEqualTo(expectedResponses);
-//
+//            assertThat(actualPage).isEqualTo(expectedPage);
 //
 //        }
+//
+//
 //    }
-
-
 }

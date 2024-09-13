@@ -1,6 +1,7 @@
 package com.tasksprints.auction.domain.auction.repository;
 
 import com.tasksprints.auction.common.config.QueryDslConfig;
+import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
@@ -14,6 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,6 +58,17 @@ public class AuctionRepositoryTest {
             BigDecimal.valueOf(100.00),
             category,
             status,
+            seller
+        );
+    }
+
+    private Auction createAuction(User seller, LocalDateTime startTime) {
+        return Auction.create(
+            startTime,
+            LocalDateTime.of(2024, 9, 1, 10, 0),
+            BigDecimal.valueOf(100.00),
+            AuctionCategory.PUBLIC_PAID,
+            AuctionStatus.PENDING,
             seller
         );
     }
@@ -110,12 +125,14 @@ public class AuctionRepositoryTest {
         auctionRepository.save(auction2);
         auctionRepository.save(auction3);
 
+        Pageable pageable = PageRequest.of(0, 10);
+
         //when
-        List<Auction> auctions = auctionRepository.getAuctionsByFilters(condition);
+        Page<AuctionResponse> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
 
         //then
         assertThat(auctions).hasSize(2);
-        assertThat(auctions).allMatch(auction -> auction.getAuctionCategory() == AuctionCategory.PUBLIC_PAID);
+        assertThat(auctions.getContent()).allMatch(auction -> auction.getCategory().equals(AuctionCategory.PUBLIC_PAID.name()));
     }
 
     @Test
@@ -127,50 +144,38 @@ public class AuctionRepositoryTest {
         auctionRepository.save(auction1);
         auctionRepository.save(auction2);
 
-        List<Auction> auctions = auctionRepository.getAuctionsByFilters(condition);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<AuctionResponse> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
         log.info(auctions.toString());
 
         assertThat(auctions).hasSize(1);
-        assertThat(auctions.get(0).getAuctionCategory()).isEqualTo(AuctionCategory.PUBLIC_FREE);
-        assertThat(auctions.get(0).getAuctionCategory()).isNotEqualTo(AuctionCategory.PUBLIC_PAID);
+        assertThat(auctions.getContent().get(0).getCategory()).isEqualTo(AuctionCategory.PUBLIC_FREE.name());
+        assertThat(auctions.getContent().get(0).getCategory()).isNotEqualTo(AuctionCategory.PUBLIC_PAID.name());
 
 
     }
 
 //    @Test
-//    @DisplayName("경매 마감 시간까지 24시간 이하로 남은 경매 목록 조회")
-//    public void testFindAuctionsByEndTimeBetweenOrderByEndTimeAsc() {
+//    @DisplayName("경매 목록 최신 순 조회")
+//    public void testFindAllSortedByNewest() {
 //        //given
-//        LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
-//        LocalDateTime next24Hours = fixedNow.plusHours(24);
+//        Auction auction1 = createAuction(seller, LocalDateTime.of(2024, 8, 2, 10, 0));
+//        Auction auction2 = createAuction(seller, LocalDateTime.of(2024, 8, 1, 10, 0));
 //
-//        List<Auction> auctions = List.of(
-//            createAuction(fixedNow.plusHours(23), AuctionStatus.ACTIVE),
-//            createAuction(fixedNow.plusHours(22), AuctionStatus.ACTIVE),
-//            createAuction(fixedNow.plusHours(21), AuctionStatus.ACTIVE),
-//            createAuction(fixedNow.plusHours(48), AuctionStatus.ACTIVE),
-//            createAuction(fixedNow.plusHours(20), AuctionStatus.PENDING)
-//        );
+//        auctionRepository.saveAll(List.of(auction1, auction2));
 //
-//        auctionRepository.saveAll(auctions);
+//        Pageable pageable = PageRequest.of(0, 10);
 //
-//        // when
-//        List<Auction> result = auctionRepository.getAuctionsEndWith24Hours(fixedNow, next24Hours, AuctionStatus.ACTIVE);
+//        //when
+//        Page<AuctionResponse> auctions = auctionRepository.findAllSortedByNewest(pageable);
 //
 //        //then
-//        assertThat(result).hasSize(3);
+//        assertThat(auctions).hasSize(2);
 //
-//        assertAll("endTime을 기준으로 오름차순 정렬이 되었는지 확인",
-//            () -> {
-//                LocalDateTime previousEndTime = null;
-//                for (Auction auction : result) {
-//                    if (previousEndTime != null) {
-//                        assertThat(auction.getEndTime()).isAfterOrEqualTo(previousEndTime);
-//                    }
-//                    previousEndTime = auction.getEndTime();
-//                }
-//            }
-//        );
+//        assertThat(auctions.getContent().get(0).getStartTime()).isEqualTo(auction2.getStartTime());
+//        assertThat(auctions.getContent().get(1).getStartTime()).isEqualTo(auction1.getStartTime());
+//
+//
 //    }
 
 }
