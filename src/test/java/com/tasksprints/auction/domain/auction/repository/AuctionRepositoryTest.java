@@ -1,6 +1,7 @@
 package com.tasksprints.auction.domain.auction.repository;
 
 import com.tasksprints.auction.common.config.QueryDslConfig;
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
@@ -44,6 +45,17 @@ public class AuctionRepositoryTest {
             .email("test@example.com")
             .build();
         userRepository.save(seller);
+    }
+
+    private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
+        return Auction.create(
+            LocalDateTime.of(2024, 8, 1, 10, 0),
+            LocalDateTime.of(2024, 9, 1, 10, 0),
+            BigDecimal.valueOf(100.00),
+            category,
+            status,
+            seller
+        );
     }
 
     @Test
@@ -93,13 +105,13 @@ public class AuctionRepositoryTest {
         Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
         Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
         Auction auction3 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
         auctionRepository.save(auction1);
         auctionRepository.save(auction2);
         auctionRepository.save(auction3);
 
         //when
-        List<Auction> auctions = auctionRepository.findAuctionsByAuctionCategory(AuctionCategory.PUBLIC_PAID);
+        List<Auction> auctions = auctionRepository.getAuctionsByFilters(condition);
 
         //then
         assertThat(auctions).hasSize(2);
@@ -111,11 +123,11 @@ public class AuctionRepositoryTest {
     public void testFindAllUsingFilter() {
         Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
         Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
         auctionRepository.save(auction1);
         auctionRepository.save(auction2);
 
-        List<Auction> auctions = auctionRepository.getAuctionsByFilters(null, AuctionCategory.PUBLIC_FREE);
+        List<Auction> auctions = auctionRepository.getAuctionsByFilters(condition);
         log.info(auctions.toString());
 
         assertThat(auctions).hasSize(1);
@@ -125,14 +137,40 @@ public class AuctionRepositoryTest {
 
     }
 
-    private Auction createAuction(User seller, AuctionCategory category, AuctionStatus status) {
-        return Auction.create(
-            LocalDateTime.now(),
-            LocalDateTime.now().plusDays(7),
-            BigDecimal.valueOf(100.00),
-            category,
-            status,
-            seller
-        );
-    }
+//    @Test
+//    @DisplayName("경매 마감 시간까지 24시간 이하로 남은 경매 목록 조회")
+//    public void testFindAuctionsByEndTimeBetweenOrderByEndTimeAsc() {
+//        //given
+//        LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
+//        LocalDateTime next24Hours = fixedNow.plusHours(24);
+//
+//        List<Auction> auctions = List.of(
+//            createAuction(fixedNow.plusHours(23), AuctionStatus.ACTIVE),
+//            createAuction(fixedNow.plusHours(22), AuctionStatus.ACTIVE),
+//            createAuction(fixedNow.plusHours(21), AuctionStatus.ACTIVE),
+//            createAuction(fixedNow.plusHours(48), AuctionStatus.ACTIVE),
+//            createAuction(fixedNow.plusHours(20), AuctionStatus.PENDING)
+//        );
+//
+//        auctionRepository.saveAll(auctions);
+//
+//        // when
+//        List<Auction> result = auctionRepository.getAuctionsEndWith24Hours(fixedNow, next24Hours, AuctionStatus.ACTIVE);
+//
+//        //then
+//        assertThat(result).hasSize(3);
+//
+//        assertAll("endTime을 기준으로 오름차순 정렬이 되었는지 확인",
+//            () -> {
+//                LocalDateTime previousEndTime = null;
+//                for (Auction auction : result) {
+//                    if (previousEndTime != null) {
+//                        assertThat(auction.getEndTime()).isAfterOrEqualTo(previousEndTime);
+//                    }
+//                    previousEndTime = auction.getEndTime();
+//                }
+//            }
+//        );
+//    }
+
 }

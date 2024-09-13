@@ -1,6 +1,7 @@
 package com.tasksprints.auction.domain.auction.model;
 
 import com.tasksprints.auction.common.entity.BaseEntity;
+import com.tasksprints.auction.domain.bid.model.Bid;
 import com.tasksprints.auction.domain.product.model.Product;
 import com.tasksprints.auction.domain.user.model.User;
 import jakarta.persistence.*;
@@ -8,6 +9,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -46,6 +49,11 @@ public class Auction extends BaseEntity {
     @OneToOne
     @Builder.Default
     private Product product = null;
+
+
+    @OneToMany
+    @Builder.Default
+    private List<Bid> bids = new ArrayList<>();
 
     public static Auction create(LocalDateTime startTime, LocalDateTime endTime, BigDecimal startingBid, AuctionCategory auctionCategory, AuctionStatus auctionStatus, User seller) {
         Auction newAuction = Auction.builder()

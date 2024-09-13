@@ -17,13 +17,10 @@ public interface AuctionService {
 
     List<AuctionResponse> getAuctionsByUser(Long userId);
 
-    List<AuctionResponse> getAuctionsByProductCategory(AuctionRequest.ProductCategoryParam param);
-
     List<AuctionResponse> getAllAuctions();
 
     AuctionResponse getAuctionById(Long auctionId);
 
-    List<AuctionResponse> getAuctionsByAuctionCategory(AuctionRequest.AuctionCategoryParam param);
+    List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition);
 
-    List<AuctionResponse> getAuctionsByFilter(AuctionRequest.ProductCategoryParam productCategoryParam, AuctionRequest.AuctionCategoryParam auctionCategoryParam);
 }

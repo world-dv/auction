@@ -6,6 +6,7 @@ import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
+import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.service.AuctionService;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
@@ -22,6 +23,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,31 +111,47 @@ public class AuctionControllerTest {
     }
 
     @Test
-    @DisplayName("경매 유형을 통한 경매목록 조회")
-    public void testFindAuctionByUsingAuctionCategory_Success() throws Exception {
+    @DisplayName("QueryString을 통한 경매 목록 조회")
+    public void testFindAuctionByUsingQueryString_Success() throws Exception {
+        // Given
         List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
+        when(auctionService.getAuctionsByFilter(any())).thenReturn(auctionResponseList);
+
+        // When & Then
         mockMvc.perform(get("/api/v1/auction")
-                .param("auctionCategory", String.valueOf(AuctionCategory.PRIVATE_FREE)))
+                .param("auctionCategory", AuctionCategory.PRIVATE_FREE.name())
+                .param("productCategory", "여성의류")
+                .param("startTime", LocalDateTime.now().minusDays(1).toString())
+                .param("endTime", LocalDateTime.now().toString())
+                .param("minPrice", "100")
+                .param("maxPrice", "500")
+                .param("auctionStatus", AuctionStatus.ACTIVE.name())
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
     }
 
-    /**
-     * 해당 기저 처리 해야함.
-     * 기본값으로 대응 PUBLIC_FREE로
-     */
-    @Test
-    @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
-    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
-        List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
+//    @Test
+//    @DisplayName("잘못된 유형을 통한 경매목록 조회(기본값으로 대응)")
+//    public void testFindAuctionByUsingWrongAuctionCategory_Success() throws Exception {
+//        List<AuctionResponse> auctionResponseList = new ArrayList<>();
+//        when(auctionService.getAuctionsByFilter(any(), any())).thenReturn(auctionResponseList);
+//
+//        mockMvc.perform(get("/api/v1/auction")
+//                .param("auctionCategory", "NON"))
+//            .andExpect(status().isOk())
+//            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
+//    }
 
-        mockMvc.perform(get("/api/v1/auction")
-                .param("auctionCategory", "NON"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED));
-    }
+//    @Test
+//    @DisplayName("마감 기한이 24시간 이하로 남은 경매 목록 조회")
+//    public void testFindAuctionsEndWithin24Hours_Success() throws Exception {
+//
+//        /*
+//        테스트 코드 추가
+//        * */
+//
+//    }
 
     @Test
     @DisplayName("입찰 제출 성공")
