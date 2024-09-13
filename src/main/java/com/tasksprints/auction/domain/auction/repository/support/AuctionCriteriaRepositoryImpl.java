@@ -34,6 +34,7 @@ public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository 
                         auction.auctionCategory.stringValue(),
                         auction.auctionStatus.stringValue(),
                         auction.startingBid,
+                        auction.viewCount,
                         auction.seller.id.as("sellerId"),
                         auction.seller.nickName.as("sellerNickName")
                 ))
@@ -91,7 +92,7 @@ public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository 
                 case "bidsDesc" -> auction.bids.size().desc();
                 case "endTimeASC" -> auction.endTime.asc();
                 case "startTimeASC" -> auction.startTime.asc();
-//                case "viewCountDESC" -> auction.viewCount.desc();
+                case "viewCountDESC" -> auction.viewCount.desc();
 
                 default -> null;
             };

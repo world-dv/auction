@@ -6,6 +6,7 @@ import com.tasksprints.auction.domain.product.model.Product;
 import com.tasksprints.auction.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -50,10 +51,19 @@ public class Auction extends BaseEntity {
     @Builder.Default
     private Product product = null;
 
-
     @OneToMany
     @Builder.Default
     private List<Bid> bids = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Long viewCount;
+
+    @PrePersist
+        protected void onCreate() {
+            if (viewCount == null) {
+                viewCount = 0L;  // 기본값 설정
+            }
+        }
 
     public static Auction create(LocalDateTime startTime, LocalDateTime endTime, BigDecimal startingBid, AuctionCategory auctionCategory, AuctionStatus auctionStatus, User seller) {
         Auction newAuction = Auction.builder()
@@ -76,5 +86,10 @@ public class Auction extends BaseEntity {
         seller.addAuction(this);
         this.seller = seller;
     }
+
+    public void incrementViewCount() {
+        this.viewCount += 1;
+    }
+
 
 }

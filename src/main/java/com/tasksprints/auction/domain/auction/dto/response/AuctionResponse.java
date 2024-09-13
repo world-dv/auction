@@ -20,7 +20,7 @@ public class AuctionResponse {
     private String category;
     private String status;
     private BigDecimal startingBid;
-
+    private Long viewCount;
     private Long sellerId;
     private String sellerNickName;
 
@@ -33,6 +33,7 @@ public class AuctionResponse {
             .category(auction.getAuctionCategory().name())
             .status(auction.getAuctionStatus().name())
             .startingBid(auction.getStartingBid())
+            .viewCount(auction.getViewCount())
             .sellerId(auction.getSeller().getId())
             .sellerNickName(auction.getSeller().getNickName())
             .build();

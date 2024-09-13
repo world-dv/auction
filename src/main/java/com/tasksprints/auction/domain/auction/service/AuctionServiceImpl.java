@@ -99,7 +99,8 @@ public class AuctionServiceImpl implements AuctionService {
     public AuctionResponse getAuctionById(Long auctionId) {
         Auction foundAuction = auctionRepository.findAuctionById(auctionId)
             .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
-
+        foundAuction.incrementViewCount();
+        auctionRepository.save(foundAuction);
         return AuctionResponse.of(foundAuction);
     }
 
