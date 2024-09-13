@@ -39,7 +39,7 @@ jobs:
         run: ./gradlew test
 
   cd-pipeline:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: SSH로 NCP 접속하기
@@ -52,7 +52,7 @@ jobs:
           script_stop: true
           script: |
             cd auction
-            git pull knuk ttest
+            git pull origin develop
             chmod 777 ./gradlew
             ./gradlew build
             kill -9 $(lsof -t -i:8080) || echo "No process on 8080"
