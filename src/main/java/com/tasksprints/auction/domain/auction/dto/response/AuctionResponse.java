@@ -25,19 +25,18 @@ public class AuctionResponse {
     private String sellerNickName;
 
 
-    public static AuctionResponse of(Auction auction){
+    public static AuctionResponse of(Auction auction) {
         return AuctionResponse.builder()
-                .id(auction.getId())
-                .startTime(auction.getStartTime())
-                .endTime(auction.getEndTime())
-                .category(auction.getAuctionCategory().name())
-                .status(auction.getAuctionStatus().name())
-                .startingBid(auction.getStartingBid())
-                .sellerId(auction.getSeller().getId())
-                .sellerNickName(auction.getSeller().getNickName())
-                .build();
+            .id(auction.getId())
+            .startTime(auction.getStartTime())
+            .endTime(auction.getEndTime())
+            .category(auction.getAuctionCategory().name())
+            .status(auction.getAuctionStatus().name())
+            .startingBid(auction.getStartingBid())
+            .sellerId(auction.getSeller().getId())
+            .sellerNickName(auction.getSeller().getNickName())
+            .build();
     }
-
 
 
 }

@@ -1,7 +1,7 @@
 package com.tasksprints.auction.domain.auction.service;
 
-import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
+import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 
 import java.util.List;
 
@@ -12,8 +12,15 @@ public interface AuctionService {
     AuctionResponse createAuction(Long userId, AuctionRequest.Create auctionRequest);
 
     void closeAuction(Long auctionId);
+
     String getAuctionStatus(Long auctionId);
+
     List<AuctionResponse> getAuctionsByUser(Long userId);
+
     List<AuctionResponse> getAllAuctions();
+
     AuctionResponse getAuctionById(Long auctionId);
+
+    List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition);
+
 }

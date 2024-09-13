@@ -1,14 +1,15 @@
 package com.tasksprints.auction.domain.user;
 
-import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
 import com.tasksprints.auction.domain.user.dto.request.UserRequest;
+import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
 import com.tasksprints.auction.domain.user.service.UserServiceImpl;
 import org.junit.jupiter.api.*;
-import org.mockito.*;
-
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
@@ -28,12 +29,12 @@ public class UserServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         existingUser = User.builder()
-                .id(1L)
-                .name("testUser")
-                .nickName("testNick")
-                .password("testPassword")
-                .email("test@example.com")
-                .build();
+            .id(1L)
+            .name("testUser")
+            .nickName("testNick")
+            .password("testPassword")
+            .email("test@example.com")
+            .build();
     }
 
     @Nested
@@ -138,12 +139,12 @@ public class UserServiceImplTest {
         void shouldDeleteUserWhenFound() {
             // Arrange
             User existingUser = User.builder()
-                    .id(1L)
-                    .name("testUser")
-                    .nickName("testNick")
-                    .password("testPassword")
-                    .email("test@example.com")
-                    .build();
+                .id(1L)
+                .name("testUser")
+                .nickName("testNick")
+                .password("testPassword")
+                .email("test@example.com")
+                .build();
             when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
             when(userRepository.save(any(User.class))).thenReturn(existingUser);
 

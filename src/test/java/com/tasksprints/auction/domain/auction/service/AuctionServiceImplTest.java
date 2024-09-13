@@ -1,5 +1,6 @@
 package com.tasksprints.auction.domain.auction.service;
 
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.exception.AuctionAlreadyClosedException;
 import com.tasksprints.auction.domain.auction.exception.AuctionNotFoundException;
@@ -7,7 +8,6 @@ import com.tasksprints.auction.domain.auction.exception.InvalidAuctionTimeExcept
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
-import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
@@ -16,10 +16,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -48,12 +48,36 @@ class AuctionServiceImplTest {
     @BeforeEach
     void setUp() {
         seller = User.builder()
-                .id(1L)
-                .name("testUser")
-                .nickName("testNick")
-                .password("testPassword")
-                .email("test@example.com")
-                .build();
+            .id(1L)
+            .name("testUser")
+            .nickName("testNick")
+            .password("testPassword")
+            .email("test@example.com")
+            .build();
+    }
+
+    private Auction createAuction(Long auctionId, User seller, AuctionStatus status) {
+        return Auction.builder()
+            .id(auctionId)
+            .auctionCategory(AuctionCategory.PUBLIC_PAID)
+            .auctionStatus(status)
+            .startTime(LocalDateTime.of(2024, 8, 1, 10, 0))
+            .endTime(LocalDateTime.of(2024, 9, 1, 10, 0))
+            .startingBid(BigDecimal.valueOf(100.00))
+            .seller(seller)
+            .build();
+    }
+
+    private Auction createAuction(Long auctionId, LocalDateTime endTime, AuctionStatus status) {
+        return Auction.builder()
+            .id(auctionId)
+            .auctionCategory(AuctionCategory.PUBLIC_PAID)
+            .auctionStatus(status)
+            .startTime(LocalDateTime.of(2024, 8, 1, 10, 0))
+            .endTime(endTime)
+            .startingBid(BigDecimal.valueOf(100.00))
+            .seller(seller)
+            .build();
     }
 
     @Nested
@@ -64,11 +88,11 @@ class AuctionServiceImplTest {
         @DisplayName("성공")
         void testCreateAuction_Success() {
             AuctionRequest.Create auctionRequest = new AuctionRequest.Create(
-                    LocalDateTime.now(),
-                    LocalDateTime.now().plusDays(7),
-                    BigDecimal.valueOf(100.00),
-                    AuctionCategory.PRIVATE_FREE,
-                    AuctionStatus.ACTIVE
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(7),
+                BigDecimal.valueOf(100.00),
+                AuctionCategory.PRIVATE_FREE,
+                AuctionStatus.ACTIVE
             );
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(seller));
@@ -87,17 +111,17 @@ class AuctionServiceImplTest {
         @DisplayName("사용자 미존재 예외")
         void testCreateAuction_UserNotFound() {
             AuctionRequest.Create auctionRequest = new AuctionRequest.Create(
-                    LocalDateTime.now(),
-                    LocalDateTime.now().plusDays(7),
-                    BigDecimal.valueOf(100.00),
-                    AuctionCategory.PRIVATE_FREE,
-                    AuctionStatus.ACTIVE
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(7),
+                BigDecimal.valueOf(100.00),
+                AuctionCategory.PRIVATE_FREE,
+                AuctionStatus.ACTIVE
             );
 
             when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
             UserNotFoundException exception = assertThrows(UserNotFoundException.class, () ->
-                    auctionService.createAuction(1L, auctionRequest));
+                auctionService.createAuction(1L, auctionRequest));
 
             assertThat(exception.getMessage()).isEqualTo("User not found");
             verify(auctionRepository, never()).save(any(Auction.class));
@@ -107,17 +131,17 @@ class AuctionServiceImplTest {
         @DisplayName("종료 시간이 시작 시간보다 이전인 경우 예외")
         void testCreateAuction_EndTimeBeforeStartTime() {
             AuctionRequest.Create auctionRequest = new AuctionRequest.Create(
-                    LocalDateTime.now().plusDays(7),
-                    LocalDateTime.now(),
-                    BigDecimal.valueOf(100.00),
-                    AuctionCategory.PRIVATE_FREE,
-                    AuctionStatus.ACTIVE
+                LocalDateTime.now().plusDays(7),
+                LocalDateTime.now(),
+                BigDecimal.valueOf(100.00),
+                AuctionCategory.PRIVATE_FREE,
+                AuctionStatus.ACTIVE
             );
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(seller));
 
             InvalidAuctionTimeException exception = assertThrows(InvalidAuctionTimeException.class, () ->
-                    auctionService.createAuction(1L, auctionRequest));
+                auctionService.createAuction(1L, auctionRequest));
 
             assertThat(exception.getMessage()).isEqualTo("End time must be after start time");
             verify(auctionRepository, never()).save(any(Auction.class));
@@ -148,7 +172,7 @@ class AuctionServiceImplTest {
             when(auctionRepository.findById(1L)).thenReturn(Optional.empty());
 
             AuctionNotFoundException exception = assertThrows(AuctionNotFoundException.class, () ->
-                    auctionService.closeAuction(1L));
+                auctionService.closeAuction(1L));
 
             assertThat(exception.getMessage()).isEqualTo("Auction not found");
             verify(auctionRepository, never()).save(any(Auction.class));
@@ -158,16 +182,16 @@ class AuctionServiceImplTest {
         @DisplayName("이미 종료된 경매 예외")
         void testCloseAuction_AuctionAlreadyClosed() {
             Auction auction = Auction.builder()
-                    .id(1L)
-                    .auctionCategory(AuctionCategory.PRIVATE_FREE)
-                    .auctionStatus(AuctionStatus.CLOSED)
-                    .seller(seller)
-                    .build();
+                .id(1L)
+                .auctionCategory(AuctionCategory.PRIVATE_FREE)
+                .auctionStatus(AuctionStatus.CLOSED)
+                .seller(seller)
+                .build();
 
             when(auctionRepository.findById(1L)).thenReturn(Optional.of(auction));
 
             AuctionAlreadyClosedException exception = assertThrows(AuctionAlreadyClosedException.class, () ->
-                    auctionService.closeAuction(1L));
+                auctionService.closeAuction(1L));
 
             assertThat(exception.getMessage()).isEqualTo("Auction is already closed");
             verify(auctionRepository, never()).save(any(Auction.class));
@@ -196,7 +220,7 @@ class AuctionServiceImplTest {
             when(auctionRepository.findById(1L)).thenReturn(Optional.empty());
 
             AuctionNotFoundException exception = assertThrows(AuctionNotFoundException.class, () ->
-                    auctionService.getAuctionStatus(1L));
+                auctionService.getAuctionStatus(1L));
 
             assertThat(exception.getMessage()).isEqualTo("Auction not found");
         }
@@ -234,7 +258,7 @@ class AuctionServiceImplTest {
 
             // Act & Assert: UserNotFoundException이 발생할 것으로 예상
             UserNotFoundException exception = assertThrows(UserNotFoundException.class, () ->
-                    auctionService.getAuctionsByUser(1L));
+                auctionService.getAuctionsByUser(1L));
 
             assertThat(exception.getMessage()).isEqualTo("User not found");
         }
@@ -282,21 +306,106 @@ class AuctionServiceImplTest {
             when(auctionRepository.findAuctionById(1L)).thenReturn(Optional.empty());
 
             AuctionNotFoundException exception = assertThrows(AuctionNotFoundException.class, () ->
-                    auctionService.getAuctionById(1L));
+                auctionService.getAuctionById(1L));
 
             assertThat(exception.getMessage()).isEqualTo("Auction not found");
         }
     }
 
-    private Auction createAuction(Long auctionId, User seller, AuctionStatus status) {
-        return Auction.builder()
-                .id(auctionId)
-                .auctionCategory(AuctionCategory.PUBLIC_PAID)
-                .auctionStatus(status)
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusDays(7))
-                .startingBid(BigDecimal.valueOf(100.00))
-                .seller(seller)
-                .build();
+    @Nested
+    @DisplayName("경매 유형이 []인 경매 목록 조회")
+    class GetAuctionsByAuctionCategoryTests {
+        @Test
+        @DisplayName("경매 유형 조회 : [성공]")
+        public void testGetAuctionsByAuctionCategory_Success() {
+            Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
+            Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
+            List<Auction> expectedAuctions = List.of(auction1, auction2);
+
+            when(auctionRepository.getAuctionsByFilters(condition)).thenReturn(expectedAuctions);
+            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
+                .map(AuctionResponse::of)
+                .toList();
+
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
+            assertThat(actualAuctions).isEqualTo(expectedResponses);
+        }
+
+        @Test
+        @DisplayName("경매 유형 조회 : [성공] -Criteria 사용")
+        public void testGetAuctionsByAuctionCategory_Success_Criteria() {
+            Auction auction1 = createAuction(1L, seller, AuctionStatus.PENDING);
+            Auction auction2 = createAuction(2L, seller, AuctionStatus.PENDING);
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
+            List<Auction> expectedAuctions = List.of(auction1, auction2);
+
+            when(auctionRepository.getAuctionsByFilters(condition)).thenReturn(expectedAuctions);
+            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
+                .map(AuctionResponse::of)
+                .toList();
+
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
+            assertThat(actualAuctions).isEqualTo(expectedResponses);
+        }
+
+        @Test
+        @DisplayName("경매 유형 조회 : [결과 없음]")
+        public void testGetAuctionsByAuctionCategory_AuctionNotFound() {
+            List<Auction> emptyAuctionList = List.of();
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
+
+            when(auctionRepository.getAuctionsByFilters(condition))
+                .thenReturn(emptyAuctionList);
+
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
+
+            assertThat(actualAuctions).isEmpty();
+        }
+
+        @Test
+        @DisplayName("경매 유형 조회 : [결과 없음] - Criteria 사용")
+        public void testGetAuctionsByAuctionCategory_AuctionNotFound_Criteria() {
+            List<Auction> emptyAuctionList = List.of();
+            AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
+
+            when(auctionRepository.getAuctionsByFilters(condition))
+                .thenReturn(emptyAuctionList);
+
+            List<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(condition);
+
+            assertThat(actualAuctions).isEmpty();
+        }
     }
+
+//    @Nested
+//    @DisplayName("경매 마감 시간이 24시간 이하인 경매 목록 조회")
+//    class GetAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAscTests {
+//        @Test
+//        @DisplayName("경매 마감 임박 목록 조회 : 성공")
+//        public void testGetAuctionsByEndTimeBetweenAndAuctionStatusOrderByEndTimeAsc_Success() {
+//            //given
+//            LocalDateTime fixedNow = LocalDateTime.of(2024, 9, 1, 10, 0);
+//            LocalDateTime next24Hours = fixedNow.plusHours(24);
+//
+//            List<Auction> expectedAuctions = List.of(createAuction(1L, fixedNow.plusHours(21), AuctionStatus.ACTIVE),
+//                createAuction(2L, fixedNow.plusHours(22), AuctionStatus.ACTIVE),
+//                createAuction(3L, fixedNow.plusHours(23), AuctionStatus.ACTIVE)
+//            );
+//
+//            List<AuctionResponse> expectedResponses = expectedAuctions.stream()
+//                .map(AuctionResponse::of)
+//                .toList();
+//
+//            when(auctionRepository.getAuctionsEndWith24Hours(fixedNow, next24Hours, AuctionStatus.ACTIVE)).thenReturn(expectedAuctions);
+//            List<AuctionResponse> actualResponses = auctionService.getAuctionsEndWith24Hours(fixedNow, next24Hours);
+//
+//            //then
+//            assertThat(actualResponses).isEqualTo(expectedResponses);
+//
+//
+//        }
+//    }
+
+
 }
