@@ -25,5 +25,4 @@ public interface AuctionService {
 
     Page<AuctionResponse> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition);
 
-//    Page<AuctionResponse> getAuctionsSortedByNewest(Pageable pageable);
 }

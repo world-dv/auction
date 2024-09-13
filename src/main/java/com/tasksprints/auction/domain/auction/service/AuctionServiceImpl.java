@@ -112,8 +112,4 @@ public class AuctionServiceImpl implements AuctionService {
         return auctionRepository.getAuctionsByFilters(pageable, searchCondition);
     }
 
-//    @Override
-//    public Page<AuctionResponse> getAuctionsSortedByNewest(Pageable pageable) {
-//        return auctionRepository.findAllSortedByNewest(pageable);
-//    }
 }

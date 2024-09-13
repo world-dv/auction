@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -399,33 +398,5 @@ class AuctionServiceImplTest {
             assertThat(actualAuctions.isEmpty()).isTrue();
         }
     }
-//    @Nested
-//       @DisplayName("경매 목록 최신 순 조회")
-//       class GetAuctionsSortedByNewestTests {
-//        @Test
-//        @DisplayName("경매 목록 최신 순 조회 성공")
-//        void testGetAuctionsSortedByNewest_Success() {
-//            //given
-//            List<Auction> auctions = List.of(
-//                    createAuction(1L, LocalDateTime.of(2024, 8, 1, 9, 0)),
-//                    createAuction(2L, LocalDateTime.of(2024, 8, 1, 10, 0))
-//            );
-//
-//            List<AuctionResponse> auctionResponses = auctions.stream()
-//                    .map(AuctionResponse::of)
-//                    .toList();
-//
-//            Pageable pageable = PageRequest.of(0, 10);
-//            Page<AuctionResponse> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
-//
-//            //when
-//            when(auctionRepository.findAllSortedByNewest(pageable)).thenReturn(expectedPage);
-//            Page<AuctionResponse> actualPage = auctionService.getAuctionsSortedByNewest(pageable);
-//            //then
-//            assertThat(actualPage).isEqualTo(expectedPage);
-//
-//        }
-//
-//
-//    }
+
 }

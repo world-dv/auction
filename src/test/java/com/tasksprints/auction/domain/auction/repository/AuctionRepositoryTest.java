@@ -155,27 +155,4 @@ public class AuctionRepositoryTest {
 
     }
 
-//    @Test
-//    @DisplayName("경매 목록 최신 순 조회")
-//    public void testFindAllSortedByNewest() {
-//        //given
-//        Auction auction1 = createAuction(seller, LocalDateTime.of(2024, 8, 2, 10, 0));
-//        Auction auction2 = createAuction(seller, LocalDateTime.of(2024, 8, 1, 10, 0));
-//
-//        auctionRepository.saveAll(List.of(auction1, auction2));
-//
-//        Pageable pageable = PageRequest.of(0, 10);
-//
-//        //when
-//        Page<AuctionResponse> auctions = auctionRepository.findAllSortedByNewest(pageable);
-//
-//        //then
-//        assertThat(auctions).hasSize(2);
-//
-//        assertThat(auctions.getContent().get(0).getStartTime()).isEqualTo(auction2.getStartTime());
-//        assertThat(auctions.getContent().get(1).getStartTime()).isEqualTo(auction1.getStartTime());
-//
-//
-//    }
-
 }
