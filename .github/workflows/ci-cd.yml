@@ -1,13 +1,19 @@
 name: Java CI/CD with Gradle
 
 on:
+  pull_request:
+    branches:
+      - 'develop'
+      - 'main'
+
   push:
     branches:
       - 'develop'
-      - 'main' # main 브랜치에 병합될 때 트리거
+      - 'main'
 
 jobs:
   ci-pipeline:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +39,7 @@ jobs:
         run: ./gradlew test
 
   cd-pipeline:
-    if: github.ref == 'refs/heads/main' # main 브랜치에만 배포 실행
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: SSH로 NCP 접속하기
