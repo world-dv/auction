@@ -16,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,8 +82,8 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(AuctionRequest.SearchCondition searchCondition) {
-        List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(searchCondition);
+    public ResponseEntity<ApiResult<Page<AuctionResponse>>> getAllAuctions(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
+        Page<AuctionResponse> auctions = auctionService.getAuctionsByFilter(pageable, searchCondition);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
 

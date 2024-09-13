@@ -13,6 +13,8 @@ import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -106,13 +108,12 @@ public class AuctionServiceImpl implements AuctionService {
      * NULL 안정성 보장을 해줬음
      **/
     @Override
-    public List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition) {
-        List<Auction> foundAuctions = auctionRepository.getAuctionsByFilters(
-            searchCondition
-        );
-
-        return foundAuctions.stream()
-            .map(AuctionResponse::of)
-            .toList();
+    public Page<AuctionResponse> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
+        return auctionRepository.getAuctionsByFilters(pageable, searchCondition);
     }
+
+//    @Override
+//    public Page<AuctionResponse> getAuctionsSortedByNewest(Pageable pageable) {
+//        return auctionRepository.findAllSortedByNewest(pageable);
+//    }
 }
