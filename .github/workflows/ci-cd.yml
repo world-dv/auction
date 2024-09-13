@@ -54,6 +54,7 @@ jobs:
             cd auction
             git pull origin develop
             chmod 777 ./gradlew
+            ./gradlew editorconfigFormat
             ./gradlew build
             kill -9 $(lsof -t -i:8080) || echo "No process on 8080"
             nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
