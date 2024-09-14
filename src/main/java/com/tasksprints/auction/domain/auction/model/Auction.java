@@ -88,6 +88,9 @@ public class Auction extends BaseEntity {
     }
 
     public void incrementViewCount() {
+        if (viewCount == null) {
+            viewCount = 0L;
+        }
         this.viewCount += 1;
     }
 
