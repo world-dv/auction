@@ -1,20 +1,27 @@
 package com.tasksprints.auction.domain.product;
 
 import com.tasksprints.auction.common.config.QueryDslConfig;
+import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
+import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.product.model.Product;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -98,6 +105,63 @@ public class ProductRepositoryTest {
         Optional<Product> deletedProduct = productRepository.findById(product.getId());
         assertTrue(deletedProduct.isEmpty());
     }
+    @Deprecated
+    @Test
+    @DisplayName("queryDSL 검색 필터로 조회")
+    public void testFindAllUsingProductCategory() {
+        //given
+        Auction auction1 = createAuction(owner, AuctionStatus.PENDING);
+        Auction auction2 = createAuction(owner, AuctionStatus.ACTIVE);
+
+        Product product1 = createProduct("product1", "description1", ProductCategory.TV, owner, auction1);
+        Product product2 = createProduct("product2", "description2", ProductCategory.DSLR, owner, auction2);
+
+        product1.addAuction(auction1);
+        product2.addAuction(auction2);
+
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(
+            null, ProductCategory.TV, null, null, null, null, AuctionStatus.PENDING, null
+        );
+        Pageable pageable = PageRequest.of(0, 10);
+
+        //when
+        Page<AuctionResponse> auctionsByFilters = auctionRepository.getAuctionsByFilters(pageable, condition);
+
+        //then
+        assertThat(auctionsByFilters).hasSize(1);
+        assertThat(auctionsByFilters.getContent().get(0).getProductCategory()).isEqualTo("TV");
+        assertThat(auctionsByFilters.getContent().get(0).getStatus()).isEqualTo("PENDING");
+
+
+    }
+    @Deprecated
+    @Test
+    @DisplayName("상품 카테고리로 경매를 조회 : Condition 쿼리스트링이 넘어온 경우")
+    public void testFindAllUsingConditionFilter() {
+        //given
+        Auction auction1 = createAuction(owner, AuctionStatus.ACTIVE);
+        Auction auction2 = createAuction(owner, AuctionStatus.PENDING);
+
+        Product product1 = createProduct("product1", "description1", ProductCategory.TV, owner, auction1);
+        Product product2 = createProduct("product2", "description2", ProductCategory.DSLR, owner, auction2);
+
+        product1.addAuction(auction1);
+        product2.addAuction(auction2);
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        AuctionRequest.SearchCondition searchCondition = new AuctionRequest.SearchCondition(null, null, null,
+            null, null, null,
+            AuctionStatus.PENDING, null)
+            ;
+        //when
+        Page<AuctionResponse> auctionsByCategory = auctionRepository.getAuctionsByCategory(pageable, searchCondition, ProductCategory.DSLR);
+
+        //then
+        assertThat(auctionsByCategory).hasSize(1);
+        assertThat(auctionsByCategory.getContent().get(0).getProductCategory()).isEqualTo("DSLR");
+    }
+
 
     // Helper methods to minimize code duplication
     private User createUser(String name, String nickName, String email) {
@@ -109,7 +173,6 @@ public class ProductRepositoryTest {
             .build();
         return userRepository.save(user);
     }
-
     private Auction createAuction(User owner, BigDecimal startingBid, LocalDateTime startTime, LocalDateTime endTime) {
         Auction auction = Auction.builder()
             .startingBid(startingBid)
@@ -122,12 +185,35 @@ public class ProductRepositoryTest {
         return auctionRepository.save(auction);
     }
 
+    private Auction createAuction(User owner, AuctionStatus auctionStatus) {
+        Auction auction = Auction.builder()
+            .startingBid(BigDecimal.valueOf(100.00))
+            .startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.now().plusHours(1))
+            .auctionStatus(auctionStatus)
+            .auctionCategory(AuctionCategory.PRIVATE_FREE)
+            .seller(owner)
+            .build();
+        return auctionRepository.save(auction);
+    }
+
     private Product createProduct(String name, String description, User owner, Auction auction) {
         Product product = Product.builder()
             .name(name)
             .description(description)
             .owner(owner)
             .auction(auction)
+            .build();
+        return productRepository.save(product);
+    }
+
+    private Product createProduct(String name, String description, ProductCategory category, User owner, Auction auction) {
+        Product product = Product.builder()
+            .name(name)
+            .description(description)
+            .owner(owner)
+            .auction(auction)
+            .category(category)
             .build();
         return productRepository.save(product);
     }

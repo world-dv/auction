@@ -78,7 +78,7 @@ public class Auction extends BaseEntity {
     }
 
     public void addProduct(Product product) {
-        product.addAuction(this);
+        //product.addAuction(this); product에서 auction을 추가하고 있어서 중복
         this.product = product;
     }
 

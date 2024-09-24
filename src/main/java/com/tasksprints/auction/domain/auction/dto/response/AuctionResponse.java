@@ -23,6 +23,7 @@ public class AuctionResponse {
     private Long viewCount;
     private Long sellerId;
     private String sellerNickName;
+    private String productCategory;
 
 
     public static AuctionResponse of(Auction auction) {

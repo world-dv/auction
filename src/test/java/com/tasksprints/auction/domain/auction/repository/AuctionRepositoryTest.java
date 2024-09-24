@@ -6,6 +6,9 @@ import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionCategory;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
+import com.tasksprints.auction.domain.product.model.Product;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
+import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +40,9 @@ public class AuctionRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     private User seller;
 
@@ -70,6 +76,17 @@ public class AuctionRepositoryTest {
             AuctionCategory.PUBLIC_PAID,
             AuctionStatus.PENDING,
             seller
+        );
+    }
+
+    private Product createProduct(User user, Auction auction, String productCategory) {
+        return Product.create(
+            "testName",
+            "testDescription",
+            user,
+            auction,
+            productCategory,
+            null
         );
     }
 
@@ -112,7 +129,7 @@ public class AuctionRepositoryTest {
 
 
     }
-
+    @Deprecated
     @Test
     @DisplayName("경매 유형이 []인 경매 목록 조회")
     public void testFindAuctionsByAuctionCategory() {
@@ -120,10 +137,14 @@ public class AuctionRepositoryTest {
         Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
         Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
         Auction auction3 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, null, null, null, null, null, null, null);
-        auctionRepository.save(auction1);
-        auctionRepository.save(auction2);
-        auctionRepository.save(auction3);
+        auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+
+        Product product1 = createProduct(seller, auction1, "TV");
+        Product product2 = createProduct(seller, auction2, "TV");
+        Product product3 = createProduct(seller, auction3, "TV");
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_PAID, ProductCategory.TV, null, null, null, null, null, null);
 
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -133,16 +154,22 @@ public class AuctionRepositoryTest {
         //then
         assertThat(auctions).hasSize(2);
         assertThat(auctions.getContent()).allMatch(auction -> auction.getCategory().equals(AuctionCategory.PUBLIC_PAID.name()));
+        assertThat(auctions.getContent()).allMatch(auction -> auction.getProductCategory().equals(ProductCategory.TV.name()));
     }
-
     @Test
     @DisplayName("QueryDSL 필터를 통해서 경매 목록 조회")
     public void testFindAllUsingFilter() {
         Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
         Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
-        auctionRepository.save(auction1);
-        auctionRepository.save(auction2);
+
+        auctionRepository.saveAll(List.of(auction1, auction2));
+
+        Product product1 = createProduct(seller, auction1, "TV");
+        Product product2 = createProduct(seller, auction2, "TV");
+
+        productRepository.saveAll(List.of(product1, product2));
+
+        AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, ProductCategory.TV, null, null, null, null, null, null);
 
         Pageable pageable = PageRequest.of(0, 10);
         Page<AuctionResponse> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
@@ -150,7 +177,7 @@ public class AuctionRepositoryTest {
 
         assertThat(auctions).hasSize(1);
         assertThat(auctions.getContent().get(0).getCategory()).isEqualTo(AuctionCategory.PUBLIC_FREE.name());
-        assertThat(auctions.getContent().get(0).getCategory()).isNotEqualTo(AuctionCategory.PUBLIC_PAID.name());
+        assertThat(auctions.getContent().get(0).getProductCategory()).isEqualTo(ProductCategory.TV.name());
 
 
     }

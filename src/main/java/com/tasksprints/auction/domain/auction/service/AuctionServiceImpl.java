@@ -8,6 +8,7 @@ import com.tasksprints.auction.domain.auction.exception.InvalidAuctionTimeExcept
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
@@ -111,6 +112,12 @@ public class AuctionServiceImpl implements AuctionService {
     @Override
     public Page<AuctionResponse> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
         return auctionRepository.getAuctionsByFilters(pageable, searchCondition);
+    }
+
+    @Deprecated
+    @Override
+    public Page<AuctionResponse> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category) {
+        return auctionRepository.getAuctionsByCategory(pageable, searchCondition, category);
     }
 
 }

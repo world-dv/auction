@@ -3,9 +3,11 @@ package com.tasksprints.auction.domain.auction.repository.support;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,43 +25,115 @@ import static com.tasksprints.auction.domain.user.model.QUser.user;
 public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository {
     private final JPAQueryFactory queryFactory;
 
+//    public Page<AuctionResponse> getAuctionsByFilters(Pageable pageable, AuctionRequest.SearchCondition condition) {
+//        BooleanBuilder builder = buildSearchCondition(condition);
+//
+//        OrderSpecifier<?> sortOrder = getSortOrder(condition);
+//        var query = queryFactory
+//            .select(Projections.constructor(AuctionResponse.class,
+//                auction.id,
+//                auction.startTime,
+//                auction.endTime,
+//                auction.auctionCategory.stringValue(),
+//                auction.auctionStatus.stringValue(),
+//                auction.startingBid,
+//                auction.viewCount,
+//                auction.seller.id.as("sellerId"),
+//                auction.seller.nickName.as("sellerNickName"),
+//                product.category.stringValue().as("productCategory")
+//            ))
+//            .from(auction)
+//            .leftJoin(auction.product, product)
+//            .leftJoin(auction.seller, user)
+//            .where(builder);
+//
+//
+//        // 페이징
+//        query = query.offset(pageable.getOffset())
+//            .limit(pageable.getPageSize());
+//
+//        List<AuctionResponse> result = query.fetch();
+//
+//        //int 오버플로 주의
+//        int total = queryFactory
+//            .selectFrom(product)
+//            .where(builder)
+//            .fetch().size();
+//
+//        return new PageImpl<>(result, pageable, total);
+//    }
     public Page<AuctionResponse> getAuctionsByFilters(Pageable pageable, AuctionRequest.SearchCondition condition) {
         BooleanBuilder builder = buildSearchCondition(condition);
-
-        var query = queryFactory
-                .select(Projections.constructor(AuctionResponse.class,
-                        auction.id,
-                        auction.startTime,
-                        auction.endTime,
-                        auction.auctionCategory.stringValue(),
-                        auction.auctionStatus.stringValue(),
-                        auction.startingBid,
-                        auction.viewCount,
-                        auction.seller.id.as("sellerId"),
-                        auction.seller.nickName.as("sellerNickName")
-                ))
-                .from(auction)
-                .leftJoin(auction.product, product)
-                .leftJoin(auction.seller, user)
-                .where(builder);
-
         OrderSpecifier<?> sortOrder = getSortOrder(condition);
-        if (sortOrder != null) {
-            query = query.orderBy(sortOrder);
-        }
-        // 페이징
-        query = query.offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
-
+        JPAQuery<AuctionResponse> query = buildQueryWithPaginationAndSorting(builder, pageable, sortOrder);
         List<AuctionResponse> result = query.fetch();
 
         //int 오버플로 주의
+        int total = queryFactory
+            .selectFrom(product)
+            .where(builder)
+            .fetch().size();
+
+        return new PageImpl<>(result, pageable, total);
+    }
+    private JPAQuery<AuctionResponse> buildQueryWithPaginationAndSorting(BooleanBuilder builder, Pageable pageable, OrderSpecifier<?> sortOrder) {
+        var query = queryFactory
+            .select(Projections.constructor(AuctionResponse.class,
+                auction.id,
+                auction.startTime,
+                auction.endTime,
+                auction.auctionCategory.stringValue(),
+                auction.auctionStatus.stringValue(),
+                auction.startingBid,
+                auction.viewCount,
+                auction.seller.id.as("sellerId"),
+                auction.seller.nickName.as("sellerNickName"),
+//                product.owner.id.as("sellerId"),
+//                product.owner.nickName.as("sellerNickName"),
+                auction.product.category.stringValue().as("productCategory")
+//                product.category.stringValue().as("productCategory")
+            ))
+            .from(auction)
+            .leftJoin(auction.product, product)
+            .leftJoin(auction.seller, user)
+//            .from(product)
+//            .leftJoin(product.auction, auction)
+//            .leftJoin(product.owner, user)
+            .where(builder)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize());
+
+        if (sortOrder != null) {
+            query.orderBy(sortOrder);
+        }
+
+        return query;
+    }
+
+    @Deprecated
+    public Page<AuctionResponse> getAuctionsByCategory(Pageable pageable,
+                                                       AuctionRequest.SearchCondition condition,
+                                                       ProductCategory category) {
+
+        BooleanBuilder builder = buildSearchCondition(condition);
+        filterByCategory(category, builder);
+        OrderSpecifier<?> sortOrder = getSortOrder(condition);
+        JPAQuery<AuctionResponse> query = buildQueryWithPaginationAndSorting(builder, pageable, sortOrder);
+        List<AuctionResponse> result = query.fetch();
+
         int total = queryFactory
             .selectFrom(auction)
             .where(builder)
             .fetch().size();
 
         return new PageImpl<>(result, pageable, total);
+
+    }
+    @Deprecated
+    private void filterByCategory(ProductCategory category, BooleanBuilder builder) {
+        if (category != null) {
+            builder.and(product.category.eq(category));
+        }
     }
 
 
