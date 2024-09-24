@@ -70,7 +70,7 @@ public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository 
 
         //int 오버플로 주의
         int total = queryFactory
-            .selectFrom(product)
+            .selectFrom(auction)
             .where(builder)
             .fetch().size();
 
