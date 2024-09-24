@@ -1,19 +1,13 @@
 name: Java CI/CD with Gradle
 
 on:
-  pull_request:
-    branches:
-      - 'develop'
-      - 'main'
-
   push:
     branches:
       - 'develop'
-      - 'main'
+      - 'main' # main 브랜치에 병합될 때 트리거
 
 jobs:
   ci-pipeline:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
@@ -38,8 +32,8 @@ jobs:
       - name: Test with Gradle
         run: ./gradlew test
 
-  cd-pipeline:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+  deploy:
+    if: github.ref == 'refs/heads/main' # main 브랜치에만 배포 실행
     runs-on: ubuntu-latest
     steps:
       - name: SSH로 NCP 접속하기
@@ -52,9 +46,8 @@ jobs:
           script_stop: true
           script: |
             cd auction
-            git pull origin develop
+            git pull knuk ttest
             chmod 777 ./gradlew
-            ./gradlew editorconfigFormat
             ./gradlew build
             kill -9 $(lsof -t -i:8080) || echo "No process on 8080"
             nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
