@@ -328,17 +328,17 @@ class AuctionServiceImplTest {
                 createAuction(1L, seller, AuctionStatus.PENDING),
                 createAuction(2L, seller, AuctionStatus.PENDING)
             );
-            List<AuctionResponse> auctionResponses = auctions
+            List<AuctionResponse.Details> auctionResponses = auctions
                 .stream()
-                .map(AuctionResponse::of)
+                .map(AuctionResponse.Details::of)
                 .toList();
 
             Pageable pageable = PageRequest.of(0, 10);
-            Page<AuctionResponse> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
+            Page<AuctionResponse.Details> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
 
             when(auctionRepository.getAuctionsByFilters(pageable, condition)).thenReturn(expectedPage);
 
-            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
+            Page<AuctionResponse.Details> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
             assertThat(actualAuctions).isEqualTo(expectedPage);
         }
 
@@ -352,32 +352,32 @@ class AuctionServiceImplTest {
                 createAuction(2L, seller, AuctionStatus.PENDING)
             );
 
-            List<AuctionResponse> auctionResponses = auctions
+            List<AuctionResponse.Details> auctionResponses = auctions
                 .stream()
-                .map(AuctionResponse::of)
+                .map(AuctionResponse.Details::of)
                 .toList();
 
             Pageable pageable = PageRequest.of(0, 10);
-            Page<AuctionResponse> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
+            Page<AuctionResponse.Details> expectedPage = new PageImpl<>(auctionResponses, pageable, auctionResponses.size());
 
             when(auctionRepository.getAuctionsByFilters(pageable, condition)).thenReturn(expectedPage);
 
-            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
+            Page<AuctionResponse.Details> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
             assertThat(actualAuctions).isEqualTo(expectedPage);
         }
 
         @Test
         @DisplayName("경매 유형 조회 : [결과 없음]")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound() {
-            List<AuctionResponse> emptyAuctionList = List.of();
+            List<AuctionResponse.Details> emptyAuctionList = List.of();
             AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
 
             Pageable pageable = PageRequest.of(0, 10);
-            Page<AuctionResponse> expectedPage = new PageImpl<>(emptyAuctionList, pageable, 0);
+            Page<AuctionResponse.Details> expectedPage = new PageImpl<>(emptyAuctionList, pageable, 0);
             when(auctionRepository.getAuctionsByFilters(pageable, condition))
                 .thenReturn(expectedPage);
 
-            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
+            Page<AuctionResponse.Details> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
 
             assertThat(actualAuctions.isEmpty()).isTrue();
         }
@@ -385,15 +385,15 @@ class AuctionServiceImplTest {
         @Test
         @DisplayName("경매 유형 조회 : [결과 없음] - Criteria 사용")
         public void testGetAuctionsByAuctionCategory_AuctionNotFound_Criteria() {
-            List<AuctionResponse> emptyAuctionList = List.of();
+            List<AuctionResponse.Details> emptyAuctionList = List.of();
             AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, null, null, null, null, null, null, null);
 
             Pageable pageable = PageRequest.of(0, 10);
-            Page<AuctionResponse> expectedPage = new PageImpl<>(emptyAuctionList, pageable, 0);
+            Page<AuctionResponse.Details> expectedPage = new PageImpl<>(emptyAuctionList, pageable, 0);
             when(auctionRepository.getAuctionsByFilters(pageable, condition))
                 .thenReturn(expectedPage);
 
-            Page<AuctionResponse> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
+            Page<AuctionResponse.Details> actualAuctions = auctionService.getAuctionsByFilter(pageable, condition);
 
             assertThat(actualAuctions.isEmpty()).isTrue();
         }

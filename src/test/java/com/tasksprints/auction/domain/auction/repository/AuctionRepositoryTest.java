@@ -149,7 +149,7 @@ public class AuctionRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<AuctionResponse> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
+        Page<AuctionResponse.Details> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
 
         //then
         assertThat(auctions).hasSize(2);
@@ -172,7 +172,7 @@ public class AuctionRepositoryTest {
         AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, ProductCategory.TV, null, null, null, null, null, null);
 
         Pageable pageable = PageRequest.of(0, 10);
-        Page<AuctionResponse> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
+        Page<AuctionResponse.Details> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
         log.info(auctions.toString());
 
         assertThat(auctions).hasSize(1);

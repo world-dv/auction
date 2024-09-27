@@ -24,8 +24,8 @@ public interface AuctionService {
 
     AuctionResponse getAuctionById(Long auctionId);
 
-    Page<AuctionResponse> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition);
+    Page<AuctionResponse.Details> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition);
 
     @Deprecated
-    Page<AuctionResponse> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category);
+    Page<AuctionResponse.Details> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category);
 }

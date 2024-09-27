@@ -83,8 +83,8 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<Page<AuctionResponse>>> getAllAuctions(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
-        Page<AuctionResponse> auctions = auctionService.getAuctionsByFilter(pageable, searchCondition);
+    public ResponseEntity<ApiResult<Page<AuctionResponse.Details>>> getAllAuctions(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
+        Page<AuctionResponse.Details> auctions = auctionService.getAuctionsByFilter(pageable, searchCondition);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
 
@@ -100,8 +100,8 @@ public class AuctionController {
     @GetMapping("/category/{category}")
     @Operation(summary = "Get auctions by ProductCategory", description = "Retrieve all auction by its ProductCategory.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<Page<AuctionResponse>>> getAuctionByProductCategory(Pageable pageable, @PathVariable String category, AuctionRequest.SearchCondition searchCondition) {
-        Page<AuctionResponse> auctions = auctionService.getAuctionsByProductCategory(pageable, searchCondition, ProductCategory.fromDisplayName(category));
+    public ResponseEntity<ApiResult<Page<AuctionResponse.Details>>> getAuctionByProductCategory(Pageable pageable, @PathVariable String category, AuctionRequest.SearchCondition searchCondition) {
+        Page<AuctionResponse.Details> auctions = auctionService.getAuctionsByProductCategory(pageable, searchCondition, ProductCategory.fromDisplayName(category));
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_RETRIEVED, auctions));
     }
 

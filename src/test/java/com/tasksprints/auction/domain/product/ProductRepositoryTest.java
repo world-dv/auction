@@ -125,7 +125,7 @@ public class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<AuctionResponse> auctionsByFilters = auctionRepository.getAuctionsByFilters(pageable, condition);
+        Page<AuctionResponse.Details> auctionsByFilters = auctionRepository.getAuctionsByFilters(pageable, condition);
 
         //then
         assertThat(auctionsByFilters).hasSize(1);
@@ -155,7 +155,7 @@ public class ProductRepositoryTest {
             AuctionStatus.PENDING, null)
             ;
         //when
-        Page<AuctionResponse> auctionsByCategory = auctionRepository.getAuctionsByCategory(pageable, searchCondition, ProductCategory.DSLR);
+        Page<AuctionResponse.Details> auctionsByCategory = auctionRepository.getAuctionsByCategory(pageable, searchCondition, ProductCategory.DSLR);
 
         //then
         assertThat(auctionsByCategory).hasSize(1);

@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface AuctionCriteriaRepository {
-    Page<AuctionResponse> getAuctionsByFilters(Pageable pageable, AuctionRequest.SearchCondition searchCondition);
+    Page<AuctionResponse.Details> getAuctionsByFilters(Pageable pageable, AuctionRequest.SearchCondition searchCondition);
     @Deprecated
-    Page<AuctionResponse> getAuctionsByCategory(Pageable pageable,
+    Page<AuctionResponse.Details> getAuctionsByCategory(Pageable pageable,
                                                 AuctionRequest.SearchCondition searchCondition,
                                                 ProductCategory category);
 }

@@ -110,13 +110,13 @@ public class AuctionServiceImpl implements AuctionService {
      * NULL 안정성 보장을 해줬음
      **/
     @Override
-    public Page<AuctionResponse> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
+    public Page<AuctionResponse.Details> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
         return auctionRepository.getAuctionsByFilters(pageable, searchCondition);
     }
 
     @Deprecated
     @Override
-    public Page<AuctionResponse> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category) {
+    public Page<AuctionResponse.Details> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category) {
         return auctionRepository.getAuctionsByCategory(pageable, searchCondition, category);
     }
 

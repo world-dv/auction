@@ -118,9 +118,9 @@ public class AuctionControllerTest {
     @DisplayName("QueryString을 통한 경매 목록 조회")
     public void testFindAuctionByUsingQueryString_Success() throws Exception {
         // Given
-        List<AuctionResponse> auctionResponseList = new ArrayList<>();
+        List<AuctionResponse.Details> auctionResponseList = new ArrayList<>();
         Pageable pageable = PageRequest.of(0, 10);
-        Page<AuctionResponse> pageAuctionResponse = new PageImpl<>(auctionResponseList, pageable, 0);
+        Page<AuctionResponse.Details> pageAuctionResponse = new PageImpl<>(auctionResponseList, pageable, 0);
         when(auctionService.getAuctionsByFilter(any(),any())).thenReturn(pageAuctionResponse);
 
         // When & Then
