@@ -68,13 +68,13 @@ public class AuctionRepositoryTest {
         );
     }
 
-    private Auction createAuction(User seller, LocalDateTime startTime) {
+    private Auction createAuction(User seller, AuctionCategory auctionCategory) {
         return Auction.create(
-            startTime,
+            LocalDateTime.of(2024, 8, 1, 10, 0),
             LocalDateTime.of(2024, 9, 1, 10, 0),
             BigDecimal.valueOf(100.00),
-            AuctionCategory.PUBLIC_PAID,
-            AuctionStatus.PENDING,
+            auctionCategory,
+            AuctionStatus.ACTIVE,
             seller
         );
     }
@@ -134,9 +134,9 @@ public class AuctionRepositoryTest {
     @DisplayName("경매 유형이 []인 경매 목록 조회")
     public void testFindAuctionsByAuctionCategory() {
         //given
-        Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
-        Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-        Auction auction3 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
+        Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE);
+        Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID);
+        Auction auction3 = createAuction(seller, AuctionCategory.PUBLIC_PAID);
         auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
         Product product1 = createProduct(seller, auction1, "TV");
@@ -149,35 +149,36 @@ public class AuctionRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<AuctionResponse.Details> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
+        Page<Auction> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
 
         //then
         assertThat(auctions).hasSize(2);
-        assertThat(auctions.getContent()).allMatch(auction -> auction.getCategory().equals(AuctionCategory.PUBLIC_PAID.name()));
-        assertThat(auctions.getContent()).allMatch(auction -> auction.getProductCategory().equals(ProductCategory.TV.name()));
+        assertThat(auctions.getContent()).allMatch(auction -> auction.getAuctionCategory().equals(AuctionCategory.PUBLIC_PAID));
+        assertThat(auctions.getContent()).allMatch(auction -> auction.getProduct().getCategory().equals(ProductCategory.TV));
     }
     @Test
     @DisplayName("QueryDSL 필터를 통해서 경매 목록 조회")
     public void testFindAllUsingFilter() {
-        Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE, AuctionStatus.ACTIVE);
-        Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID, AuctionStatus.PENDING);
-
+        //given
+        Auction auction1 = createAuction(seller, AuctionCategory.PUBLIC_FREE);
+        Auction auction2 = createAuction(seller, AuctionCategory.PUBLIC_PAID);
         auctionRepository.saveAll(List.of(auction1, auction2));
 
         Product product1 = createProduct(seller, auction1, "TV");
         Product product2 = createProduct(seller, auction2, "TV");
-
         productRepository.saveAll(List.of(product1, product2));
 
         AuctionRequest.SearchCondition condition = new AuctionRequest.SearchCondition(AuctionCategory.PUBLIC_FREE, ProductCategory.TV, null, null, null, null, null, null);
-
         Pageable pageable = PageRequest.of(0, 10);
-        Page<AuctionResponse.Details> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
+
+        //when
+        Page<Auction> auctions = auctionRepository.getAuctionsByFilters(pageable, condition);
         log.info(auctions.toString());
 
+        //then
         assertThat(auctions).hasSize(1);
-        assertThat(auctions.getContent().get(0).getCategory()).isEqualTo(AuctionCategory.PUBLIC_FREE.name());
-        assertThat(auctions.getContent().get(0).getProductCategory()).isEqualTo(ProductCategory.TV.name());
+        assertThat(auctions.getContent().get(0).getAuctionCategory()).isEqualTo(AuctionCategory.PUBLIC_FREE);
+        assertThat(auctions.getContent().get(0).getProduct().getCategory()).isEqualTo(ProductCategory.TV);
 
 
     }

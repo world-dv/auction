@@ -9,6 +9,7 @@ import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.product.model.Product;
 import com.tasksprints.auction.domain.product.model.ProductCategory;
+import com.tasksprints.auction.domain.product.model.ProductImage;
 import com.tasksprints.auction.domain.product.repository.ProductRepository;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
@@ -125,12 +126,12 @@ public class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<AuctionResponse.Details> auctionsByFilters = auctionRepository.getAuctionsByFilters(pageable, condition);
+        Page<Auction> auctionsByFilters = auctionRepository.getAuctionsByFilters(pageable, condition);
 
         //then
         assertThat(auctionsByFilters).hasSize(1);
-        assertThat(auctionsByFilters.getContent().get(0).getProductCategory()).isEqualTo("TV");
-        assertThat(auctionsByFilters.getContent().get(0).getStatus()).isEqualTo("PENDING");
+        assertThat(auctionsByFilters.getContent().get(0).getProduct().getCategory()).isEqualTo(ProductCategory.TV);
+        assertThat(auctionsByFilters.getContent().get(0).getAuctionStatus()).isEqualTo(AuctionStatus.PENDING);
 
 
     }
@@ -155,11 +156,11 @@ public class ProductRepositoryTest {
             AuctionStatus.PENDING, null)
             ;
         //when
-        Page<AuctionResponse.Details> auctionsByCategory = auctionRepository.getAuctionsByCategory(pageable, searchCondition, ProductCategory.DSLR);
+        Page<Auction> auctionsByCategory = auctionRepository.getAuctionsByCategory(pageable, searchCondition, ProductCategory.DSLR);
 
         //then
         assertThat(auctionsByCategory).hasSize(1);
-        assertThat(auctionsByCategory.getContent().get(0).getProductCategory()).isEqualTo("DSLR");
+        assertThat(auctionsByCategory.getContent().get(0).getProduct().getCategory()).isEqualTo(ProductCategory.DSLR);
     }
 
 

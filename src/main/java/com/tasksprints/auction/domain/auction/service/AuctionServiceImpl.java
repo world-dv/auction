@@ -111,13 +111,15 @@ public class AuctionServiceImpl implements AuctionService {
      **/
     @Override
     public Page<AuctionResponse.Details> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
-        return auctionRepository.getAuctionsByFilters(pageable, searchCondition);
+        Page<Auction> auctions = auctionRepository.getAuctionsByFilters(pageable, searchCondition);
+        return auctions.map(AuctionResponse.Details::of);
     }
 
     @Deprecated
     @Override
     public Page<AuctionResponse.Details> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category) {
-        return auctionRepository.getAuctionsByCategory(pageable, searchCondition, category);
+        Page<Auction> auctions = auctionRepository.getAuctionsByFilters(pageable, searchCondition);
+        return auctions.map(AuctionResponse.Details::of);
     }
 
 }
