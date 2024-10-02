@@ -37,6 +37,7 @@ public class Product extends BaseEntity {
 
     @OneToOne
     //mappedby
+    @JoinColumn(name = "auction_id")
     private Auction auction;
 
     @OneToMany
@@ -55,7 +56,9 @@ public class Product extends BaseEntity {
     }
 
     public void addAuction(Auction auction) {
+        //양방향 매핑
         this.auction = auction;
+        auction.addProduct(this);
     }
 
     public void initProductImageList(List<ProductImage> productImageList) {
