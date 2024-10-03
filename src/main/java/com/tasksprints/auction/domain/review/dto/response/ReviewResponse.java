@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
 public class ReviewResponse {
     Integer rating;
     String content;
+
     public static ReviewResponse of(Review review) {
         return ReviewResponse.builder()
-                .rating(review.getRating())
-                .content(review.getContent())
-                .build();
+            .rating(review.getRating())
+            .content(review.getContent())
+            .build();
     }
 }
