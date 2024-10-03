@@ -47,7 +47,7 @@ public class AuctionInitializer implements ApplicationRunner {
     }
 
     private void createDummyProduct(User user, Auction auction) {
-        ProductImage productImage = ProductImage.create("/url");
+        ProductImage productImage = ProductImage.create("https://sb.kaleidousercontent.com/67418/960x650/77e3d95435/e-commerce-1.png");
         // Save the productImage to avoid the TransientObjectException
         productImageRepository.save(productImage);
 
