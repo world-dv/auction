@@ -2,6 +2,9 @@ package com.tasksprints.auction.domain.auction.service;
 
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -21,6 +24,8 @@ public interface AuctionService {
 
     AuctionResponse getAuctionById(Long auctionId);
 
-    List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition);
+    Page<AuctionResponse.Details> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition);
 
+    @Deprecated
+    Page<AuctionResponse.Details> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category);
 }

@@ -5,37 +5,85 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tasksprints.auction.domain.auction.dto.request.AuctionRequest;
 import com.tasksprints.auction.domain.auction.model.Auction;
-import com.tasksprints.auction.domain.auction.model.QAuction;
-import com.tasksprints.auction.domain.product.model.QProduct;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.tasksprints.auction.domain.auction.model.QAuction.auction;
+import static com.tasksprints.auction.domain.product.model.QProduct.product;
+import static com.tasksprints.auction.domain.user.model.QUser.user;
 
 @RequiredArgsConstructor
 @Repository
 public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository {
     private final JPAQueryFactory queryFactory;
 
-    public List<Auction> getAuctionsByFilters(AuctionRequest.SearchCondition condition) {
-        QAuction auction = QAuction.auction;
-        QProduct product = QProduct.product;
+    public Page<Auction> getAuctionsByFilters(Pageable pageable, AuctionRequest.SearchCondition condition) {
+        BooleanBuilder builder = buildSearchCondition(condition);
+        OrderSpecifier<?> sortOrder = getSortOrder(condition);
+        List<Auction> result = buildQueryWithPaginationAndSorting(builder, pageable, sortOrder);
 
-        BooleanBuilder builder = buildSearchCondition(condition, auction, product);
+        // int 오버플로 주의
+//        int total = queryFactory
+//            .selectFrom(auction)
+//            .where(builder)
+//            .fetch().size();
 
-        var query = queryFactory.selectFrom(auction)
-            .leftJoin(auction.product, product)
-            .where(builder);
+        long total = result.size();
 
-        OrderSpecifier<?> sortOrder = getSortOrder(condition, auction);
-        if (sortOrder != null) {
-            query = query.orderBy(sortOrder);
-        }
-
-        return query.fetch();
+        return new PageImpl<>(result, pageable, total);
     }
 
-    private BooleanBuilder buildSearchCondition(AuctionRequest.SearchCondition condition, QAuction auction, QProduct product) {
+    private List<Auction> buildQueryWithPaginationAndSorting(BooleanBuilder builder, Pageable pageable, OrderSpecifier<?> sortOrder) {
+        var mainQuery = queryFactory
+            .selectFrom(auction)
+            .leftJoin(auction.product, product)
+            .fetchJoin()
+            .leftJoin(auction.seller, user)
+            .fetchJoin()
+            .where(builder)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize());
+
+        if (sortOrder != null) {
+            mainQuery.orderBy(sortOrder);
+        }
+
+        return mainQuery.fetch();
+    }
+
+    @Deprecated
+    public Page<Auction> getAuctionsByCategory(Pageable pageable,
+                                                       AuctionRequest.SearchCondition condition,
+                                                       ProductCategory category) {
+
+        BooleanBuilder builder = buildSearchCondition(condition);
+        filterByCategory(category, builder);
+        OrderSpecifier<?> sortOrder = getSortOrder(condition);
+        List<Auction> result = buildQueryWithPaginationAndSorting(builder, pageable, sortOrder);
+
+        int total = queryFactory
+            .selectFrom(auction)
+            .where(builder)
+            .fetch().size();
+
+        return new PageImpl<>(result, pageable, total);
+
+    }
+    @Deprecated
+    private void filterByCategory(ProductCategory category, BooleanBuilder builder) {
+        if (category != null) {
+            builder.and(product.category.eq(category));
+        }
+    }
+
+
+    private BooleanBuilder buildSearchCondition(AuctionRequest.SearchCondition condition) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (condition.getAuctionCategory() != null) {
@@ -57,15 +105,20 @@ public class AuctionCriteriaRepositoryImpl implements AuctionCriteriaRepository 
         return builder;
     }
 
-    private OrderSpecifier<?> getSortOrder(AuctionRequest.SearchCondition condition, QAuction auction) {
+    private OrderSpecifier<?> getSortOrder(AuctionRequest.SearchCondition condition) {
         if (condition.getSortBy() != null) {
             return switch (condition.getSortBy()) {
                 case "bidsAsc" -> auction.bids.size().asc();
                 case "bidsDesc" -> auction.bids.size().desc();
-                case "endingSoon" -> auction.endTime.asc();
+                case "endTimeASC" -> auction.endTime.asc();
+                case "startTimeASC" -> auction.startTime.asc();
+                case "viewCountDESC" -> auction.viewCount.desc();
+
                 default -> null;
             };
         }
         return null;
     }
+
+
 }

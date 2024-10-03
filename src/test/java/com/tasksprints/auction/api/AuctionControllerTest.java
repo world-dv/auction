@@ -19,6 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -114,8 +118,10 @@ public class AuctionControllerTest {
     @DisplayName("QueryString을 통한 경매 목록 조회")
     public void testFindAuctionByUsingQueryString_Success() throws Exception {
         // Given
-        List<AuctionResponse> auctionResponseList = new ArrayList<>();
-        when(auctionService.getAuctionsByFilter(any())).thenReturn(auctionResponseList);
+        List<AuctionResponse.Details> auctionResponseList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<AuctionResponse.Details> pageAuctionResponse = new PageImpl<>(auctionResponseList, pageable, 0);
+        when(auctionService.getAuctionsByFilter(any(),any())).thenReturn(pageAuctionResponse);
 
         // When & Then
         mockMvc.perform(get("/api/v1/auction")

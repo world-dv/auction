@@ -7,6 +7,7 @@ import com.tasksprints.auction.domain.auction.dto.response.AuctionResponse;
 import com.tasksprints.auction.domain.auction.service.AuctionService;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
 import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
 import com.tasksprints.auction.domain.review.service.ReviewService;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,8 +83,8 @@ public class AuctionController {
     @GetMapping
     @Operation(summary = "Get all auctions", description = "Retrieves all auctions.")
     @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
-    public ResponseEntity<ApiResult<List<AuctionResponse>>> getAllAuctions(AuctionRequest.SearchCondition searchCondition) {
-        List<AuctionResponse> auctions = auctionService.getAuctionsByFilter(searchCondition);
+    public ResponseEntity<ApiResult<Page<AuctionResponse.Details>>> getAllAuctions(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
+        Page<AuctionResponse.Details> auctions = auctionService.getAuctionsByFilter(pageable, searchCondition);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.ALL_AUCTIONS_RETRIEVED, auctions));
     }
 
@@ -91,6 +94,15 @@ public class AuctionController {
     public ResponseEntity<ApiResult<AuctionResponse>> getAuctionById(@PathVariable Long auctionId) {
         AuctionResponse auction = auctionService.getAuctionById(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_RETRIEVED, auction));
+    }
+
+    @Deprecated
+    @GetMapping("/category/{category}")
+    @Operation(summary = "Get auctions by ProductCategory", description = "Retrieve all auction by its ProductCategory.")
+    @ApiResponse(responseCode = "200", description = "All auctions retrieved successfully")
+    public ResponseEntity<ApiResult<Page<AuctionResponse.Details>>> getAuctionByProductCategory(Pageable pageable, @PathVariable String category, AuctionRequest.SearchCondition searchCondition) {
+        Page<AuctionResponse.Details> auctions = auctionService.getAuctionsByProductCategory(pageable, searchCondition, ProductCategory.fromDisplayName(category));
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_RETRIEVED, auctions));
     }
 
     // Bid Endpoints

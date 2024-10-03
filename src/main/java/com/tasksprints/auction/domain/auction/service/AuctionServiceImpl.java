@@ -8,11 +8,14 @@ import com.tasksprints.auction.domain.auction.exception.InvalidAuctionTimeExcept
 import com.tasksprints.auction.domain.auction.model.Auction;
 import com.tasksprints.auction.domain.auction.model.AuctionStatus;
 import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
+import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.user.exception.UserNotFoundException;
 import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -97,7 +100,8 @@ public class AuctionServiceImpl implements AuctionService {
     public AuctionResponse getAuctionById(Long auctionId) {
         Auction foundAuction = auctionRepository.findAuctionById(auctionId)
             .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
-
+        foundAuction.incrementViewCount();
+        auctionRepository.save(foundAuction);
         return AuctionResponse.of(foundAuction);
     }
 
@@ -106,13 +110,16 @@ public class AuctionServiceImpl implements AuctionService {
      * NULL 안정성 보장을 해줬음
      **/
     @Override
-    public List<AuctionResponse> getAuctionsByFilter(AuctionRequest.SearchCondition searchCondition) {
-        List<Auction> foundAuctions = auctionRepository.getAuctionsByFilters(
-            searchCondition
-        );
-
-        return foundAuctions.stream()
-            .map(AuctionResponse::of)
-            .toList();
+    public Page<AuctionResponse.Details> getAuctionsByFilter(Pageable pageable, AuctionRequest.SearchCondition searchCondition) {
+        Page<Auction> auctions = auctionRepository.getAuctionsByFilters(pageable, searchCondition);
+        return auctions.map(AuctionResponse.Details::of);
     }
+
+    @Deprecated
+    @Override
+    public Page<AuctionResponse.Details> getAuctionsByProductCategory(Pageable pageable, AuctionRequest.SearchCondition searchCondition, ProductCategory category) {
+        Page<Auction> auctions = auctionRepository.getAuctionsByFilters(pageable, searchCondition);
+        return auctions.map(AuctionResponse.Details::of);
+    }
+
 }
