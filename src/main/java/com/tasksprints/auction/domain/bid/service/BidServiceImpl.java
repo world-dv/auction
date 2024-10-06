@@ -34,9 +34,9 @@ public class BidServiceImpl implements BidService {
     public BidResponse submitBid(Long userId, Long auctionId, BigDecimal amount) {
         // 입찰 시 유효성 검사
         User foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
         Auction foundAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
+            .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
 
         // 경매가 종료되었는지 확인
         if (foundAuction.getEndTime().isBefore(LocalDateTime.now())) {
@@ -58,7 +58,7 @@ public class BidServiceImpl implements BidService {
     public BidResponse updateBidAmount(Long userId, Long auctionId, BigDecimal newAmount) {
         // 기존 입찰을 찾습니다.
         Bid foundBid = bidRepository.findByUserIdAndAuctionId(userId, auctionId)
-                .orElseThrow(() -> new BidNotFoundException("Bid not found"));
+            .orElseThrow(() -> new BidNotFoundException("Bid not found"));
 
         Auction foundAuction = foundBid.getAuction();
 

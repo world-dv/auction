@@ -54,18 +54,12 @@ public class Bid extends BaseEntity {
         addAuction(auction);
     }
 
-    public static Bid create(BigDecimal amount, User user, Auction auction){
+    public static Bid create(BigDecimal amount, User user, Auction auction) {
         Bid newBid = Bid.builder()
-                .uuid(UUID.randomUUID().toString()) //version 4 uuid 생성
-                .amount(amount)
-                .build();
+            .amount(amount)
+            .build();
 
         newBid.addUserAndAuction(user, auction);
         return newBid;
     }
-
-    public void update(BigDecimal amount){
-        this.amount = amount;
-    }
-
 }

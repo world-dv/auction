@@ -2,8 +2,8 @@ package com.tasksprints.auction.api.user;
 
 import com.tasksprints.auction.common.constant.ApiResponseMessages;
 import com.tasksprints.auction.common.response.ApiResult;
-import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
 import com.tasksprints.auction.domain.user.dto.request.UserRequest;
+import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
 import com.tasksprints.auction.domain.user.dto.response.UserSummaryResponse;
 import com.tasksprints.auction.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +23,8 @@ public class UserController {
 
     @Operation(summary = "Register User", description = "Register a new user with the provided user information.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User created successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid user data.")
+        @ApiResponse(responseCode = "200", description = "User created successfully."),
+        @ApiResponse(responseCode = "400", description = "Invalid user data.")
     })
     @PostMapping()
     public ResponseEntity<ApiResult<UserDetailResponse>> register(@RequestBody UserRequest.Register user) {
@@ -34,8 +34,8 @@ public class UserController {
 
     @Operation(summary = "Get User by ID", description = "Retrieve user details based on the user ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User details retrieved successfully."),
-            @ApiResponse(responseCode = "404", description = "User not found.")
+        @ApiResponse(responseCode = "200", description = "User details retrieved successfully."),
+        @ApiResponse(responseCode = "404", description = "User not found.")
     })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResult<UserDetailResponse>> getUserById(@PathVariable Long id) {
@@ -45,8 +45,8 @@ public class UserController {
 
     @Operation(summary = "Get All Users", description = "Retrieve a summary list of all users.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User summary list retrieved successfully."),
-            @ApiResponse(responseCode = "204", description = "No users found.")
+        @ApiResponse(responseCode = "200", description = "User summary list retrieved successfully."),
+        @ApiResponse(responseCode = "204", description = "No users found.")
     })
     @GetMapping()
     public ResponseEntity<ApiResult<List<UserSummaryResponse>>> getAllUsers() {
@@ -56,8 +56,8 @@ public class UserController {
 
     @Operation(summary = "Update User", description = "Update user information for a specific user ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User updated successfully."),
-            @ApiResponse(responseCode = "404", description = "User not found.")
+        @ApiResponse(responseCode = "200", description = "User updated successfully."),
+        @ApiResponse(responseCode = "404", description = "User not found.")
     })
     @PutMapping()
     public ResponseEntity<ApiResult<UserDetailResponse>> updateUser(@RequestParam Long id, @RequestBody UserRequest.Update user) {
@@ -67,8 +67,8 @@ public class UserController {
 
     @Operation(summary = "Delete User", description = "Delete a user by user ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User deleted successfully."),
-            @ApiResponse(responseCode = "404", description = "User not found.")
+        @ApiResponse(responseCode = "200", description = "User deleted successfully."),
+        @ApiResponse(responseCode = "404", description = "User not found.")
     })
     @DeleteMapping()
     public ResponseEntity<ApiResult<String>> deleteUser(@RequestParam Long id) {
