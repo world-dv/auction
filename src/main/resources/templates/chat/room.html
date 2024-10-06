@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Websocket Chat</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container" id="pub">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>채팅방 리스트</h3>
+    </div>
+  </div>
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <label class="input-group-text">방 제목</label>
+    </div>
+    <label for="room_name"></label><input type="text" class="form-control" id="room_name" />
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="button" id="createRoomBtn">채팅방 개설</button>
+    </div>
+  </div>
+  <ul class="list-group" id="chatroomList">
+  </ul>
+</div>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const roomNameInput = document.getElementById('room_name');
+      const chatroomList = document.getElementById('chatroomList');
+      const createRoomBtn = document.getElementById('createRoomBtn');
+
+      // 채팅방 목록 로드
+      function findAllRoom() {
+          axios.get('http://localhost:8080/chat/room/all')
+              .then(response => {
+                  chatroomList.innerHTML = ''; // 리스트 초기화
+                  response.data.forEach(item => {
+                      const li = document.createElement('li');
+                      li.className = 'list-group-item list-group-item-action';
+                      li.textContent = item.name;
+                      li.addEventListener('click', () => enterRoom(item.chatRoomId));
+                      chatroomList.appendChild(li);
+                  });
+              });
+      }
+
+      // 채팅방 생성
+      function createRoom() {
+          const roomName = roomNameInput.value.trim();
+          if (roomName === "") {
+              alert("방 제목을 입력해 주십시요.");
+              return;
+          }
+          const params = new URLSearchParams();
+          params.append("name", roomName);
+          axios.post('http://localhost:8080/chat/room', params)
+              .then(response => {
+                  alert(response.data.name + " 방 개설에 성공하였습니다.");
+                  roomNameInput.value = '';
+                  findAllRoom();
+              })
+              .catch(() => {
+                  alert("채팅방 개설에 실패하였습니다.");
+              });
+      }
+
+      // 방에 들어가기
+      function enterRoom(roomId) {
+          const sender = prompt('대화명을 입력해 주세요.');
+          if (sender) {
+              localStorage.setItem('wschat.sender', sender);
+              localStorage.setItem('wschat.roomId', roomId); // >> localStorage 아닌 다른 방법 필요
+              window.location.href = "http://localhost:8080/chat/room/enter/" + roomId;
+          }
+      }
+
+      // Enter 키로 채팅방 생성하기
+      roomNameInput.addEventListener('keyup', function(event) {
+          if (event.key === 'Enter') {
+              createRoom();
+          }
+      });
+
+      // 버튼 클릭으로 채팅방 생성
+      createRoomBtn.addEventListener('click', createRoom);
+
+      // 페이지 로드 시 채팅방 목록 불러오기
+      findAllRoom();
+  });
+</script>
+</body>
+</html>
