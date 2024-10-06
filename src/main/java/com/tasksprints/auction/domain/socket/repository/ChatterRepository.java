@@ -7,4 +7,3 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChatterRepository extends JpaRepository<Chatter, String> {
 }
-g
