@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.socket;
+package com.tasksprints.auction.domain.socket.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
