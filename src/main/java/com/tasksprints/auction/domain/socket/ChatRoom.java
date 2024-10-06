@@ -31,7 +31,7 @@ public class ChatRoom {
     private List<Chatter> chatters;
 
     @Builder
-g    public ChatRoom(String name) {
+    public ChatRoom(String name) {
         this.chatRoomId = UUID.randomUUID().toString();
         this.name = name;
         this.chatters = new ArrayList<>();
