@@ -25,15 +25,14 @@ public class User extends BaseEntityWithUpdate {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true) //unique 특성 추가 필요
     private String email;
 
-
-    @Column(nullable = false)
+    @Column(nullable = false) //unique 특성 추가 필요
     private String password;
 
     @Column(nullable = false)
-    private String nickName;
+    private String nickName; //unique 특성 추가 필요
 
     @Column(nullable = true)
     private LocalDateTime deletedAt;

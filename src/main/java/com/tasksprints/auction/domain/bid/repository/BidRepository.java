@@ -12,7 +12,9 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     @Query("select b from bids b where b.auction.id = :auctionId")
     List<Bid> findByAuctionId(Long auctionId);
 
-
     @Query("select b from bids b where b.auction.id = :auctionId and b.user.id = :userId")
     Optional<Bid> findByUserIdAndAuctionId(Long userId, Long auctionId);
+
+    @Query("select b from bids b where b.uuid = :uuid")
+    Optional<Bid> findByUuid(String uuid);
 }

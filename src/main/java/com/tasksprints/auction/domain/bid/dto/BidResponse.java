@@ -17,6 +17,7 @@ public class BidResponse {
     String name;
     Long auctionId;
     BigDecimal amount;
+    String uuid;
 
     public static BidResponse of(Bid bid) {
         return BidResponse.builder()

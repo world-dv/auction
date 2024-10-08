@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Websocket ChatRoom</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container" id="pub">
+  <div>
+    <h2 id="roomName"></h2>
+    <button class="btn btn-primary" type="button" id="leaveButton">나가기</button>
+  </div>
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <label class="input-group-text">내용</label>
+    </div>
+    <input type="text" class="form-control" id="messageInput">
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="button" id="sendButton">보내기</button>
+    </div>
+  </div>
+  <ul class="list-group" id="messagesList">
+  </ul>
+</div>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  var sock = new SockJS('http://localhost:8080/ws-stomp');
+  var ws = Stomp.over(sock);
+  var reconnect = 0;
+
+  var roomId = localStorage.getItem('wschat.roomId');
+  var sender = localStorage.getItem('wschat.sender');
+  var room = {};
+  var messages = [];
+  console.log("Chat Room ID: " + roomId);
+
+  document.getElementById('sendButton').addEventListener('click', sendMessage);
+  document.getElementById('leaveButton').addEventListener('click', leaveChatRoom);
+  document.getElementById('messageInput').addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+          sendMessage();
+      }
+  });
+
+  function findRoom() {
+      axios.get('http://localhost:8080/chat/room/' + roomId).then(function(response) {
+          room = response.data;
+          document.getElementById('roomName').textContent = room.name;
+      });
+  }
+
+  function sendMessage() {
+      var messageInput = document.getElementById('messageInput');
+      var message = messageInput.value;
+       if (message) {
+          ws.send("/pub/chat/message", {}, JSON.stringify({type: 'TALK', roomId: roomId, sender: sender, message: message}));
+         messageInput.value = '';
+      }
+  }
+
+  function revMessage(rev) {
+      var messageList = document.getElementById('messagesList');
+      var newMessage = document.createElement('li');
+      newMessage.classList.add('list-group-item');
+      newMessage.textContent = (rev.type === 'ENTER' ? '[알림]' : rev.sender) + ' - ' + rev.message;
+      messageList.insertBefore(newMessage, messageList.firstChild);
+  }
+
+  function leaveChatRoom() {
+      ws.send("/pub/chat/message", {}, JSON.stringify({type: 'LEAVE', roomId: roomId, sender: sender, message: ''}));
+      window.location.href = "http://localhost:8080/chat/room";
+  }
+
+  function connect() {
+      ws.connect({}, function(frame) {
+          ws.subscribe("/sub/chat/room/" + roomId, function(message) {
+              var rev = JSON.parse(message.body);
+              revMessage(rev);
+          });
+          ws.send("/pub/chat/message", {}, JSON.stringify({type: 'ENTER', roomId: roomId, sender: sender}));
+      }, function(error) {
+          if (reconnect++ <= 5) {
+              setTimeout(function() {
+                  console.log("connection reconnect");
+                  sock = new SockJS("http://localhost:8080/ws-stomp");
+                  ws = Stomp.over(sock);
+                  connect();
+              }, 10 * 1000);
+          }
+      });
+  }
+
+  findRoom();
+  connect();
+</script>
+</body>
+</html>
