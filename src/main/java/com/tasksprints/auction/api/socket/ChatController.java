@@ -21,6 +21,6 @@ public class ChatController {
         if (MessageDto.MessageType.LEAVE.equals(messageDto.getType())) {
             messageDto.setMessage(messageDto.getSender() + "님이 퇴장하셨습니다.");
         }
-        simpMessageSendingOperations.convertAndSend("/sub/chat/room/" + messageDto.getRoomId(), messageDto);
+        simpMessageSendingOperations.convertAndSend("/bid/chat/room/" + messageDto.getRoomId(), messageDto);
     }
 }
