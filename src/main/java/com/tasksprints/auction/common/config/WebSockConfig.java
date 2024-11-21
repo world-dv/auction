@@ -12,9 +12,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
 
+    /*
+    /topic : 채팅방 전체 메시지 (공지) 경로
+    /bid : bid 메시지 (주로 bid 금액 업데이트 관련) 경로
+    /whisper : 귓속말 경로
+     */
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry brokerRegistry) {
-        brokerRegistry.enableSimpleBroker("/topic", "/bid");
+        brokerRegistry.enableSimpleBroker("/topic", "/bid", "/whisper");
         brokerRegistry.setApplicationDestinationPrefixes("/app");
     }
 
