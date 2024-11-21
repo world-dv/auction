@@ -22,11 +22,11 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
 
     public final StringPath chatRoomId = createString("chatRoomId");
 
-    public final ListPath<Chatter, QChatter> chatters = this.<Chatter, QChatter>createList("chatters", Chatter.class, QChatter.class, PathInits.DIRECT2);
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath name = createString("name");
+
+    public final ListPath<com.tasksprints.auction.domain.user.model.User, com.tasksprints.auction.domain.user.model.QUser> users = this.<com.tasksprints.auction.domain.user.model.User, com.tasksprints.auction.domain.user.model.QUser>createList("users", com.tasksprints.auction.domain.user.model.User.class, com.tasksprints.auction.domain.user.model.QUser.class, PathInits.DIRECT2);
 
     public QChatRoom(String variable) {
         super(ChatRoom.class, forVariable(variable));
