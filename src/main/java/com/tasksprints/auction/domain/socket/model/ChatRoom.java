@@ -1,5 +1,6 @@
 package com.tasksprints.auction.domain.socket.model;
 
+import com.tasksprints.auction.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,13 +28,13 @@ public class ChatRoom {
     private String name;
 
     @OneToMany
-    @Column(name = "chatterList")
-    private List<Chatter> chatters;
+    @Column(name = "users")
+    private List<User> users;
 
     @Builder
     public ChatRoom(String name) {
         this.chatRoomId = UUID.randomUUID().toString();
         this.name = name;
-        this.chatters = new ArrayList<>();
+        this.users = new ArrayList<>();
     }
 }
