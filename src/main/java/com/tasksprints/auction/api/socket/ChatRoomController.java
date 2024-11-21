@@ -15,11 +15,6 @@ public class ChatRoomController {
 
     private final ChatService chatService;
 
-    @GetMapping("/chat/room")
-    public String chatRoomList(Model model) {
-        return "/chat/room";
-    } //채팅방 목록 화면
-
     @GetMapping("/chat/room/all")
     @ResponseBody
     public List<ChatRoom> chatRoomAll() {
@@ -31,12 +26,6 @@ public class ChatRoomController {
     public ChatRoom createChatRoom(@RequestParam("name") String name) {
         return chatService.createRoom(name);
     } //채팅방 생성
-
-    @GetMapping("/chat/room/enter/{chatRoomId}")
-    public String enterChatRoom(Model model, @PathVariable(value = "chatRoomId") String chatRoomId) {
-        model.addAttribute("chatRoomId", chatRoomId);
-        return "/chat/enter";
-    } //채팅방 입장 화면
 
     @GetMapping("/chat/room/{chatRoomId}")
     @ResponseBody
