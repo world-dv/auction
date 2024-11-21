@@ -17,7 +17,6 @@ public class MessageDto {
     private String sender;
     private String message;
 
-
     public void setMessage(String s) {
         this.message = s;
     }
