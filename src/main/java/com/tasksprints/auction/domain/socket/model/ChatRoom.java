@@ -27,7 +27,8 @@ public class ChatRoom {
     @Column(name = "name")
     private String name; //채팅방 이름은 상품 이름으로 하면 좋을 것 같습니다.
 
-    @Column(name = "owner_id")
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
     private User owner; //입찰자 -> 입찰 불가하도록 ? 설정 후 메시지 보내기 금지
 
     @OneToMany
