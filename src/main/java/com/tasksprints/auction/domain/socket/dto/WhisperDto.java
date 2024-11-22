@@ -12,6 +12,10 @@ public class WhisperDto {
     private String sender; //보내는 사람 email 또는 닉네임
     private String receiver; //받는 사람 email 또는 닉네임
     private String message;
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
 
 // email 은 unique 하기때문에 sender 와 receiver 로 사용 가능

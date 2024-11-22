@@ -28,6 +28,7 @@ public class ChatController {
 
     @MessageMapping("/chat/message/whisper")
     public void messageToOne(WhisperDto whisperDto) {
+        whisperDto.setMessage("[귓속말] " + whisperDto.getSender() + " : " + whisperDto.getMessage());
         simpMessageSendingOperations.convertAndSend("/whisper/" + whisperDto.getReceiver(), whisperDto);
         //유저 생성 시 "/whisper/{유저 email 또는 nickname}" 경로를 구독해야 귓속말이 가능
         //유저가 보낼 때 받는 사람의 경로로 메시지를 전달 -> 받는 사람만 메시지를 볼 수 있음
