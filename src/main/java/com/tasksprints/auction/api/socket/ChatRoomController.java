@@ -1,10 +1,10 @@
 package com.tasksprints.auction.api.socket;
 
+import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
 import com.tasksprints.auction.domain.socket.model.ChatRoom;
 import com.tasksprints.auction.domain.socket.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +23,8 @@ public class ChatRoomController {
 
     @PostMapping("/chat/room")
     @ResponseBody
-    public ChatRoom createChatRoom(@RequestParam("name") String name) {
-        return chatService.createRoom(name);
+    public ChatRoom createChatRoom(@RequestParam("roomInfo") AddChatRoomDto addChatRoomDto) {
+        return chatService.createRoom(addChatRoomDto);
     } //채팅방 생성
 
     @GetMapping("/chat/room/{chatRoomId}")

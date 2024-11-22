@@ -1,6 +1,7 @@
 package com.tasksprints.auction.domain.socket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
 import com.tasksprints.auction.domain.socket.model.ChatRoom;
 import com.tasksprints.auction.domain.socket.repository.ChatRoomRepository;
 import jakarta.annotation.PostConstruct;
@@ -36,11 +37,10 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatRoom createRoom(String name) {
-        ChatRoom chatRoom = chatRoomRepository.save(new ChatRoom(name));
+    public ChatRoom createRoom(AddChatRoomDto addChatRoomDto) {
+        ChatRoom chatRoom = chatRoomRepository.save(addChatRoomDto.toEntity());
         log.info("Create Room : {} {}", chatRoom.getId(), chatRoom.getName());
         chatRoomMap.put(chatRoom.getChatRoomId(), chatRoom);
         return chatRoom;
     }
 }
-

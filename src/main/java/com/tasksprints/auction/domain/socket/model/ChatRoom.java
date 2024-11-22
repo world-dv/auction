@@ -25,16 +25,20 @@ public class ChatRoom {
     private String chatRoomId;
 
     @Column(name = "name")
-    private String name;
+    private String name; //채팅방 이름은 상품 이름으로 하면 좋을 것 같습니다.
+
+    @Column(name = "owner")
+    private User owner; //입찰자 -> 입찰 불가하도록 ? 설정 후 메시지 보내기 금지
 
     @OneToMany
     @Column(name = "users")
     private List<User> users;
 
     @Builder
-    public ChatRoom(String name) {
+    public ChatRoom(String name, User owner) {
         this.chatRoomId = UUID.randomUUID().toString();
         this.name = name;
+        this.owner = owner;
         this.users = new ArrayList<>();
     }
 }
