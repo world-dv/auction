@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WhisperDto {
 
+    private String roomId;
     private String sender; //보내는 사람 email 또는 닉네임
     private String receiver; //받는 사람 email 또는 닉네임
     private String message;

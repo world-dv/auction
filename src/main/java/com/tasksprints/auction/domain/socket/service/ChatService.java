@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
 import com.tasksprints.auction.domain.socket.model.ChatRoom;
 import com.tasksprints.auction.domain.socket.repository.ChatRoomRepository;
+import com.tasksprints.auction.domain.user.model.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,14 @@ public class ChatService {
 
     public ChatRoom findRoomById(String id) {
         return chatRoomMap.get(id);
+    }
+
+    public User findOwnerById(String id) {
+        return findRoomById(id).getOwner();
+    }
+
+    public boolean isUserOwner(String id, String userName) {
+        return findOwnerById(id).getNickName().equals(userName);
     }
 
     @Transactional

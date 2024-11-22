@@ -3,6 +3,7 @@ package com.tasksprints.auction.api.socket;
 import com.tasksprints.auction.domain.socket.dto.MessageDto;
 import com.tasksprints.auction.domain.socket.dto.MessageDto.MessageType;
 import com.tasksprints.auction.domain.socket.dto.WhisperDto;
+import com.tasksprints.auction.domain.socket.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -13,13 +14,17 @@ import org.springframework.stereotype.Controller;
 public class ChatController {
 
     private final SimpMessageSendingOperations simpMessageSendingOperations;
+    private final ChatService chatService;
 
     @MessageMapping("/chat/message")
     public void message(MessageDto messageDto) {
+        if (chatService.isUserOwner(messageDto.getRoomId(), messageDto.getSender())) {
+            return;
+        } //메시지 전송자가 경매자라면 메시지 전송 금지
+
         if (MessageType.ENTER.equals(messageDto.getType())) {
             messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
         }
-
         if (MessageType.LEAVE.equals(messageDto.getType())) {
             messageDto.setMessage(messageDto.getSender() + "님이 퇴장하셨습니다.");
         }
@@ -28,6 +33,10 @@ public class ChatController {
 
     @MessageMapping("/chat/message/whisper")
     public void messageToOne(WhisperDto whisperDto) {
+        if (chatService.isUserOwner(whisperDto.getRoomId(), whisperDto.getSender())) {
+            return;
+        } //메시지 전송자가 경매자라면 메시지 전송 금지
+
         whisperDto.setMessage("[귓속말] " + whisperDto.getSender() + " : " + whisperDto.getMessage());
         simpMessageSendingOperations.convertAndSend("/whisper/" + whisperDto.getReceiver(), whisperDto);
         //유저 생성 시 "/whisper/{유저 email 또는 nickname}" 경로를 구독해야 귓속말이 가능
