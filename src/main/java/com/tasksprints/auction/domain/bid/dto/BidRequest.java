@@ -9,5 +9,6 @@ import java.math.BigDecimal;
 public class BidRequest {
     private Long userId;
     private Long auctionId;
+    private String chatRoomId;
     private BigDecimal amount;
 }

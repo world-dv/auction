@@ -5,6 +5,9 @@ import com.tasksprints.auction.common.response.ApiResult;
 import com.tasksprints.auction.domain.bid.dto.BidRequest;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
+import com.tasksprints.auction.domain.socket.service.ChatService;
+import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
+import com.tasksprints.auction.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/v1/bid")
 public class BidController {
     private final BidService bidService;
+    private final ChatService chatService;
+    private final UserService userService;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
 
     @MessageMapping("/bid")
@@ -28,6 +33,11 @@ public class BidController {
         /**
          * 입찰하는거 여기다가 추가하면 좋을 듯 합니다g.
          */
+        UserDetailResponse userDetailResponse = userService.getUserDetailsById(bidRequest.getUserId());
+        if (chatService.isUserOwner(bidRequest.getChatRoomId(), userDetailResponse.getNickName())) {
+            return;
+        }
+
         BidResponse bidResponse = bidService.submitBid(bidRequest.getUserId(), bidRequest.getAuctionId(), bidRequest.getAmount());
         simpMessageSendingOperations.convertAndSend("/bid/"+bidResponse.getUuid(), bidResponse);
     }
