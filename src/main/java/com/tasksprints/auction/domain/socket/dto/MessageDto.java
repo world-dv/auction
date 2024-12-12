@@ -14,7 +14,7 @@ public class MessageDto {
 
     private MessageType type;
     private String roomId;
-    private String sender;
+    private Long sender;
     private String message;
 
     public void setMessage(String s) {

@@ -34,7 +34,7 @@ public class BidController {
          * 입찰하는거 여기다가 추가하면 좋을 듯 합니다g.
          */
         UserDetailResponse userDetailResponse = userService.getUserDetailsById(bidRequest.getUserId());
-        if (chatService.isUserOwner(bidRequest.getChatRoomId(), userDetailResponse.getNickName())) {
+        if (chatService.isUserOwner(bidRequest.getChatRoomId(), userDetailResponse.getId())) {
             return;
         }
 

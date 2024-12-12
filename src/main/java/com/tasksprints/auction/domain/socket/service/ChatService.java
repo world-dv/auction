@@ -41,8 +41,8 @@ public class ChatService {
         return findRoomById(id).getOwner();
     }
 
-    public boolean isUserOwner(String id, String userName) {
-        return findOwnerById(id).getNickName().equals(userName);
+    public boolean isUserOwner(String id, Long user) {
+        return findOwnerById(id).getId().equals(user);
     }
 
     @Transactional
