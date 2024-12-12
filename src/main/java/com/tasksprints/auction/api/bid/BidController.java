@@ -38,7 +38,7 @@ public class BidController {
             return;
         }
 
-        BidResponse bidResponse = bidService.submitBid(bidRequest.getUserId(), bidRequest.getAuctionId(), bidRequest.getAmount());
+        BidResponse bidResponse = bidService.updateBidAmount(bidRequest.getUserId(), bidRequest.getAuctionId(), bidRequest.getAmount());
         simpMessageSendingOperations.convertAndSend("/bid/"+bidResponse.getUuid(), bidResponse);
     }
 
