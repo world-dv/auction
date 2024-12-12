@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.socket.model;
+package com.tasksprints.auction.domain.chat.model;
 
 import com.tasksprints.auction.domain.user.model.User;
 import jakarta.persistence.*;

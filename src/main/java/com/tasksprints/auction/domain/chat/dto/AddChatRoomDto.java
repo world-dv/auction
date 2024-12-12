@@ -1,6 +1,6 @@
-package com.tasksprints.auction.domain.socket.dto;
+package com.tasksprints.auction.domain.chat.dto;
 
-import com.tasksprints.auction.domain.socket.model.ChatRoom;
+import com.tasksprints.auction.domain.chat.model.ChatRoom;
 import com.tasksprints.auction.domain.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

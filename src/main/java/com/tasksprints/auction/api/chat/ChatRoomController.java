@@ -1,7 +1,7 @@
-package com.tasksprints.auction.api.socket;
+package com.tasksprints.auction.api.chat;
 
-import com.tasksprints.auction.domain.socket.model.ChatRoom;
-import com.tasksprints.auction.domain.socket.service.ChatService;
+import com.tasksprints.auction.domain.chat.model.ChatRoom;
+import com.tasksprints.auction.domain.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

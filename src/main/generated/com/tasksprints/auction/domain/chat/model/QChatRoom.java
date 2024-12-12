@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.socket.model;
+package com.tasksprints.auction.domain.chat.model;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QChatRoom extends EntityPathBase<ChatRoom> {
 
-    private static final long serialVersionUID = -65337957L;
+    private static final long serialVersionUID = -1584360170L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

@@ -1,9 +1,9 @@
-package com.tasksprints.auction.api.socket;
+package com.tasksprints.auction.api.chat;
 
-import com.tasksprints.auction.domain.socket.dto.MessageDto;
-import com.tasksprints.auction.domain.socket.dto.MessageDto.MessageType;
-import com.tasksprints.auction.domain.socket.dto.WhisperDto;
-import com.tasksprints.auction.domain.socket.service.ChatService;
+import com.tasksprints.auction.domain.chat.dto.MessageDto;
+import com.tasksprints.auction.domain.chat.dto.MessageDto.MessageType;
+import com.tasksprints.auction.domain.chat.dto.WhisperDto;
+import com.tasksprints.auction.domain.chat.service.ChatService;
 import com.tasksprints.auction.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;

@@ -1,4 +1,4 @@
-package com.tasksprints.auction.domain.socket.dto;
+package com.tasksprints.auction.domain.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

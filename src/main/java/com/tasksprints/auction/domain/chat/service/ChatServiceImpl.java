@@ -1,9 +1,9 @@
-package com.tasksprints.auction.domain.socket.service;
+package com.tasksprints.auction.domain.chat.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
-import com.tasksprints.auction.domain.socket.model.ChatRoom;
-import com.tasksprints.auction.domain.socket.repository.ChatRoomRepository;
+import com.tasksprints.auction.domain.chat.dto.AddChatRoomDto;
+import com.tasksprints.auction.domain.chat.model.ChatRoom;
+import com.tasksprints.auction.domain.chat.repository.ChatRoomRepository;
 import com.tasksprints.auction.domain.user.model.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;

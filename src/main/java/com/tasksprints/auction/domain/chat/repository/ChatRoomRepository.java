@@ -1,6 +1,6 @@
-package com.tasksprints.auction.domain.socket.repository;
+package com.tasksprints.auction.domain.chat.repository;
 
-import com.tasksprints.auction.domain.socket.model.ChatRoom;
+import com.tasksprints.auction.domain.chat.model.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

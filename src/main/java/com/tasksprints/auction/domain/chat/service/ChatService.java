@@ -1,7 +1,7 @@
-package com.tasksprints.auction.domain.socket.service;
+package com.tasksprints.auction.domain.chat.service;
 
-import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
-import com.tasksprints.auction.domain.socket.model.ChatRoom;
+import com.tasksprints.auction.domain.chat.dto.AddChatRoomDto;
+import com.tasksprints.auction.domain.chat.model.ChatRoom;
 import com.tasksprints.auction.domain.user.model.User;
 import java.util.List;
 
