@@ -59,4 +59,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user); // 상태 업데이트를 저장
     }
 
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
+    }
 }

@@ -21,10 +21,10 @@ public class ChatRoomController {
         return chatService.findAllRoom();
     } //채팅방 목록 조회
 
-    @PostMapping("/chat/room")
-    public ChatRoom createChatRoom(AddChatRoomDto addChatRoomDto) {
-        return chatService.createRoom(addChatRoomDto);
-    } //채팅방 생성
+//    @PostMapping("/chat/room")
+//    public ChatRoom createChatRoom(AddChatRoomDto addChatRoomDto) {
+//        return chatService.createRoom(addChatRoomDto);
+//    } //채팅방 생성
 
     @GetMapping("/chat/room/{chatRoomId}")
     public ChatRoom chatRoom(@PathVariable(value = "chatRoomId") String chatRoomId) {

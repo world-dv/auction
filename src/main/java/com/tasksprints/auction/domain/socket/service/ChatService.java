@@ -46,10 +46,9 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatRoom createRoom(AddChatRoomDto addChatRoomDto) {
+    public void createRoom(AddChatRoomDto addChatRoomDto) {
         ChatRoom chatRoom = chatRoomRepository.save(addChatRoomDto.toEntity());
         log.info("Create Room : {} {}", chatRoom.getId(), chatRoom.getName());
         chatRoomMap.put(chatRoom.getChatRoomId(), chatRoom);
-        return chatRoom;
     }
 }

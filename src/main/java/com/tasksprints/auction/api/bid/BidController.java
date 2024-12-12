@@ -5,8 +5,11 @@ import com.tasksprints.auction.common.response.ApiResult;
 import com.tasksprints.auction.domain.bid.dto.BidRequest;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
+import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
+import com.tasksprints.auction.domain.socket.model.ChatRoom;
 import com.tasksprints.auction.domain.socket.service.ChatService;
 import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
+import com.tasksprints.auction.domain.user.model.User;
 import com.tasksprints.auction.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auction")
 public class BidController {
     private final BidService bidService;
     private final ChatService chatService;
@@ -52,6 +55,8 @@ public class BidController {
     @ApiResponse(responseCode = "200", description = "Bid submitted successfully")
     public ResponseEntity<ApiResult<BidResponse>> submitBid(@Parameter(description = "ID of the user submitting the bid") @RequestParam Long userId, @PathVariable Long auctionId, @Parameter(description = "Bid amount") @RequestParam BigDecimal amount) {
         BidResponse bid = bidService.submitBid(userId, auctionId, amount);
+        User user = userService.getUserById(userId);
+        chatService.createRoom(new AddChatRoomDto(bid.getName(), user)); //입찰 생성 시 채팅방 생성 후 저장
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_SUBMITTED_SUCCESS, bid));
     }
 

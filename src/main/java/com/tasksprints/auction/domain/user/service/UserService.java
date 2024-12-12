@@ -4,6 +4,7 @@ import com.tasksprints.auction.domain.user.dto.request.UserRequest;
 import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
 import com.tasksprints.auction.domain.user.dto.response.UserSummaryResponse;
 
+import com.tasksprints.auction.domain.user.model.User;
 import java.util.List;
 
 public interface UserService {
@@ -16,4 +17,6 @@ public interface UserService {
     UserDetailResponse updateUser(Long id, UserRequest.Update user);
 
     void deleteUser(Long id);
+
+    User getUserById(Long id);
 }
