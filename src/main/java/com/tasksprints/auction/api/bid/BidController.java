@@ -9,7 +9,9 @@ import com.tasksprints.auction.domain.socket.service.ChatService;
 import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
 import com.tasksprints.auction.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,11 +19,14 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/bid")
+@RequestMapping("/api/v1")
 public class BidController {
     private final BidService bidService;
     private final ChatService chatService;
@@ -31,7 +36,7 @@ public class BidController {
     @MessageMapping("/bid")
     public void handleBid(BidRequest bidRequest) {
         /**
-         * 입찰하는거 여기다가 추가하면 좋을 듯 합니다g.
+         * 입찰하는거 여기다가 추가하면 좋을 듯 합니다.
          */
         UserDetailResponse userDetailResponse = userService.getUserDetailsById(bidRequest.getUserId());
         if (chatService.isUserOwner(bidRequest.getChatRoomId(), userDetailResponse.getId())) {
@@ -42,7 +47,31 @@ public class BidController {
         simpMessageSendingOperations.convertAndSend("/bid/"+bidResponse.getUuid(), bidResponse);
     }
 
-    @GetMapping("/{uuid}")
+    @PostMapping("/{auctionId}/bid")
+    @Operation(summary = "Submit a bid", description = "Submits a bid for the specified auction.")
+    @ApiResponse(responseCode = "200", description = "Bid submitted successfully")
+    public ResponseEntity<ApiResult<BidResponse>> submitBid(@Parameter(description = "ID of the user submitting the bid") @RequestParam Long userId, @PathVariable Long auctionId, @Parameter(description = "Bid amount") @RequestParam BigDecimal amount) {
+        BidResponse bid = bidService.submitBid(userId, auctionId, amount);
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_SUBMITTED_SUCCESS, bid));
+    }
+
+    @PutMapping("/{auctionId}/bid")
+    @Operation(summary = "Update a bid", description = "Updates the amount of an existing bid.")
+    @ApiResponse(responseCode = "200", description = "Bid updated successfully")
+    public ResponseEntity<ApiResult<BidResponse>> updateBid(@Parameter(description = "ID of the user updating the bid") @RequestParam Long userId, @PathVariable Long auctionId, @Parameter(description = "New bid amount") @RequestParam BigDecimal amount) {
+        BidResponse updatedBid = bidService.updateBidAmount(userId, auctionId, amount);
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_UPDATED_SUCCESS, updatedBid));
+    }
+
+    @GetMapping("/{auctionId}/bid/status")
+    @Operation(summary = "Check user bid status", description = "Checks if the user has already placed a bid on the auction.")
+    @ApiResponse(responseCode = "200", description = "Bid status checked successfully")
+    public ResponseEntity<ApiResult<Boolean>> checkUserBidStatus(@PathVariable Long auctionId, @Parameter(description = "ID of the user") @RequestParam Long userId) {
+        Boolean hasBid = bidService.hasUserAlreadyBid(auctionId);
+        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_STATUS_CHECKED, hasBid));
+    }
+
+    @GetMapping("/bid/{uuid}")
     @Operation(summary = "Get a bid", description = "Get a bid by bid uuid")
     @ApiResponse(responseCode = "200", description = "Bid status retrieved successfully")
     public ResponseEntity<ApiResult<BidResponse>> getBidByUuid(@PathVariable(value = "uuid") String uuid) {

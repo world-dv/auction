@@ -105,31 +105,6 @@ public class AuctionController {
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_RETRIEVED, auctions));
     }
 
-    // Bid Endpoints
-    @PostMapping("/{auctionId}/bid")
-    @Operation(summary = "Submit a bid", description = "Submits a bid for the specified auction.")
-    @ApiResponse(responseCode = "200", description = "Bid submitted successfully")
-    public ResponseEntity<ApiResult<BidResponse>> submitBid(@Parameter(description = "ID of the user submitting the bid") @RequestParam Long userId, @PathVariable Long auctionId, @Parameter(description = "Bid amount") @RequestParam BigDecimal amount) {
-        BidResponse bid = bidService.submitBid(userId, auctionId, amount);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_SUBMITTED_SUCCESS, bid));
-    }
-
-    @PutMapping("/{auctionId}/bid")
-    @Operation(summary = "Update a bid", description = "Updates the amount of an existing bid.")
-    @ApiResponse(responseCode = "200", description = "Bid updated successfully")
-    public ResponseEntity<ApiResult<BidResponse>> updateBid(@Parameter(description = "ID of the user updating the bid") @RequestParam Long userId, @PathVariable Long auctionId, @Parameter(description = "New bid amount") @RequestParam BigDecimal amount) {
-        BidResponse updatedBid = bidService.updateBidAmount(userId, auctionId, amount);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_UPDATED_SUCCESS, updatedBid));
-    }
-
-    @GetMapping("/{auctionId}/bid/status")
-    @Operation(summary = "Check user bid status", description = "Checks if the user has already placed a bid on the auction.")
-    @ApiResponse(responseCode = "200", description = "Bid status checked successfully")
-    public ResponseEntity<ApiResult<Boolean>> checkUserBidStatus(@PathVariable Long auctionId, @Parameter(description = "ID of the user") @RequestParam Long userId) {
-        Boolean hasBidded = bidService.hasUserAlreadyBid(auctionId);
-        return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_STATUS_CHECKED, hasBidded));
-    }
-
     // Review Endpoints
     @PostMapping("/{auctionId}/review")
     @Operation(summary = "Create a review", description = "Creates a review for a specific auction.")
