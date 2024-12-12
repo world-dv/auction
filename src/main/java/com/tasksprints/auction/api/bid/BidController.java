@@ -45,6 +45,10 @@ public class BidController {
             return;
         }
 
+        if (bidService.isBidEnd(bidRequest.getAuctionId())) {
+            return;
+        } //경매가 종료되었을 경우 채팅 입력 금지
+
         BidResponse bidResponse = bidService.updateBidAmount(bidRequest.getUserId(), bidRequest.getAuctionId(),
             bidRequest.getAmount());
         simpMessageSendingOperations.convertAndSend("/bid/" + bidResponse.getUuid(), bidResponse);

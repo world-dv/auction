@@ -16,4 +16,6 @@ public interface BidService {
     Boolean hasUserAlreadyBid(Long auctionId);
 
     BidResponse getBidByUuid(String uuid);
+
+    boolean isBidEnd(Long auctionId);
 }
