@@ -6,7 +6,6 @@ import com.tasksprints.auction.domain.bid.dto.BidRequest;
 import com.tasksprints.auction.domain.bid.dto.BidResponse;
 import com.tasksprints.auction.domain.bid.service.BidService;
 import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
-import com.tasksprints.auction.domain.socket.model.ChatRoom;
 import com.tasksprints.auction.domain.socket.service.ChatService;
 import com.tasksprints.auction.domain.user.dto.response.UserDetailResponse;
 import com.tasksprints.auction.domain.user.model.User;
@@ -46,14 +45,17 @@ public class BidController {
             return;
         }
 
-        BidResponse bidResponse = bidService.updateBidAmount(bidRequest.getUserId(), bidRequest.getAuctionId(), bidRequest.getAmount());
-        simpMessageSendingOperations.convertAndSend("/bid/"+bidResponse.getUuid(), bidResponse);
+        BidResponse bidResponse = bidService.updateBidAmount(bidRequest.getUserId(), bidRequest.getAuctionId(),
+            bidRequest.getAmount());
+        simpMessageSendingOperations.convertAndSend("/bid/" + bidResponse.getUuid(), bidResponse);
     }
 
     @PostMapping("/{auctionId}/bid")
     @Operation(summary = "Submit a bid", description = "Submits a bid for the specified auction.")
     @ApiResponse(responseCode = "200", description = "Bid submitted successfully")
-    public ResponseEntity<ApiResult<BidResponse>> submitBid(@Parameter(description = "ID of the user submitting the bid") @RequestParam Long userId, @PathVariable Long auctionId, @Parameter(description = "Bid amount") @RequestParam BigDecimal amount) {
+    public ResponseEntity<ApiResult<BidResponse>> submitBid(
+        @Parameter(description = "ID of the user submitting the bid") @RequestParam Long userId,
+        @PathVariable Long auctionId, @Parameter(description = "Bid amount") @RequestParam BigDecimal amount) {
         BidResponse bid = bidService.submitBid(userId, auctionId, amount);
         User user = userService.getUserById(userId);
         chatService.createRoom(new AddChatRoomDto(bid.getName(), user)); //입찰 생성 시 채팅방 생성 후 저장
@@ -63,7 +65,9 @@ public class BidController {
     @PutMapping("/{auctionId}/bid")
     @Operation(summary = "Update a bid", description = "Updates the amount of an existing bid.")
     @ApiResponse(responseCode = "200", description = "Bid updated successfully")
-    public ResponseEntity<ApiResult<BidResponse>> updateBid(@Parameter(description = "ID of the user updating the bid") @RequestParam Long userId, @PathVariable Long auctionId, @Parameter(description = "New bid amount") @RequestParam BigDecimal amount) {
+    public ResponseEntity<ApiResult<BidResponse>> updateBid(
+        @Parameter(description = "ID of the user updating the bid") @RequestParam Long userId,
+        @PathVariable Long auctionId, @Parameter(description = "New bid amount") @RequestParam BigDecimal amount) {
         BidResponse updatedBid = bidService.updateBidAmount(userId, auctionId, amount);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_UPDATED_SUCCESS, updatedBid));
     }
@@ -71,7 +75,8 @@ public class BidController {
     @GetMapping("/{auctionId}/bid/status")
     @Operation(summary = "Check user bid status", description = "Checks if the user has already placed a bid on the auction.")
     @ApiResponse(responseCode = "200", description = "Bid status checked successfully")
-    public ResponseEntity<ApiResult<Boolean>> checkUserBidStatus(@PathVariable Long auctionId, @Parameter(description = "ID of the user") @RequestParam Long userId) {
+    public ResponseEntity<ApiResult<Boolean>> checkUserBidStatus(@PathVariable Long auctionId,
+                                                                 @Parameter(description = "ID of the user") @RequestParam Long userId) {
         Boolean hasBid = bidService.hasUserAlreadyBid(auctionId);
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.BID_STATUS_CHECKED, hasBid));
     }

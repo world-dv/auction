@@ -1,6 +1,5 @@
 package com.tasksprints.auction.api.socket;
 
-import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
 import com.tasksprints.auction.domain.socket.model.ChatRoom;
 import com.tasksprints.auction.domain.socket.service.ChatService;
 import lombok.RequiredArgsConstructor;

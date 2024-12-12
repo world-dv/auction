@@ -1,54 +1,19 @@
 package com.tasksprints.auction.domain.socket.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
 import com.tasksprints.auction.domain.socket.model.ChatRoom;
-import com.tasksprints.auction.domain.socket.repository.ChatRoomRepository;
 import com.tasksprints.auction.domain.user.model.User;
-import jakarta.annotation.PostConstruct;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
-@Slf4j
-@RequiredArgsConstructor
-@Service
-public class ChatService {
+public interface ChatService {
 
-    private final ObjectMapper mapper;
-    private ConcurrentHashMap<String, ChatRoom> chatRoomMap;
-    private final ChatRoomRepository chatRoomRepository;
+    List<ChatRoom> findAllRoom();
 
-    @PostConstruct
-    private void init() {
-        chatRoomMap = new ConcurrentHashMap<>();
-    }
+    ChatRoom findRoomById(String id);
 
-    public List<ChatRoom> findAllRoom() {
-        return new ArrayList<>(chatRoomMap.values());
-    }
+    User findOwnerById(String id);
 
-    public ChatRoom findRoomById(String id) {
-        return chatRoomMap.get(id);
-    }
+    boolean isUserOwner(String id, Long user);
 
-    public User findOwnerById(String id) {
-        return findRoomById(id).getOwner();
-    }
-
-    public boolean isUserOwner(String id, Long user) {
-        return findOwnerById(id).getId().equals(user);
-    }
-
-    @Transactional
-    public void createRoom(AddChatRoomDto addChatRoomDto) {
-        ChatRoom chatRoom = chatRoomRepository.save(addChatRoomDto.toEntity());
-        log.info("Create Room : {} {}", chatRoom.getId(), chatRoom.getName());
-        chatRoomMap.put(chatRoom.getChatRoomId(), chatRoom);
-    }
+    void createRoom(AddChatRoomDto addChatRoomDto);
 }
