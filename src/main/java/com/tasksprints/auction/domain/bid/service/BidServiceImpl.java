@@ -95,4 +95,11 @@ public class BidServiceImpl implements BidService {
                 .orElseThrow(() -> new BidNotFoundException("Bid not found"));
         return BidResponse.of(bid);
     }
+
+    @Override
+    public boolean isBidEnd(Long auctionId) {
+        Auction auction = auctionRepository.findById(auctionId)
+            .orElseThrow(() -> new IllegalArgumentException("NOT FOUND : Auction " + auctionId));
+        return auction.getEndTime().isBefore(LocalDateTime.now());
+    }
 }

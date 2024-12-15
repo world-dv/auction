@@ -38,6 +38,10 @@ public class BidController {
             return;
         }
 
+        if (bidService.isBidEnd(bidRequest.getAuctionId())) {
+            return;
+        }
+
         BidResponse bidResponse = bidService.submitBid(bidRequest.getUserId(), bidRequest.getAuctionId(), bidRequest.getAmount());
         simpMessageSendingOperations.convertAndSend("/bid/"+bidResponse.getUuid(), bidResponse);
     }
