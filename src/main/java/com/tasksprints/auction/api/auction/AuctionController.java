@@ -11,6 +11,7 @@ import com.tasksprints.auction.domain.product.model.ProductCategory;
 import com.tasksprints.auction.domain.review.dto.request.ReviewRequest;
 import com.tasksprints.auction.domain.review.dto.response.ReviewResponse;
 import com.tasksprints.auction.domain.review.service.ReviewService;
+import com.tasksprints.auction.domain.socket.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,12 +34,14 @@ public class AuctionController {
     private final AuctionService auctionService;
     private final BidService bidService;
     private final ReviewService reviewService;
+    private final ChatService chatService;
 
     @PostMapping
     @Operation(summary = "Create an auction", description = "Creates a new auction for a user.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Auction created successfully")})
     public ResponseEntity<ApiResult<AuctionResponse>> createAuction(@Parameter(description = "ID of the user creating the auction") @RequestParam Long userId, @RequestBody AuctionRequest.Create auctionRequest) {
         AuctionResponse createdAuction = auctionService.createAuction(userId, auctionRequest);
+        chatService.createRoom(userId, createdAuction.getId());
         return ResponseEntity.ok(ApiResult.success(ApiResponseMessages.AUCTION_CREATED_SUCCESS, createdAuction));
     }
 

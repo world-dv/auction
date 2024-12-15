@@ -1,10 +1,13 @@
 package com.tasksprints.auction.domain.socket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tasksprints.auction.domain.auction.model.Auction;
+import com.tasksprints.auction.domain.auction.repository.AuctionRepository;
 import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
 import com.tasksprints.auction.domain.socket.model.ChatRoom;
 import com.tasksprints.auction.domain.socket.repository.ChatRoomRepository;
 import com.tasksprints.auction.domain.user.model.User;
+import com.tasksprints.auction.domain.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,8 @@ public class ChatServiceImpl implements ChatService {
     private final ObjectMapper mapper;
     private ConcurrentHashMap<String, ChatRoom> chatRoomMap;
     private final ChatRoomRepository chatRoomRepository;
+    private final UserRepository userRepository;
+    private final AuctionRepository auctionRepository;
 
     @PostConstruct
     private void init() {
@@ -51,10 +56,14 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public ChatRoom createRoom(AddChatRoomDto addChatRoomDto) {
+    public void createRoom(Long userId, Long auctionId) {
+        Auction auction = auctionRepository.findById(auctionId)
+            .orElseThrow(() -> new IllegalArgumentException("NOT FOUND : auction " + auctionId));
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("NOT FOUND : user " + userId));
+        AddChatRoomDto addChatRoomDto = new AddChatRoomDto(auction.getProduct().getName(), user);
         ChatRoom chatRoom = chatRoomRepository.save(addChatRoomDto.toEntity());
         log.info("Create Room : {} {}", chatRoom.getId(), chatRoom.getName());
         chatRoomMap.put(chatRoom.getChatRoomId(), chatRoom);
-        return chatRoom;
     }
 }

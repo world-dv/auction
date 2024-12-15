@@ -16,5 +16,5 @@ public interface ChatService {
 
     boolean isUserOwner(String id, Long user);
 
-    ChatRoom createRoom(AddChatRoomDto addChatRoomDto);
+    void createRoom(Long userId, Long auctionId);
 }
