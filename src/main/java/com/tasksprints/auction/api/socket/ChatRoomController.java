@@ -2,7 +2,7 @@ package com.tasksprints.auction.api.socket;
 
 import com.tasksprints.auction.domain.socket.dto.AddChatRoomDto;
 import com.tasksprints.auction.domain.socket.model.ChatRoom;
-import com.tasksprints.auction.domain.socket.service.ChatService;
+import com.tasksprints.auction.domain.socket.service.ChatServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import java.util.List;
 @ResponseBody
 public class ChatRoomController {
 
-    private final ChatService chatService;
+    private final ChatServiceImpl chatService;
 
     @GetMapping("/chat/room/all")
     public List<ChatRoom> chatRoomAll() {

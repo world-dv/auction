@@ -3,7 +3,7 @@ package com.tasksprints.auction.api.socket;
 import com.tasksprints.auction.domain.socket.dto.MessageDto;
 import com.tasksprints.auction.domain.socket.dto.MessageDto.MessageType;
 import com.tasksprints.auction.domain.socket.dto.WhisperDto;
-import com.tasksprints.auction.domain.socket.service.ChatService;
+import com.tasksprints.auction.domain.socket.service.ChatServiceImpl;
 import com.tasksprints.auction.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -16,7 +16,7 @@ public class ChatController {
 
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final UserService userService;
-    private final ChatService chatService;
+    private final ChatServiceImpl chatService;
 
     @MessageMapping("/chat/message")
     public void message(MessageDto messageDto) {
