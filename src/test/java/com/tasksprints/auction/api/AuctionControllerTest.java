@@ -160,32 +160,6 @@ public class AuctionControllerTest {
 //    }
 
     @Test
-    @DisplayName("입찰 제출 성공")
-    public void testSubmitBid_Success() throws Exception {
-        BidResponse bidDTO = new BidResponse(); // Populate with necessary fields
-        when(bidService.submitBid(anyLong(), anyLong(), any())).thenReturn(bidDTO);
-
-        mockMvc.perform(post("/api/v1/auction/1/bid")
-                .param("userId", "1")
-                .param("amount", "100.00"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value(ApiResponseMessages.BID_SUBMITTED_SUCCESS));
-    }
-
-    @Test
-    @DisplayName("입찰 금액 업데이트 성공")
-    public void testUpdateBid_Success() throws Exception {
-        BidResponse updatedBidDTO = new BidResponse(); // Populate with necessary fields
-        when(bidService.updateBidAmount(anyLong(), anyLong(), any())).thenReturn(updatedBidDTO);
-
-        mockMvc.perform(put("/api/v1/auction/1/bid")
-                .param("userId", "1")
-                .param("amount", "150.00"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value(ApiResponseMessages.BID_UPDATED_SUCCESS));
-    }
-
-    @Test
     @DisplayName("리뷰 생성 성공")
     public void testCreateReview_Success() throws Exception {
         ReviewRequest.Create reviewRequest = new ReviewRequest.Create();
